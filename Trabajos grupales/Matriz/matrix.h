@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include<algorithm>
 #include <stdexcept>
 
 template<typename T>
@@ -38,13 +39,12 @@ public:
 
     // Función para imprimir matriz
     void print() const {
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                std::cout << data[i][j] << "\t";
-            }
-            std::cout << std::endl;
-        }
+        std::for_each(data.begin(), data.end(), [](const std::vector<int>& fila) {
+            std::for_each(fila.begin(), fila.end(), [](int num) {
+                std::cout << num << " ";
+            });
         std::cout << std::endl;
+    });
     }
 
     // Suma recursiva de matrices
