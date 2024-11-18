@@ -41,7 +41,7 @@ public:
     void print() const {
         std::for_each(data.begin(), data.end(), [](const std::vector<int>& fila) {
             std::for_each(fila.begin(), fila.end(), [](int num) {
-                std::cout << num << " ";
+                std::cout << "[" << num << "] ";
             });
         std::cout << std::endl;
     });

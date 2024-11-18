@@ -11,7 +11,6 @@ private:
 
 public:
     // Constructor
-    Caja(T v, T l, T a, T h) : valor(v), largo(l), ancho(a), alto(h) {}
 
     // Métodos para obtener los valores de cada atributo
     T obtenerValor() { return valor; }

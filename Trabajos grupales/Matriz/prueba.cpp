@@ -11,7 +11,7 @@ int main() {
     };
 
     // Recorrer e imprimir la matriz usando for_each y lambdas
-    std::for_each(data.begin(), data.end(), [](const std::vector<int>& fila) {
+    std::for_each(matriz.begin(), matriz.end(), [](const std::vector<int>& fila) {
         std::for_each(fila.begin(), fila.end(), [](int num) {
             std::cout << num << " ";
         });
