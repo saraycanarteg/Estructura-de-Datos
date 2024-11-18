@@ -19,19 +19,29 @@ public:
     }
 
     // Getter y Setter separados para mayor claridad
-    T& at(size_t i, size_t j) {
-        if (i >= rows || j >= cols) {
-            throw std::out_of_range("Matrix indices out of range");
-        }
-        return data[i][j];
-    }
+    //con funcion lambda por especificación de tipo de retorno
 
-    const T& at(size_t i, size_t j) const {
-        if (i >= rows || j >= cols) {
-            throw std::out_of_range("Matrix indices out of range");
-        }
-        return data[i][j];
+    T& at(size_t i, size_t j) {
+    auto checkBounds = [this, i, j]() -> bool {
+        return i < rows && j < cols;
+    };
+
+    if (!checkBounds()) {
+        throw std::out_of_range("Matrix indices out of range");
     }
+    return data[i][j];
+}
+
+const T& at(size_t i, size_t j) const {
+    auto checkBounds = [this, i, j]() -> bool {
+        return i < rows && j < cols;
+    };
+
+    if (!checkBounds()) {
+        throw std::out_of_range("Matrix indices out of range");
+    }
+    return data[i][j];
+}
 
     // Obtener dimensiones
     size_t getRows() const { return rows; }
