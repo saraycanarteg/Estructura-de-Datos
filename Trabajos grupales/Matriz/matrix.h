@@ -62,18 +62,19 @@ public:
 private:
     template<typename U>
     void recursiveSumHelper(const Matrix<U>& other, Matrix<T>& result, int i, int j) const {
-        auto recursiveSumLambda = [this, &other, &result, &i, &j](int currentI, int currentJ) -> void {
+        auto recursiveSumLambda = [](auto& self, const Matrix<T>* thisMatrix, const Matrix<U>& otherMatrix,
+                                      Matrix<T>& resultMatrix, int currentI, int currentJ) -> void {
             if (currentI < 0) return;
-            
+
             if (currentJ >= 0) {
-                result.at(currentI, currentJ) = this->at(currentI, currentJ) + other.at(currentI, currentJ);
-                recursiveSumLambda(currentI, currentJ - 1);
+                resultMatrix.at(currentI, currentJ) = thisMatrix->at(currentI, currentJ) + otherMatrix.at(currentI, currentJ);
+                self(self, thisMatrix, otherMatrix, resultMatrix, currentI, currentJ - 1);
             } else {
-                recursiveSumLambda(currentI - 1, cols - 1);
+                self(self, thisMatrix, otherMatrix, resultMatrix, currentI - 1, thisMatrix->getCols() - 1);
             }
         };
 
-        recursiveSumLambda(i, j);
+        recursiveSumLambda(recursiveSumLambda, this, other, result, i, j);
     }
 };
 
