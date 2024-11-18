@@ -18,30 +18,20 @@ public:
         data.resize(rows, std::vector<T>(cols));
     }
 
-    // Getter y Setter separados para mayor claridad
-    //con funcion lambda por especificación de tipo de retorno
-
+    // Getter y Setter
     T& at(size_t i, size_t j) {
-    auto checkBounds = [this, i, j]() -> bool {
-        return i < rows && j < cols;
-    };
-
-    if (!checkBounds()) {
-        throw std::out_of_range("Matrix indices out of range");
+        if (i >= rows || j >= cols) {
+            throw std::out_of_range("Matrix indices out of range");
+        }
+        return data[i][j];
     }
-    return data[i][j];
-}
 
-const T& at(size_t i, size_t j) const {
-    auto checkBounds = [this, i, j]() -> bool {
-        return i < rows && j < cols;
-    };
-
-    if (!checkBounds()) {
-        throw std::out_of_range("Matrix indices out of range");
+    const T& at(size_t i, size_t j) const {
+        if (i >= rows || j >= cols) {
+            throw std::out_of_range("Matrix indices out of range");
+        }
+        return data[i][j];
     }
-    return data[i][j];
-}
 
     // Obtener dimensiones
     size_t getRows() const { return rows; }
@@ -51,7 +41,7 @@ const T& at(size_t i, size_t j) const {
     void print() const {
         std::for_each(data.begin(), data.end(), [](const std::vector<int>& fila) {
             std::for_each(fila.begin(), fila.end(), [](int num) {
-                std::cout << "[" << num << "] ";
+                std::cout << num << " ";
             });
         std::cout << std::endl;
     });
@@ -72,14 +62,18 @@ const T& at(size_t i, size_t j) const {
 private:
     template<typename U>
     void recursiveSumHelper(const Matrix<U>& other, Matrix<T>& result, int i, int j) const {
-        if (i < 0) return;
-        
-        if (j >= 0) {
-            result.at(i, j) = this->at(i, j) + other.at(i, j);
-            recursiveSumHelper(other, result, i, j-1);
-        } else {
-            recursiveSumHelper(other, result, i-1, cols-1);
-        }
+        auto recursiveSumLambda = [this, &other, &result, &i, &j](int currentI, int currentJ) -> void {
+            if (currentI < 0) return;
+            
+            if (currentJ >= 0) {
+                result.at(currentI, currentJ) = this->at(currentI, currentJ) + other.at(currentI, currentJ);
+                recursiveSumLambda(currentI, currentJ - 1);
+            } else {
+                recursiveSumLambda(currentI - 1, cols - 1);
+            }
+        };
+
+        recursiveSumLambda(i, j);
     }
 };
 
