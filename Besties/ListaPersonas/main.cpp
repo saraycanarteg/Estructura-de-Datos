@@ -27,8 +27,10 @@ int main() {
         cout << "3. Mostrar lista original\n";
         cout << "4. Mostrar lista modificada\n";
         cout << "5. Eliminar caracter\n";
-        cout << "6. Salir\n";
-        cout << "Seleccione una opción: ";
+        cout << "6. Buscar persona\n";
+        cout << "7. Eliminar persona\n";
+        cout << "8. Salir\n";
+        cout << "Seleccione una opcion: ";
         cin >> opcion;
 
         switch (opcion) {
@@ -84,11 +86,27 @@ int main() {
                 cout << "Caracter eliminado en la lista modificada.\n";
                 break;
             }
-
             case 6:
-                cout << "Saliendo...\n";
+                cout << "Ingrese la cedula de la persona a buscar: ";
+                cin >> cedula;
+                if (validarCedula(cedula)){
+                    listaOriginal.buscarPorCedula(cedula);   
+                } else {
+                    cout <<"Datos no validos"<<endl;
+                }
+               break;
+            case 7:
+                cout <<"Ingrese la cedula de la persona a eliminar: ";
+                cin >> cedula;
+                if (validarCedula(cedula)){
+                    listaOriginal.eliminarPorCedula(cedula);   
+                } else {
+                    cout <<"Datos no validos \n"<<endl;
+                }
                 break;
-
+            case 8:
+                cout <<"Saliendo del programa ... \n";
+                break;
             default:
                 cout << "Opcion inválida.\n";
         }
@@ -96,7 +114,7 @@ int main() {
         cout << "\nPresione ENTER para continuar...";
         cin.ignore();
         cin.get();
-    } while (opcion != 6);
+    } while (opcion != 8);
 
     return 0;
 }

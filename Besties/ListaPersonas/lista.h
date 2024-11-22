@@ -30,8 +30,11 @@ public:
     void insertarPorCabeza(T data);
     void insertarPorCola(T data);
     void eliminarPorCabeza();
+    void eliminarPorCedula(string cedula);
     void mostrarLista() const;
     void eliminarCaracter(char c);
+    //void buscarEnLista();
+    void buscarPorCedula(string cedula);
 };
 
 

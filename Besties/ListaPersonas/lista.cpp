@@ -42,6 +42,61 @@ void Lista<T>::eliminarPorCabeza() {
     delete temp;
 }
 
+template<typename T>
+void Lista<T>::eliminarPorCedula(string cedula) {
+    if (cabeza == NULL) {
+        cout << "La lista esta vacia" << endl;
+        return;
+    }
+
+    // Caso especial: si es el primer nodo
+    if (cabeza->data.getCedula() == cedula) {
+        Nodo<T>* temp = cabeza;
+        cabeza = cabeza->siguiente;
+        delete temp;
+        cout << "Persona con cedula " << cedula << " eliminada exitosamente" << endl;
+        return;
+    }
+
+    // Buscar en el resto de la lista
+    Nodo<T>* actual = cabeza;
+    Nodo<T>* anterior = NULL;
+
+    while (actual != NULL && actual->data.getCedula() != cedula) {
+        anterior = actual;
+        actual = actual->siguiente;
+    }
+
+    if (actual != NULL) {
+        anterior->siguiente = actual->siguiente;
+        delete actual;
+        cout << "Persona con cedula " << cedula << " eliminada exitosamente" << endl;
+    } else {
+        cout << "No se encontro ninguna persona con la cedula " << cedula << endl;
+    }
+}
+
+template<typename T>
+void Lista<T>::buscarPorCedula(string cedula) {
+    if (cabeza == NULL) {
+        cout << "La lista esta vacia" << endl;
+        return;
+    }
+
+    Nodo<T>* actual = cabeza;
+    while (actual != NULL) {
+        if (actual->data.getCedula() == cedula) {
+            cout << "Persona encontrada:" << endl;
+            cout << "Cedula: " << actual->data.getCedula() << endl;
+            cout << "Nombre: " << actual->data.getNombre() << endl;
+            cout << "Apellido: " << actual->data.getApellido() << endl;
+            return;
+        }
+        actual = actual->siguiente;
+    }
+    cout << "No se encontro ninguna persona con la cedula " << cedula << endl;
+}
+
 template <typename T>
 void Lista<T>::mostrarLista() const {
     Nodo<T>* actual = cabeza;
