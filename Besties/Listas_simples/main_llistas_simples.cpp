@@ -283,9 +283,10 @@ int main() {
                 cout << "1. Insertar por cabeza" << endl;
                 cout << "2. Insertar por cola" << endl;
                 cout << "3. Buscar" << endl;
-                cout << "4. Eliminar" << endl;
-                cout << "5. Mostrar" << endl;
-                cout << "6. Salir" << endl;
+                cout << "4. Eliminar elemento" << endl;
+                cout << "5. Eliminar caracter" << endl;
+                cout << "6. Mostrar" << endl;
+                cout << "7. Salir" << endl;
                 opcion = ingresar_entero.ingresar("Opcion: ", "entero");
                 cout << endl;
                 
@@ -328,11 +329,35 @@ int main() {
                     system("pause");
                     break;
                 }
-                case 5:
+                case 5: {
+                
+                    char caracter;
+                    cout << "Ingrese el caracter a eliminar: ";
+                    cin >> caracter;
+                    Lista_Simple<Persona>* nueva_lista = lista_persona->EliminarCaracter(caracter);
+                    cout << "Lista original:" << endl;
+                    lista_persona->Mostrar();
+                    cout << "\nLista con caracteres eliminados:" << endl;
+                    nueva_lista->Mostrar();
+                    
+                    cout << "\n¿Desea reemplazar la lista original? (1: Si, 0: No): ";
+                    int opcionReemplazo;
+                    cin >> opcionReemplazo;
+                    if (opcionReemplazo == 1) {
+                        delete lista_persona;
+                        lista_persona = nueva_lista;
+                    } else {
+                        delete nueva_lista;
+                    }
+                    system("pause");
+                            
+                break;
+                }
+                case 6:
                     lista_persona->Mostrar();
                     system("pause");
                     break;
-                case 6:
+                case 7:
                     break;
                 default:
                     cout << "Opcion no valida, intente de nuevo" << endl;
@@ -354,3 +379,5 @@ int main() {
     
     return 0;
 }
+
+

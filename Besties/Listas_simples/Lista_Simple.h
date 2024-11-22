@@ -1,7 +1,8 @@
-
 #pragma once
-//#include "Nodo.cpp"
 #include "Nodo.h"
+#include <string>
+#include <sstream>
+#include <typeinfo>
 
 using namespace std;
 
@@ -12,10 +13,11 @@ private:
 public:
     Lista_Simple();
     void Insertar_cabeza(T);
-    void Insertar_cola(T);  // Nuevo método
+    void Insertar_cola(T);
     void Buscar(T);
     void Eliminar(T);
     void Mostrar();
+    Lista_Simple<T>* EliminarCaracter(char caracter);
 };
 
 // En Lista_Simple.cpp

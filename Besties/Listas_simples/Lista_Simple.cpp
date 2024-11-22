@@ -85,4 +85,54 @@ template<typename T>
     }
     cout << "NULL" << endl;
 }
+template <typename T>
+Lista_Simple<T>* Lista_Simple<T>::EliminarCaracter(char caracter) {
+    Lista_Simple<T>* nuevaLista = new Lista_Simple<T>();
+    Nodo<T>* actual = cabeza;
 
+    while (actual != NULL) {
+        T datoOriginal = actual->getDato();
+        T datoModificado = datoOriginal; // Copia inicial del dato
+
+        // Manejo para cadenas (std::string)
+        if (typeid(T) == typeid(std::string)) {
+            // Eliminación manual del carácter
+            std::string strDato = datoOriginal;
+            std::string strModificado;
+            for (char c : strDato) {
+                if (c != caracter) {
+                    strModificado += c;
+                }
+            }
+            datoModificado = strModificado; // Asignar el valor modificado
+        }
+        // Manejo para Persona
+        else if (typeid(T) == typeid(Persona)) {
+            Persona personaOriginal = datoOriginal; // Copia del objeto Persona
+            std::string nombreModificado, apellidoModificado;
+
+            // Eliminar el carácter del nombre
+            for (char c : personaOriginal.getNombre()) {
+                if (c != caracter) {
+                    nombreModificado += c;
+                }
+            }
+
+            // Eliminar el carácter del apellido
+            for (char c : personaOriginal.getApellido()) {
+                if (c != caracter) {
+                    apellidoModificado += c;
+                }
+            }
+
+            // Crear una nueva instancia de Persona con los valores modificados
+            datoModificado = Persona(personaOriginal.getCedula(), nombreModificado, apellidoModificado);
+        }
+
+        // Para otros tipos, no modificar el dato
+        nuevaLista->Insertar_cabeza(datoModificado);
+        actual = actual->getSiguiente();
+    }
+
+    return nuevaLista;
+}
