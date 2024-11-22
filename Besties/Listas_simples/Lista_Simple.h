@@ -17,7 +17,7 @@ public:
     void Buscar(T);
     void Eliminar(T);
     void Mostrar();
-    Lista_Simple<T>* EliminarCaracter(char caracter);
+    //Lista_Simple<T>* EliminarCaracter(char caracter);
 };
 
 // En Lista_Simple.cpp

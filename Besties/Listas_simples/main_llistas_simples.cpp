@@ -331,25 +331,25 @@ int main() {
                 }
                 case 5: {
                 
-                    char caracter;
-                    cout << "Ingrese el caracter a eliminar: ";
-                    cin >> caracter;
-                    Lista_Simple<Persona>* nueva_lista = lista_persona->EliminarCaracter(caracter);
-                    cout << "Lista original:" << endl;
-                    lista_persona->Mostrar();
-                    cout << "\nLista con caracteres eliminados:" << endl;
-                    nueva_lista->Mostrar();
+                    // char caracter;
+                    // cout << "Ingrese el caracter a eliminar: ";
+                    // cin >> caracter;
+                    // Lista_Simple<Persona>* nueva_lista = lista_persona->EliminarCaracter(caracter);
+                    // cout << "Lista original:" << endl;
+                    // lista_persona->Mostrar();
+                    // cout << "\nLista con caracteres eliminados:" << endl;
+                    // nueva_lista->Mostrar();
                     
-                    cout << "\n¿Desea reemplazar la lista original? (1: Si, 0: No): ";
-                    int opcionReemplazo;
-                    cin >> opcionReemplazo;
-                    if (opcionReemplazo == 1) {
-                        delete lista_persona;
-                        lista_persona = nueva_lista;
-                    } else {
-                        delete nueva_lista;
-                    }
-                    system("pause");
+                    // cout << "\n¿Desea reemplazar la lista original? (1: Si, 0: No): ";
+                    // int opcionReemplazo;
+                    // cin >> opcionReemplazo;
+                    // if (opcionReemplazo == 1) {
+                    //     delete lista_persona;
+                    //     lista_persona = nueva_lista;
+                    // } else {
+                    //     delete nueva_lista;
+                    // }
+                    // system("pause");
                             
                 break;
                 }
