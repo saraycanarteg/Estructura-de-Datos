@@ -33,6 +33,7 @@ public:
     void eliminarPorCedula(string cedula);
     void mostrarLista() const;
     void eliminarCaracter(char c);
+    void reemplazarCaracter(char original, char reemplazo);
     //void buscarEnLista();
     void buscarPorCedula(string cedula);
 };

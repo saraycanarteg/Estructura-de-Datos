@@ -27,9 +27,10 @@ int main() {
         cout << "3. Mostrar lista original\n";
         cout << "4. Mostrar lista modificada\n";
         cout << "5. Eliminar caracter\n";
-        cout << "6. Buscar persona\n";
-        cout << "7. Eliminar persona\n";
-        cout << "8. Salir\n";
+        cout << "6. Reemplazar caracter\n"; // Nueva opción
+        cout << "7. Buscar persona\n";
+        cout << "8. Eliminar persona\n";
+        cout << "9. Salir\n";
         cout << "Seleccione una opcion: ";
         cin >> opcion;
 
@@ -86,35 +87,54 @@ int main() {
                 cout << "Caracter eliminado en la lista modificada.\n";
                 break;
             }
-            case 6:
+
+            case 6: { // Nueva funcionalidad para reemplazar caracteres
+                char original, reemplazo;
+                cout << "Ingrese el caracter a reemplazar: ";
+                cin >> original;
+                cout << "Ingrese el caracter por el cual reemplazar: ";
+                cin >> reemplazo;
+
+                // Crear una copia de la lista original para modificarla
+                listaModificada = listaOriginal;
+                listaModificada.reemplazarCaracter(original, reemplazo);
+
+                cout << "Caracter reemplazado en la lista modificada.\n";
+                break;
+            }
+
+            case 7:
                 cout << "Ingrese la cedula de la persona a buscar: ";
                 cin >> cedula;
-                if (validarCedula(cedula)){
-                    listaOriginal.buscarPorCedula(cedula);   
+                if (validarCedula(cedula)) {
+                    listaOriginal.buscarPorCedula(cedula);
                 } else {
-                    cout <<"Datos no validos"<<endl;
-                }
-               break;
-            case 7:
-                cout <<"Ingrese la cedula de la persona a eliminar: ";
-                cin >> cedula;
-                if (validarCedula(cedula)){
-                    listaOriginal.eliminarPorCedula(cedula);   
-                } else {
-                    cout <<"Datos no validos \n"<<endl;
+                    cout << "Datos no validos.\n";
                 }
                 break;
+
             case 8:
-                cout <<"Saliendo del programa ... \n";
+                cout << "Ingrese la cedula de la persona a eliminar: ";
+                cin >> cedula;
+                if (validarCedula(cedula)) {
+                    listaOriginal.eliminarPorCedula(cedula);
+                } else {
+                    cout << "Datos no validos.\n";
+                }
                 break;
+
+            case 9:
+                cout << "Saliendo del programa...\n";
+                break;
+
             default:
-                cout << "Opcion inválida.\n";
+                cout << "Opcion invalida.\n";
         }
 
         cout << "\nPresione ENTER para continuar...";
         cin.ignore();
         cin.get();
-    } while (opcion != 8);
+    } while (opcion != 9);
 
     return 0;
 }
