@@ -153,3 +153,24 @@ void Lista<T>::copiarLista(const Nodo<T>* otraCabeza) {
     }
 }
 
+template <typename T>
+void Lista<T>::reemplazarCaracter(char original, char reemplazo) {
+    Nodo<T>* actual = cabeza;
+    while (actual != nullptr) {
+        // Reemplazar carácter en cédula, apellido y nombre
+        string cedula = actual->data.getCedula();
+        replace(cedula.begin(), cedula.end(), original, reemplazo);
+        actual->data.setCedula(cedula);
+
+        string apellido = actual->data.getApellido();
+        replace(apellido.begin(), apellido.end(), original, reemplazo);
+        actual->data.setApellido(apellido);
+
+        string nombre = actual->data.getNombre();
+        replace(nombre.begin(), nombre.end(), original, reemplazo);
+        actual->data.setNombre(nombre);
+
+        actual = actual->siguiente;
+    }
+}
+
