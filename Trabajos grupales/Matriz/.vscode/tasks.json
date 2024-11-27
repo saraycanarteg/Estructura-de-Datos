@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+       
+        {
+            "label": "build-app",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-o", "build/app",
+                "src/main.cpp",
+                "-Lbuild", "-lmydll" // Ruta y enlace a la DLL
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": ["$gcc"]
+        }
+        
+    ]
+    
+}

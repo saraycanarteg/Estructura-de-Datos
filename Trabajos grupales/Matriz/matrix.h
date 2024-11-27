@@ -18,7 +18,7 @@ public:
         data.resize(rows, std::vector<T>(cols));
     }
 
-    // Getter y Setter
+    // Getter y Setter separados para mayor claridad
     T& at(size_t i, size_t j) {
         if (i >= rows || j >= cols) {
             throw std::out_of_range("Matrix indices out of range");
@@ -62,19 +62,14 @@ public:
 private:
     template<typename U>
     void recursiveSumHelper(const Matrix<U>& other, Matrix<T>& result, int i, int j) const {
-        auto recursiveSumLambda = [](auto& self, const Matrix<T>* thisMatrix, const Matrix<U>& otherMatrix,
-                                      Matrix<T>& resultMatrix, int currentI, int currentJ) -> void {
-            if (currentI < 0) return;
-
-            if (currentJ >= 0) {
-                resultMatrix.at(currentI, currentJ) = thisMatrix->at(currentI, currentJ) + otherMatrix.at(currentI, currentJ);
-                self(self, thisMatrix, otherMatrix, resultMatrix, currentI, currentJ - 1);
-            } else {
-                self(self, thisMatrix, otherMatrix, resultMatrix, currentI - 1, thisMatrix->getCols() - 1);
-            }
-        };
-
-        recursiveSumLambda(recursiveSumLambda, this, other, result, i, j);
+        if (i < 0) return;
+        
+        if (j >= 0) {
+            result.at(i, j) = this->at(i, j) + other.at(i, j);
+            recursiveSumHelper(other, result, i, j-1);
+        } else {
+            recursiveSumHelper(other, result, i-1, cols-1);
+        }
     }
 };
 
