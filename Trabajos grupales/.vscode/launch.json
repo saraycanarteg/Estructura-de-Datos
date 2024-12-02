@@ -8,10 +8,10 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/usuar/OneDrive/ESPE/3 software/Estructura de datos/Grupis/Estructura-de-Datos/Besties/ListaPersonas",
-      "program": "C:/Users/usuar/OneDrive/ESPE/3 software/Estructura de datos/Grupis/Estructura-de-Datos/Besties/ListaPersonas/output/main.exe",
+      "cwd": ".",
+      "program": "build/Debug/outDebug",
       "MIMode": "gdb",
-      "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
+      "miDebuggerPath": "gdb",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",

@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/usuar/OneDrive/ESPE/3 software/Estructura de datos/Grupis/Estructura-de-Datos/Besties/ListaPersonas",
-      "program": "C:/Users/usuar/OneDrive/ESPE/3 software/Estructura de datos/Grupis/Estructura-de-Datos/Besties/ListaPersonas/output/main.exe",
+      "cwd": "c:/Users/usuar/OneDrive/ESPE/3 software/Estructura de datos/Grupis/Estructura-de-Datos/Trabajos grupales/Polaca",
+      "program": "c:/Users/usuar/OneDrive/ESPE/3 software/Estructura de datos/Grupis/Estructura-de-Datos/Trabajos grupales/Polaca/output/main.exe",
       "MIMode": "gdb",
       "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
       "setupCommands": [
