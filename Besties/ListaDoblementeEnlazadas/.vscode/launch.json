@@ -5,12 +5,17 @@
       "name": "Aktive Datei erstellen (minGw) und debuggen (cdb)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/${fileBasenameNoExtension}.exe",
+      "program": "C:/Users/sncan/Desktop/repositorio/Estructura-de-Datos/Besties/ListaDoblementeEnlazadas/output/main.exe",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": false,
+      "environment": [
+        {
+          "name": "config",
+          "value": "Debug"
+        }
+      ],
+      "externalConsole": true,
       "MIMode": "gdb",
       "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
       "setupCommands": [

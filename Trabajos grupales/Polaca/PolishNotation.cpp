@@ -6,6 +6,7 @@
 #include <cctype>
 #include <cmath>
 #include <stdexcept>
+#include <algorithm>
 
 int PolishNotationConverter::getPrecedence(char op) {
     if (op == '+' || op == '-') return 1;
@@ -14,49 +15,102 @@ int PolishNotationConverter::getPrecedence(char op) {
     return 0;
 }
 
-std::string PolishNotationConverter::convertToPolishNotation(const std::string& expression) {
+bool PolishNotationConverter::isOperator(char c) {
+    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
+}
+
+// Conversión a notación polaca inversa (postfijo)
+std::string PolishNotationConverter::convertToPostfix(const std::string& expression) {
     std::stack<char> operators;
-    std::string polishNotation;
+    std::string postfix;
     std::istringstream iss(expression);
     std::string token;
 
     while (iss >> token) {
         if (isdigit(token[0])) {
-            // Si es un número, agregarlo directamente
-            polishNotation += token + " ";
+            postfix += token + " ";
         } else if (token[0] == '(') {
             operators.push(token[0]);
         } else if (token[0] == ')') {
-            // Sacar operadores hasta encontrar el paréntesis de apertura
             while (!operators.empty() && operators.top() != '(') {
-                polishNotation += std::string(1, operators.top()) + " ";
+                postfix += std::string(1, operators.top()) + " ";
                 operators.pop();
             }
             if (!operators.empty() && operators.top() == '(') {
                 operators.pop();
             }
-        } else {
-            // Operadores
+        } else if (isOperator(token[0])) {
             while (!operators.empty() && getPrecedence(operators.top()) >= getPrecedence(token[0])) {
-                polishNotation += std::string(1, operators.top()) + " ";
+                postfix += std::string(1, operators.top()) + " ";
                 operators.pop();
             }
             operators.push(token[0]);
         }
     }
 
-    // Agregar los operadores restantes
     while (!operators.empty()) {
-        polishNotation += std::string(1, operators.top()) + " ";
+        postfix += std::string(1, operators.top()) + " ";
         operators.pop();
     }
 
-    return polishNotation;
+    return postfix;
 }
 
-double PolishNotationConverter::evaluatePolishNotation(const std::string& polishNotation) {
+// Conversión a notación polaca (prefijo)
+std::string PolishNotationConverter::convertToPrefix(const std::string& expression) {
+    std::stack<std::string> operands;
+    std::stack<char> operators;
+    std::istringstream iss(expression);
+    std::string token;
+
+    while (iss >> token) {
+        if (isdigit(token[0])) {
+            operands.push(token);
+        } else if (token[0] == '(') {
+            operators.push(token[0]);
+        } else if (token[0] == ')') {
+            while (!operators.empty() && operators.top() != '(') {
+                std::string op = std::string(1, operators.top());
+                operators.pop();
+
+                std::string b = operands.top(); operands.pop();
+                std::string a = operands.top(); operands.pop();
+
+                operands.push(op + " " + a + " " + b);
+            }
+            if (!operators.empty() && operators.top() == '(') {
+                operators.pop();
+            }
+        } else if (isOperator(token[0])) {
+            while (!operators.empty() && getPrecedence(operators.top()) > getPrecedence(token[0])) {
+                std::string op = std::string(1, operators.top());
+                operators.pop();
+
+                std::string b = operands.top(); operands.pop();
+                std::string a = operands.top(); operands.pop();
+
+                operands.push(op + " " + a + " " + b);
+            }
+            operators.push(token[0]);
+        }
+    }
+
+    while (!operators.empty()) {
+        std::string op = std::string(1, operators.top());
+        operators.pop();
+
+        std::string b = operands.top(); operands.pop();
+        std::string a = operands.top(); operands.pop();
+
+        operands.push(op + " " + a + " " + b);
+    }
+
+    return operands.top();
+}
+
+double PolishNotationConverter::evaluatePostfix(const std::string& postfix) {
     std::stack<double> values;
-    std::istringstream iss(polishNotation);
+    std::istringstream iss(postfix);
     std::string token;
 
     while (iss >> token) {
@@ -72,7 +126,7 @@ double PolishNotationConverter::evaluatePolishNotation(const std::string& polish
                 case '*': values.push(a * b); break;
                 case '/': 
                     if (b != 0) values.push(a / b); 
-                    else throw std::runtime_error("División por cero");
+                    else throw std::runtime_error("Division por cero");
                     break;
                 case '^': values.push(std::pow(a, b)); break;
             }
@@ -84,20 +138,25 @@ double PolishNotationConverter::evaluatePolishNotation(const std::string& polish
 
 void PolishNotationConverter::run() {
     std::string input;
-    std::cout << "Ingrese una expresión matemática (use espacios entre números y operadores)\n";
+    std::cout << "Ingrese una expresion matematica (use espacios entre numeros y operadores)\n";
     std::cout << "Ejemplo: 3 + 4 * 2 / ( 1 - 5 ) ^ 2\n";
-    std::cout << "Expresión: ";
+    std::cout << "Expresion: ";
     
     std::getline(std::cin, input);
 
     try {
-        // Convertir a notación polaca
-        std::string polishNotation = convertToPolishNotation(input);
-        std::cout << "\nNotación Polaca: " << polishNotation << std::endl;
+        // Convertir a notación polaca inversa (postfijo)
+        std::string postfix = convertToPostfix(input);
+        //std::cout << "\nNotacion Polaca Inversa (Postfijo): " << postfix << std::endl;
 
-        // Evaluar la expresión en notación polaca
-        double resultado = evaluatePolishNotation(polishNotation);
-        std::cout << "Resultado: " << resultado << std::endl;
+        // Evaluar la expresión en notación polaca inversa
+        double resultadoPostfix = evaluatePostfix(postfix);
+        std::cout << "Resultado: " << resultadoPostfix << std::endl;
+
+        // Convertir a notación polaca (prefijo)
+        std::string prefix = convertToPrefix(input);
+        std::cout << "\nNotacion Polaca (Prefijo): " << prefix << std::endl;
+
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }

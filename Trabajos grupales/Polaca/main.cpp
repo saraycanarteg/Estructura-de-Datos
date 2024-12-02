@@ -1,4 +1,4 @@
-#include "PolishNotationConverter.h"
+#include "PolishNotation.cpp"
 
 int main() {
     PolishNotationConverter converter;
