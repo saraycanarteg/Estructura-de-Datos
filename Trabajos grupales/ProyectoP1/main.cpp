@@ -1,4 +1,8 @@
 #include "Menu.cpp"
+#include "Lista.h"
+#include "Libro.h"
+#include "Autor.h"
+#include "Fecha.h"
 
 using namespace std;
 
@@ -27,6 +31,7 @@ int main(){
     Menu elimination_menu;
     elimination_menu.set_menu("1. Regresar");
 
+    Lista<Libro> listaLibros;
 
     int op;
     do{  
@@ -37,6 +42,7 @@ int main(){
         {
         case 1:{
             int op = book_entry_menu.coursor("INGRESO DE LIBROS");
+            listaLibros.registrarLibro();
             break;
             }
         case 2:{

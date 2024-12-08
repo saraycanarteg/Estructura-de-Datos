@@ -30,6 +30,9 @@ public:
     void setAutor(Autor autor);
     void setFechaPublicacion(Fecha fecha_publicacion);
     void setIsbn(string isbn);
+
+    void mostrarDetalles() const;
+    bool operator==(const Libro& otro) const;
 };
 
 #endif

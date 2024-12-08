@@ -28,6 +28,7 @@ public:
     string getFechaComoString() const;
 
     bool esFechaValida() const;
+    void mostrarFecha() const;
 };
 
 #endif

@@ -2,6 +2,8 @@
 #define LISTA_H
 
 #include <iostream>
+#include "Libro.h"
+
 using namespace std;
 
 template <typename T>
@@ -37,6 +39,15 @@ public:
     void mostrarListaInversa() const; // Nueva función para mostrar la lista en orden inverso
     Nodo<T>* get_cabeza();
     Nodo<T>* get_cola();
+
+    void registrarLibro();
+    void buscarLibroPorTitulo(string titulo);
+    void buscarLibroPorAutor(string autor);
+    void buscarLibroPorIsbn(string isbn);
+    void eliminarLibroPorIsbn(string isbn);
+    void mostrarLibros();
+    void mostrarLibrosPorAutor(string autor);
+    void guardarLibrosEnArchivo(string nombreArchivo);
 };
 
 #endif
