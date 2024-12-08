@@ -1,42 +1,42 @@
-#ifndef LISTA_LIBROS_H
-#define LIBROS_LISTA
+#ifndef LISTA_H
+#define LISTA_H
 
-#include "Libro.h"
-#include <string>
+#include <iostream>
 using namespace std;
 
-// Nodo para la lista doblemente enlazada circular de Libros
-class NodoLibro {
+template <typename T>
+class Nodo {
 public:
-    Libro libro;
-    NodoLibro* siguiente;
-    NodoLibro* anterior;
+    T data;
+    Nodo* siguiente;
+    Nodo* anterior;
 
-    NodoLibro(const Libro& lib);
+    Nodo(T data) : data(data), siguiente(nullptr), anterior(nullptr) {}
 };
 
-class ListaLibros {
+template <typename T>
+class Lista {
 private:
-    NodoLibro* cabeza;
-    int tamano;
+    Nodo<T>* cabeza;
+    Nodo<T>* cola;
+
+    // Función auxiliar para copiar una lista
+    void copiarLista(const Nodo<T>* otraCabeza);
 
 public:
-    // Constructor
-    ListaLibros();
-    // Destructor
-    ~ListaLibros();
+    Lista();
+    ~Lista();
 
-    void registrarLibro(const Libro& libro);
-    Libro* buscarLibroPorTitulo(const string& titulo);
-    Libro* buscarLibroPorIsbn(const string& isbn);
+    Lista(const Lista& otra);            // Constructor de copia
+    Lista& operator=(const Lista& otra); // Operador de asignación
 
-    bool eliminarLibroPorTitulo(const string& titulo);
-    bool eliminarLibroPorIsbn(const string& isbn);
-
-    void imprimirLibros() const;
-
-    int obtenerTamano() const;
-    bool estaVacia() const;
+    void insertarPorCabeza(T data);
+    void insertarPorCola(T data);
+    void eliminarPorCabeza();
+    void mostrarLista() const;
+    void mostrarListaInversa() const; // Nueva función para mostrar la lista en orden inverso
+    Nodo<T>* get_cabeza();
+    Nodo<T>* get_cola();
 };
 
-#endif 
+#endif

@@ -12,9 +12,8 @@ public:
     Validation();
     
     T enter_a_number(char *data_type);
-    T enter_a_char_or_string(char *data_type);
-    T data_convertion_to_number(char cad[], char *data_type);
-    T data_convertion_to_string(char cad[], char *data_type);
+    T enter_a_char_or_string(int data_size);
+    T data_convertion_to_number(char *cad, char *data_type);
 };
 
 

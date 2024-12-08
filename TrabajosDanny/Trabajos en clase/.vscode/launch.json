@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "D:\\Universidad\\Tercer Semestre\\Estructura de datos\\RepositorioGit\\Estructura-de-Datos\\TrabajosDanny\\Trabajos en clase\\Listas\\Listas_simples\\main_llistas_simples.exe",
+        "program": "D:\\Universidad\\Tercer Semestre\\Estructura de datos\\RepositorioGit\\Estructura-de-Datos\\TrabajosDanny\\Trabajos en clase\\Programas_Proyecto\\Menu_Cursores\\output\\main.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

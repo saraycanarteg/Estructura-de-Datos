@@ -11,7 +11,6 @@
 
 using namespace std;
 
-
 template <typename T>
 Lista_Simple<T>::Lista_Simple()
 {
