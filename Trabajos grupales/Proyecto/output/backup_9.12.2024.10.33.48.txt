@@ -1,0 +1,7 @@
+Backup de libros (fecha y hora: backup_9.12.2024.10.33.48.txt):
+
+Titulo: Principito
+Autor: Jose Larrea
+Fecha de publicacion: 12/02/4
+ISBN: 9783140464079
+---

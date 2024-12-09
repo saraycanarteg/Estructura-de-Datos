@@ -43,6 +43,7 @@ public:
     void generarBackup() const;
     void restaurarBackup(const string& fechaHora) const;
     void retornar_libros_txt();
+    void guardarLibrosEnArchivo() const; 
     
 };
 

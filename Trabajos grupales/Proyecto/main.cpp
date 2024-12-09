@@ -79,13 +79,22 @@ int main(){
             if(sub_menu_op==2){
                 break;
             }else{
-                cout<<"INGRESO DE LIBRO\n\n";
-                cout << "Ingrese el titulo del libro: ";    
-                titulo = validacion_string.enter_a_char_or_string_with_may(20);
-                cout << "\nIngrese los nombres del autor: ";
-                nombreAutor = validacion_string.enter_a_char_or_string_with_may(20);
-                cout << "\nIngrese los apellidos del autor: ";
-                apellidoAutor = validacion_string.enter_a_char_or_string_with_may(20);
+                do{
+                    cout<<"INGRESO DE LIBRO\n\n";
+                    cout << "Ingrese el titulo del libro: ";    
+                    titulo = validacion_string.enter_a_char_or_string_with_may(20);
+                    cout << "\nIngrese los nombres del autor: ";
+                    nombreAutor = validacion_string.enter_a_char_or_string_with_may(20);
+                    cout << "\nIngrese los apellidos del autor: ";
+                    apellidoAutor = validacion_string.enter_a_char_or_string_with_may(20);
+                    if((titulo == " ") && (nombreAutor == " ") && (apellidoAutor == " ")){
+                        cout<<"\n\nDebe ingresar todos los campos requeridos. Intente de nuevo...\n"<<endl;
+                        system("pause");
+                        system("cls");
+                    }
+
+                }while((titulo == " ") && (nombreAutor == " ") && (apellidoAutor == " "));
+
                 Autor autorLibro(nombreAutor, apellidoAutor);
 
                 string fechaIngresada = validacion_string.enter_date();
