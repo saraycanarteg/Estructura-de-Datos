@@ -1,0 +1,7 @@
+Backup de libros (fecha y hora: backup_9.12.2024.11.21.10.txt):
+
+Titulo: El Principito
+Autor: Juan Verlannga
+Fecha de publicacion: 12/02/943
+ISBN: 9783140464079
+---
