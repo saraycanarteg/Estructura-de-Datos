@@ -1,5 +1,8 @@
 #include <stdlib.h>
 #include <iostream>
+#include <conio.h>
+#include <iostream>
+#include "Ayuda.cpp"
 #include "Menu.cpp"
 #include "Libro.h"
 #include "Libro.cpp"
@@ -26,8 +29,9 @@ int main(){
     main_menu.set_menu("2. Buscar libro");
     main_menu.set_menu("3. Mostrar libreria");
     main_menu.set_menu("4. Eliminar libro");
-    main_menu.set_menu("4. Recuperar backup");
-    main_menu.set_menu("5. Salir");
+    main_menu.set_menu("5. Recuperar Backup");
+    main_menu.set_menu("6. Ayuda");
+    main_menu.set_menu("7. Salir");
 
     Menu book_entry_menu;
     book_entry_menu.set_menu("1. Ingresar libro");
@@ -48,6 +52,10 @@ int main(){
     elimination_menu.set_menu("2. Eliminar por isbn");
     elimination_menu.set_menu("3. Regresar");
 
+    Menu help_menu;
+    help_menu.set_menu("1. Ver Ayuda");
+    help_menu.set_menu("2. Regresar");
+
     string titulo, isbn;
     Libro* libroEncontrado;
 
@@ -56,6 +64,10 @@ int main(){
 
     do{  
         op = main_menu.coursor("REGISTRO Y CONSULTA DE LIBROS");
+        if (GetAsyncKeyState(VK_F1) & 0x8000) {
+            Ayuda::mostrarAyuda();
+            continue;
+        }
         cout<<op<<endl;
 
         switch (op){
@@ -191,10 +203,15 @@ int main(){
             system("pause");
             break;
         }
+            case 6: { // Ayuda
+                Ayuda::mostrarAyuda();
+                system("pause");
+                break;
+        }
             default:
                 cout<<"GRACIAS POR USARNOS\n";
                 cout<<op;
             break;
         }
-    }while(op!=6);
+    }while(op!=8);
 }
