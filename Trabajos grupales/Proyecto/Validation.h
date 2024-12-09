@@ -20,8 +20,13 @@ public:
     T enter_a_char_or_string_only_nums(int data_size);
     T data_convertion_to_number(char *cad, char *data_type);
     T primera_letra_a_mayuscula();
-    bool date_validation(int, int, int);
+    
     bool validate_isbn(const string &isbn);
+
+    string enter_date();
+    bool validarFecha(const string& fechaStr);
+    bool esFechaPosterior(int dia, int mes, int anio);
 };
+
 
 

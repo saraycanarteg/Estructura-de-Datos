@@ -25,15 +25,16 @@ void ListaLibros::registrarLibro(const Libro& libro) {
     NodoLibro* nuevoNodo = new NodoLibro(libro);
 
     if (cabeza == nullptr) {
+        // First book
         cabeza = nuevoNodo;
         nuevoNodo->siguiente = nuevoNodo;
         nuevoNodo->anterior = nuevoNodo;
     } else {
+        // Add to the end of the circular list
         nuevoNodo->siguiente = cabeza;
         nuevoNodo->anterior = cabeza->anterior;
         cabeza->anterior->siguiente = nuevoNodo;
         cabeza->anterior = nuevoNodo;
-        cabeza = nuevoNodo;
     }
 
     tamano++;
@@ -154,16 +155,16 @@ void ListaLibros::generarBackup() const {
 
     // Formatear la fecha y hora como "dd.MM.yyyy.HH.mm.ss"
     std::ostringstream nombreArchivo;
-    nombreArchivo 
+    nombreArchivo << "backup_"
                   << (fechaHora->tm_mday) << "."
                   << (fechaHora->tm_mon + 1) << "."
                   << (fechaHora->tm_year + 1900) << "."
                   << (fechaHora->tm_hour) << "."
                   << (fechaHora->tm_min) << "."
-                  << (fechaHora->tm_sec) ;
+                  << (fechaHora->tm_sec) << ".txt";
 
-    // Crear y abrir el archivo
-    std::ofstream archivoBackup(nombreArchivo.str());
+    // Abrir el archivo en modo append para preservar backups anteriores
+    std::ofstream archivoBackup(nombreArchivo.str(), std::ios_base::app);
     if (!archivoBackup.is_open()) {
         std::cerr << "Error al crear el archivo de respaldo." << std::endl;
         return;
@@ -187,8 +188,9 @@ void ListaLibros::generarBackup() const {
 }
 
 void ListaLibros::restaurarBackup(const string& fechaHora) const {
-    // Construir el nombre del archivo a buscar
-    std::ifstream archivoBackup(fechaHora);
+    // Construir el nombre del archivo con prefijo backup_
+    string nombreArchivo = "backup_" + fechaHora + ".txt";
+    std::ifstream archivoBackup(nombreArchivo);
     
     if (!archivoBackup.is_open()) {
         cout << "No se encontró un archivo de respaldo con la fecha y hora ingresada." << endl;
@@ -197,16 +199,32 @@ void ListaLibros::restaurarBackup(const string& fechaHora) const {
 
     cout << "Restaurando libros desde el respaldo...\n";
 
-    string titulo, autor, fecha, isbn;
-    while (getline(archivoBackup, titulo) &&
-           getline(archivoBackup, autor) &&
-           getline(archivoBackup, fecha) &&
-           getline(archivoBackup, isbn)) {
-        cout << "Título: " << titulo << endl;
-        cout << "Autor: " << autor << endl;
-        cout << "Fecha de publicación: " << fecha << endl;
-        cout << "ISBN: " << isbn << endl;
-        cout << "------" << endl;
+    // Ignorar la primera línea de encabezado
+    string linea;
+    std::getline(archivoBackup, linea);
+
+    // Variables para almacenar datos del libro
+    string titulo, autor, fechaPublicacion, isbn;
+    
+    while (std::getline(archivoBackup, linea)) {
+        // Saltar línea de separación
+        if (linea == "---") continue;
+
+        if (linea.substr(0, 7) == "Titulo:") {
+            titulo = linea.substr(8);
+            std::getline(archivoBackup, linea);
+            autor = linea.substr(7);
+            std::getline(archivoBackup, linea);
+            fechaPublicacion = linea.substr(22);
+            std::getline(archivoBackup, linea);
+            isbn = linea.substr(6);
+
+            cout << "Titulo: " << titulo << endl;
+            cout << "Autor: " << autor << endl;
+            cout << "Fecha de publicacion: " << fechaPublicacion << endl;
+            cout << "ISBN: " << isbn << endl;
+            cout << "------" << endl;
+        }
     }
 
     archivoBackup.close();

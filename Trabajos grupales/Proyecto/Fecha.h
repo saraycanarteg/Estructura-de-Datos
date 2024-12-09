@@ -27,7 +27,6 @@ public:
 
     string getFechaComoString() const;
 
-    bool esFechaValida() const;
 };
 
 #endif

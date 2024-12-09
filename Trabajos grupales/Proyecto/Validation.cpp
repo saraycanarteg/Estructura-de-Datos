@@ -43,7 +43,6 @@ template <typename T>
 T Validation<T>::enter_a_char_or_string(int data_size){
     char cad[data_size], c;
     int i = 0;
-
      while(((c = getch())!=13)){
         if ((c>='a' && c <= 'z') || (c>='A'&&c<='Z') || (c==' ') ){
             printf("%c", c);
@@ -153,4 +152,130 @@ bool Validation<T>::validate_isbn(const string &isbn) {
 
     // Longitud inválida
     return false;
+
+    
+}
+template <typename T>
+string Validation<T>::enter_date() {
+    char cad[11];
+    int i = 0;
+    bool esperando_espacio = false;
+    
+    cout << "Ingrese la fecha (DD MM AAAA): ";
+    
+    while (true) {
+        char c = getch();
+        
+        // Tecla Enter finaliza la entrada
+        if (c == 13) {
+            cad[i] = '\0';
+            break;
+        }
+        
+        // Manejo de Backspace
+        if (c == 8 && i > 0) {
+            printf("\b \b");
+            i--;
+            esperando_espacio = false;
+            continue;
+        }
+        
+        // Solo permite números y espacios
+        if ((c >= '0' && c <= '9') || c == ' ') {
+            // Control de longitud máxima
+            if (i < 10) {
+                // Si es un espacio
+                if (c == ' ') {
+                    // Solo permite espacios en posiciones específicas
+                    if ((i == 2 || i == 5) && !esperando_espacio) {
+                        printf("%c", c);
+                        cad[i++] = c;
+                        esperando_espacio = true;
+                    }
+                }
+                // Si es un número
+                else {
+                    // Validación de posición para números
+                    if (!esperando_espacio || 
+                        (i > 2 && i < 5) || 
+                        (i > 5 && i < 10)) {
+                        printf("%c", c);
+                        cad[i++] = c;
+                        esperando_espacio = false;
+                    }
+                }
+            }
+        }
+    }
+
+    if (!validarFecha(cad)) {
+        cout << "\nFecha invalida. Intente de nuevo." << endl;
+        return enter_date();
+    }
+    
+    return string(cad);
+}
+
+template <typename T>
+bool Validation<T>::validarFecha(const string& fechaStr) {
+    // Verificar longitud y formato
+    if (fechaStr.length() != 10 || 
+        fechaStr[2] != ' ' || 
+        fechaStr[5] != ' ') {
+        return false;
+    }
+
+    // Parsear fecha manualmente para asegurar precisión
+    int dia = stoi(fechaStr.substr(0, 2));
+    int mes = stoi(fechaStr.substr(3, 2));
+    int anio = stoi(fechaStr.substr(6));
+
+    // Validaciones básicas de rango
+    if (dia < 1 || dia > 31 || 
+        mes < 1 || mes > 12|| 
+        anio < 1500 || anio > 9999) {
+        return false;
+    }
+
+    // Días por mes (considerando años bisiestos)
+    int diasEnMes[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    
+    // Ajustar febrero para años bisiestos
+    if (mes == 2) {
+        int diasFebrero = (anio % 4 == 0 && (anio % 100 != 0 || anio % 400 == 0)) ? 29 : 28;
+        if (dia > diasFebrero) return false;
+    } else {
+        // Validar días para otros meses
+        if (dia > diasEnMes[mes]) return false;
+    }
+
+    // Verificar que la fecha no sea posterior a la fecha actual
+    if (esFechaPosterior(dia, mes, anio)) {
+        return false;
+    }
+
+    return true;
+}
+
+template <typename T>
+bool Validation<T>::esFechaPosterior(int dia, int mes, int anio) {
+    // Obtener fecha actual
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+
+    // Fecha actual
+    int diaActual = ltm->tm_mday;
+    int mesActual = 1 + ltm->tm_mon;
+    int anioActual = 1900 + ltm->tm_year;
+
+    // Comparar año
+    if (anio > anioActual) return true;
+    if (anio < anioActual) return false;
+
+    // Si el año es igual, comparar mes
+    if (mes > mesActual) return true;
+    if (mes < mesActual) return false;
+
+    // Si el mes es igual, comparar día
+    return (dia > diaActual);
 }
