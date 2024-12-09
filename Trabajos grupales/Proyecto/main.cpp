@@ -68,7 +68,6 @@ int main(){
             Ayuda::mostrarAyuda();
             continue;
         }
-        cout<<op<<endl;
 
         switch (op){
         case 1:{
