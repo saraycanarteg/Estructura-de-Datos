@@ -14,7 +14,7 @@ int main(){
     string nombres = validation_string.enter_a_char_or_string_with_may(20);
     strcpy(nombres_char, nombres.c_str());
     cout<<endl<<"Apellidos: ";
-    string apellidos = validation_string.enter_a_char_or_string_with_may(12);
+    string apellidos = validation_string.enter_a_char_or_string_with_may(20);
     strcpy(apellidos_char, apellidos.c_str());
     cout<<endl;
     

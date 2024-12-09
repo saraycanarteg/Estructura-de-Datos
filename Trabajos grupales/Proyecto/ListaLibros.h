@@ -42,6 +42,8 @@ public:
     bool estaVacia() const;
     void generarBackup() const;
     void restaurarBackup(const string& fechaHora) const;
+    void retornar_libros_txt();
+    
 };
 
 #endif 

@@ -98,7 +98,7 @@ int main(){
                 bool isbn_valido = false;
                 do {
                     cout << "\nIngrese el ISBN del libro: ";
-                    std::getline(cin, isbn); // Captura la entrada completa del usuario
+                    isbn = validacion_string.enter_a_char_or_string_only_nums(10); // Captura la entrada completa del usuario
 
                     if (validacion_isbn.validate_isbn(isbn)) {
                         isbn_valido = true; // ISBN válido
@@ -213,5 +213,5 @@ int main(){
                 cout<<op;
             break;
         }
-    }while(op!=8);
+    }while(op!=7);
 }

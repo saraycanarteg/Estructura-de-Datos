@@ -57,6 +57,24 @@ T Validation<T>::enter_a_char_or_string(int data_size){
     return cad;
 }
 
+template <typename T>
+T Validation<T>::enter_a_char_or_string_only_nums(int data_size){
+    char cad[data_size], c;
+    int i = 0;
+     while(((c = getch())!=13)){
+        if ((c>='0' && c <= '9') ){
+            printf("%c", c);
+            cad[i++] = c;
+
+        }else if(c==8 && i > 0){
+            printf("\b \b");
+            i--;
+        }
+    }
+    cad[i++]='\0';
+    return cad;
+}
+
 
 template <typename T>
 T Validation<T>::enter_a_char_or_string_with_may(int data_size){
