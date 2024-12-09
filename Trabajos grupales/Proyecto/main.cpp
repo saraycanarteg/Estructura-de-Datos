@@ -22,13 +22,13 @@ int main(){
     main_menu.set_menu("5. Salir");
 
     Menu book_entry_menu;
-    book_entry_menu.set_menu("1. Regresar");
+    book_entry_menu.set_menu("1. Ingresar libro");
+    book_entry_menu.set_menu("2. Regresar");
 
     Menu search_menu;
     search_menu.set_menu("1. Buscar por titulo");
-    search_menu.set_menu("2. Buscar por autor");
-    search_menu.set_menu("3. Buscar por isbn");
-    search_menu.set_menu("4. Regresar");
+    search_menu.set_menu("2. Buscar por isbn");
+    search_menu.set_menu("3. Regresar");
 
     Menu show_menu;
     show_menu.set_menu("1. Mostrar por autor");
@@ -36,12 +36,15 @@ int main(){
     show_menu.set_menu("3. Regresar");
 
     Menu elimination_menu;
-    elimination_menu.set_menu("1. Regresar");
+    elimination_menu.set_menu("1. Eliminar por titulo");
+    elimination_menu.set_menu("2. Eliminar por isbn");
+    elimination_menu.set_menu("3. Regresar");
 
     string titulo, isbn;
     Libro* libroEncontrado;
 
     int op;
+
     do{  
         op = main_menu.coursor("REGISTRO Y CONSULTA DE LIBROS");
         cout<<op<<endl;
@@ -53,9 +56,9 @@ int main(){
             cin.ignore();
             getline(cin, titulo);
             cout << "Ingrese el autor del libro: ";
-            string nombreAutor, apellidoAutor, nacionalidadAutor;
-            cin >> nombreAutor >> apellidoAutor >> nacionalidadAutor;
-            Autor autorLibro(nombreAutor, apellidoAutor, nacionalidadAutor);
+            string nombreAutor, apellidoAutor;
+            cin >> nombreAutor >> apellidoAutor ;
+            Autor autorLibro(nombreAutor, apellidoAutor);
             cout << "Ingrese la fecha de publicacion (dd mm aaaa): ";
             int dia, mes, anio;
             cin >> dia >> mes >> anio;

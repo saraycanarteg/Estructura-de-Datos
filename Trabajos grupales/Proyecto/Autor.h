@@ -8,23 +8,20 @@ class Autor {
 private:
     string nombre;
     string apellido;
-    string nacionalidad;
 
 public:
     // Constructores
     Autor(); 
-    Autor(string nombre, string apellido, string nacionalidad);
+    Autor(string nombre, string apellido);
 
     // Getters
     string getNombre() const;
     string getApellido() const;
-    string getNacionalidad() const;
     string getNombreCompleto() const;
 
     // Setters
     void setNombre(string nombre);
     void setApellido(string apellido);
-    void setNacionalidad(string nacionalidad);
 };
 
 #endif

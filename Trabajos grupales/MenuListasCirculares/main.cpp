@@ -10,10 +10,14 @@ int main(){
     menu.set_menu("3. Opcion 3");
     menu.set_menu("4. Opcion 4");
 
+  
+
     int op = menu.coursor("TITULO");
       
+
+
     cout<< op;
 
-    
+
 
 }
