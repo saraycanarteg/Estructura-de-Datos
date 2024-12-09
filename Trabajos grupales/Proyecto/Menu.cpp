@@ -1,4 +1,7 @@
 #include <conio.h>
+#include <iostream>
+#include <conio.h>
+#include "Ayuda.cpp"
 #include "Menu.h"
 
 Menu::Menu(){
@@ -46,6 +49,10 @@ int Menu::coursor(string titulo){
         }else if(c==72){//Flecha hacia arriba
             actual =actual->siguiente;
             print_menu_option(actual->data, titulo);
+        }else if(GetAsyncKeyState(VK_F1) & 0x8000) {
+            Ayuda::mostrarAyuda();
+           
+           return -1;
         }
     }
 

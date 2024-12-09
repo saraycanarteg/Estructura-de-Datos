@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include <iostream>
 #include <conio.h>
-#include <iostream>
-#include "Ayuda.cpp"
 #include "Menu.cpp"
 #include "Libro.h"
 #include "Libro.cpp"
@@ -64,10 +62,6 @@ int main(){
 
     do{  
         op = main_menu.coursor("REGISTRO Y CONSULTA DE LIBROS");
-        if (GetAsyncKeyState(VK_F1) & 0x8000) {
-            Ayuda::mostrarAyuda();
-            continue;
-        }
 
         switch (op){
         case 1:{

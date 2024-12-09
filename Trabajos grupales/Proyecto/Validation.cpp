@@ -161,7 +161,7 @@ string Validation<T>::enter_date() {
     int i = 0;
     bool esperando_espacio = false;
     
-    cout << "Ingrese la fecha (DD MM AAAA): ";
+    cout << "\nIngrese la fecha (DD MM AAAA): ";
     
     while (true) {
         char c = getch();
