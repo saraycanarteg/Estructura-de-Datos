@@ -17,6 +17,7 @@ using namespace std;
 int main(){
 
     Validation<string> validacion_string;
+    Validation<string> validacion_isbn;
 
     ListaLibros listaLibros;
     
@@ -81,9 +82,18 @@ int main(){
                 fflush(stdin);
                 Fecha fechaPublicacion(dia, mes, anio);
 
-                cout << "\nIngrese el ISBN del libro: "; //Ingrese validaciones isbn
-                cin >> isbn;
-                fflush(stdin);
+                bool isbn_valido = false;
+                do {
+                    cout << "\nIngrese el ISBN del libro: ";
+                    std::getline(cin, isbn); // Captura la entrada completa del usuario
+
+                    if (validacion_isbn.validate_isbn(isbn)) {
+                        isbn_valido = true; // ISBN válido
+                    } else {
+                        cout << "El ISBN ingresado no es válido. Por favor, intente nuevamente." << endl;
+                    }
+                } while (!isbn_valido);
+
                 Libro nuevoLibro(titulo, autorLibro, fechaPublicacion, isbn);
                 listaLibros.registrarLibro(nuevoLibro);
                 cout << "\nLibro registrado exitosamente." << endl;

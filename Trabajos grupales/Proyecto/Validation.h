@@ -1,5 +1,8 @@
 #include <iostream>
 #include <conio.h>
+#include <ctime> 
+#include <cstring>
+#include <cstdlib> 
 
 using namespace std;
 
@@ -16,6 +19,7 @@ public:
     T enter_a_char_or_string(int data_size);
     T data_convertion_to_number(char *cad, char *data_type);
     T primera_letra_a_mayuscula();
+    bool validate_isbn(const string &isbn);
 };
 
 

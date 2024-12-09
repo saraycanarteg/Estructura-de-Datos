@@ -1,5 +1,8 @@
 #include <iostream>
 #include "ListaLibros.h"
+#include <fstream>
+#include <ctime>
+#include <sstream>
 
 // Constructor
 ListaLibros::ListaLibros() : cabeza(nullptr), tamano(0) {}
@@ -136,4 +139,48 @@ int ListaLibros::obtenerTamano() const {
 
 bool ListaLibros::estaVacia() const {
     return cabeza == nullptr;
+}
+
+void ListaLibros::generarBackup() const {
+    if (cabeza == nullptr) {
+        std::cout << "No hay libros para respaldar." << std::endl;
+        return;
+    }
+
+    // Obtener la fecha y hora actuales
+    std::time_t ahora = std::time(nullptr);
+    std::tm* fechaHora = std::localtime(&ahora);
+
+    // Formatear la fecha y hora como "dd.MM.yyyy.HH.mm.ss"
+    std::ostringstream nombreArchivo;
+    nombreArchivo << "backup_"
+                  << (fechaHora->tm_mday) << "."
+                  << (fechaHora->tm_mon + 1) << "."
+                  << (fechaHora->tm_year + 1900) << "."
+                  << (fechaHora->tm_hour) << "."
+                  << (fechaHora->tm_min) << "."
+                  << (fechaHora->tm_sec) << ".txt";
+
+    // Crear y abrir el archivo
+    std::ofstream archivoBackup(nombreArchivo.str());
+    if (!archivoBackup.is_open()) {
+        std::cerr << "Error al crear el archivo de respaldo." << std::endl;
+        return;
+    }
+
+    // Escribir los datos de los libros en el archivo
+    NodoLibro* actual = cabeza;
+    archivoBackup << "Backup de libros (fecha y hora: " 
+                  << nombreArchivo.str() << "):\n\n";
+    do {
+        archivoBackup << "Titulo: " << actual->libro.getTitulo() << "\n";
+        archivoBackup << "Autor: " << actual->libro.getAutor().getNombreCompleto() << "\n";
+        archivoBackup << "Fecha de publicacion: " << actual->libro.getFechaPublicacion().getFechaComoString() << "\n";
+        archivoBackup << "ISBN: " << actual->libro.getIsbn() << "\n";
+        archivoBackup << "---\n";
+        actual = actual->siguiente;
+    } while (actual != cabeza);
+
+    archivoBackup.close();
+    std::cout << "Respaldo generado con éxito: " << nombreArchivo.str() << std::endl;
 }

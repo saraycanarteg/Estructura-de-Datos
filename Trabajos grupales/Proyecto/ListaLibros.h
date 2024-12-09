@@ -3,6 +3,9 @@
 
 #include "Libro.h"
 #include <string>
+#include <fstream>
+#include <ctime>
+#include <sstream>
 using namespace std;
 
 // Nodo para la lista doblemente enlazada circular de Libros
@@ -37,6 +40,7 @@ public:
 
     int obtenerTamano() const;
     bool estaVacia() const;
+    void generarBackup() const;
 };
 
 #endif 

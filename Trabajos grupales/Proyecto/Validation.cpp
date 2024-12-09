@@ -102,3 +102,36 @@ T Validation<T>::data_convertion_to_number(char *value, char *data_type){
     }   
     return 0;
 }
+
+
+template <typename T>
+bool Validation<T>::validate_isbn(const string &isbn) {
+    int length = isbn.length();
+
+    // Validación de ISBN-10
+    if (length == 10) {
+        int sum = 0;
+        for (int i = 0; i < 9; i++) {
+            if (!isdigit(isbn[i])) return false; // Solo dígitos
+            sum += (isbn[i] - '0') * (10 - i);
+        }
+        char last_char = isbn[9];
+        if (last_char != 'X' && !isdigit(last_char)) return false;
+
+        sum += (last_char == 'X') ? 10 : (last_char - '0');
+        return (sum % 11 == 0);
+    }
+    // Validación de ISBN-13
+    else if (length == 13) {
+        int sum = 0;
+        for (int i = 0; i < 13; i++) {
+            if (!isdigit(isbn[i])) return false; // Solo dígitos
+            int digit = isbn[i] - '0';
+            sum += (i % 2 == 0) ? digit : digit * 3;
+        }
+        return (sum % 10 == 0);
+    }
+
+    // Longitud inválida
+    return false;
+}
