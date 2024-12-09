@@ -81,13 +81,13 @@ int main(){
                     nombreAutor = validacion_string.enter_a_char_or_string_with_may(20);
                     cout << "\nIngrese los apellidos del autor: ";
                     apellidoAutor = validacion_string.enter_a_char_or_string_with_may(20);
-                    if((titulo == " ") && (nombreAutor == " ") && (apellidoAutor == " ")){
+                    if((titulo.empty()) || (nombreAutor.empty()) || (apellidoAutor.empty())){
                         cout<<"\n\nDebe ingresar todos los campos requeridos. Intente de nuevo...\n"<<endl;
                         system("pause");
                         system("cls");
                     }
 
-                }while((titulo == " ") && (nombreAutor == " ") && (apellidoAutor == " "));
+                }while((titulo.empty()) || (nombreAutor.empty()) || (apellidoAutor.empty()));
 
                 Autor autorLibro(nombreAutor, apellidoAutor);
 

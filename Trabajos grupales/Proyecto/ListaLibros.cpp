@@ -20,17 +20,44 @@ ListaLibros::~ListaLibros() {
     }
 }
 
+void ListaLibros::guardarLibrosEnArchivo() const {
+    std::ofstream archivo("libros.txt");
+    if (!archivo.is_open()) {
+        std::cerr << "Error al abrir el archivo para guardar los libros." << std::endl;
+        return;
+    }
+
+    NodoLibro* actual = cabeza;
+    if (actual == nullptr) {
+        archivo << "No hay libros en la biblioteca." << std::endl;
+        archivo.close();
+        return;
+    }
+
+    do {
+        archivo << "Titulo: " << actual->libro.getTitulo() << "\n";
+        archivo << "Autor: " << actual->libro.getAutor().getNombreCompleto() << "\n";
+        archivo << "Fecha de publicacion: " << actual->libro.getFechaPublicacion().getFechaComoString() << "\n";
+        archivo << "ISBN: " << actual->libro.getIsbn() << "\n";
+        archivo << "---\n";
+        actual = actual->siguiente;
+    } while (actual != cabeza);
+
+    archivo.close();
+    std::cout << "Archivo actualizado: libros.txt" << std::endl;
+}
+
 // Registro de libros
 void ListaLibros::registrarLibro(const Libro& libro) {
     NodoLibro* nuevoNodo = new NodoLibro(libro);
 
     if (cabeza == nullptr) {
-        // First book
+        // Primer libro
         cabeza = nuevoNodo;
         nuevoNodo->siguiente = nuevoNodo;
         nuevoNodo->anterior = nuevoNodo;
     } else {
-        // Add to the end of the circular list
+        // Agregar al final de la lista circular
         nuevoNodo->siguiente = cabeza;
         nuevoNodo->anterior = cabeza->anterior;
         cabeza->anterior->siguiente = nuevoNodo;
@@ -38,53 +65,17 @@ void ListaLibros::registrarLibro(const Libro& libro) {
     }
 
     tamano++;
-    generarBackup();
+    guardarLibrosEnArchivo(); // Actualizar archivo después de registrar
 }
-
-// Búsqueda de libros
-Libro* ListaLibros::buscarLibroPorTitulo(const string& titulo) {
-    if (cabeza == nullptr)
-        return nullptr;
-
+bool ListaLibros::modificarLibroPorTitulo(const string& titulo, const Libro& nuevoLibro) {
     NodoLibro* actual = cabeza;
-    do {
-        if (actual->libro.getTitulo() == titulo)
-            return &(actual->libro);
-        actual = actual->siguiente;
-    } while (actual != cabeza);
-
-    return nullptr;
-}
-
-Libro* ListaLibros::buscarLibroPorIsbn(const string& isbn) {
-    if (cabeza == nullptr)
-        return nullptr;
-
-    NodoLibro* actual = cabeza;
-    do {
-        if (actual->libro.getIsbn() == isbn)
-            return &(actual->libro);
-        actual = actual->siguiente;
-    } while (actual != cabeza);
-
-    return nullptr;
-}
-
-// Eliminación de libros
-bool ListaLibros::eliminarLibroPorTitulo(const string& titulo) {
-    if (cabeza == nullptr)
+    if (actual == nullptr)
         return false;
 
-    NodoLibro* actual = cabeza;
     do {
         if (actual->libro.getTitulo() == titulo) {
-            if (actual == cabeza) {
-                cabeza = cabeza->siguiente;
-            }
-            actual->anterior->siguiente = actual->siguiente;
-            actual->siguiente->anterior = actual->anterior;
-            delete actual;
-            tamano--;
+            actual->libro = nuevoLibro;
+            guardarLibrosEnArchivo(); // Actualizar archivo después de modificar
             return true;
         }
         actual = actual->siguiente;
@@ -92,6 +83,33 @@ bool ListaLibros::eliminarLibroPorTitulo(const string& titulo) {
 
     return false;
 }
+
+
+
+// Eliminación de libros
+bool ListaLibros::eliminarLibroPorTitulo(const string& titulo) {
+    if (cabeza == nullptr) return false;
+
+    NodoLibro* actual = cabeza;
+    do {
+        if (actual->libro.getTitulo() == titulo) {
+            if (actual == cabeza) {
+                cabeza = (cabeza->siguiente == cabeza) ? nullptr : cabeza->siguiente;
+            }
+            actual->anterior->siguiente = actual->siguiente;
+            actual->siguiente->anterior = actual->anterior;
+            delete actual;
+            tamano--;
+
+            guardarLibrosEnArchivo(); // <-- Llama a este método después de eliminar
+            return true;
+        }
+        actual = actual->siguiente;
+    } while (actual != cabeza);
+
+    return false;
+}
+
 
 bool ListaLibros::eliminarLibroPorIsbn(const string& isbn) {
     if (cabeza == nullptr)
@@ -101,12 +119,13 @@ bool ListaLibros::eliminarLibroPorIsbn(const string& isbn) {
     do {
         if (actual->libro.getIsbn() == isbn) {
             if (actual == cabeza) {
-                cabeza = cabeza->siguiente;
+                cabeza = (cabeza->siguiente == cabeza) ? nullptr : cabeza->siguiente;
             }
             actual->anterior->siguiente = actual->siguiente;
             actual->siguiente->anterior = actual->anterior;
             delete actual;
             tamano--;
+            guardarLibrosEnArchivo(); // Actualizar archivo después de eliminar
             return true;
         }
         actual = actual->siguiente;
@@ -132,6 +151,19 @@ void ListaLibros::imprimirLibros() const {
         cout << "---" << endl;
         actual = actual->siguiente;
     } while (actual != cabeza);
+}
+Libro* ListaLibros::buscarLibroPorTitulo(const string& titulo) {
+    if (cabeza == nullptr) return nullptr;
+
+    NodoLibro* actual = cabeza;
+    do {
+        if (actual->libro.getTitulo() == titulo) {
+            return &actual->libro;
+        }
+        actual = actual->siguiente;
+    } while (actual != cabeza);
+
+    return nullptr;
 }
 
 // Métodos adicionales
