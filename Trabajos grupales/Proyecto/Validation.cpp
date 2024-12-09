@@ -43,6 +43,7 @@ template <typename T>
 T Validation<T>::enter_a_char_or_string(int data_size){
     char cad[data_size], c;
     int i = 0;
+
      while(((c = getch())!=13)){
         if ((c>='a' && c <= 'z') || (c>='A'&&c<='Z') || (c==' ') ){
             printf("%c", c);
