@@ -41,6 +41,7 @@ public:
     int obtenerTamano() const;
     bool estaVacia() const;
     void generarBackup() const;
+    void restaurarBackup(const string& fechaHora) const;
 };
 
 #endif 

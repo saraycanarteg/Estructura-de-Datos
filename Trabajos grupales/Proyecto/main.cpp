@@ -26,6 +26,7 @@ int main(){
     main_menu.set_menu("2. Buscar libro");
     main_menu.set_menu("3. Mostrar libreria");
     main_menu.set_menu("4. Eliminar libro");
+    main_menu.set_menu("4. Recuperar backup");
     main_menu.set_menu("5. Salir");
 
     Menu book_entry_menu;
@@ -182,10 +183,18 @@ int main(){
             }
             break;
         }
+            case 5: { // Nueva opción para restaurar backup
+            string fechaHoraIngresada;
+            cout << "Ingrese la fecha y hora del respaldo en el formato dd.mm.aaaa.HH.MM.SS: ";
+            cin >> fechaHoraIngresada;
+            listaLibros.restaurarBackup(fechaHoraIngresada);
+            system("pause");
+            break;
+        }
             default:
                 cout<<"GRACIAS POR USARNOS\n";
                 cout<<op;
             break;
         }
-    }while(op!=5);
+    }while(op!=6);
 }

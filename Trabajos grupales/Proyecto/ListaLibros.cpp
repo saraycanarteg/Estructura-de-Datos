@@ -37,6 +37,7 @@ void ListaLibros::registrarLibro(const Libro& libro) {
     }
 
     tamano++;
+    generarBackup();
 }
 
 // Búsqueda de libros
@@ -153,13 +154,13 @@ void ListaLibros::generarBackup() const {
 
     // Formatear la fecha y hora como "dd.MM.yyyy.HH.mm.ss"
     std::ostringstream nombreArchivo;
-    nombreArchivo << "backup_"
+    nombreArchivo 
                   << (fechaHora->tm_mday) << "."
                   << (fechaHora->tm_mon + 1) << "."
                   << (fechaHora->tm_year + 1900) << "."
                   << (fechaHora->tm_hour) << "."
                   << (fechaHora->tm_min) << "."
-                  << (fechaHora->tm_sec) << ".txt";
+                  << (fechaHora->tm_sec) ;
 
     // Crear y abrir el archivo
     std::ofstream archivoBackup(nombreArchivo.str());
@@ -183,4 +184,31 @@ void ListaLibros::generarBackup() const {
 
     archivoBackup.close();
     std::cout << "Respaldo generado con éxito: " << nombreArchivo.str() << std::endl;
+}
+
+void ListaLibros::restaurarBackup(const string& fechaHora) const {
+    // Construir el nombre del archivo a buscar
+    std::ifstream archivoBackup(fechaHora);
+    
+    if (!archivoBackup.is_open()) {
+        cout << "No se encontró un archivo de respaldo con la fecha y hora ingresada." << endl;
+        return;
+    }
+
+    cout << "Restaurando libros desde el respaldo...\n";
+
+    string titulo, autor, fecha, isbn;
+    while (getline(archivoBackup, titulo) &&
+           getline(archivoBackup, autor) &&
+           getline(archivoBackup, fecha) &&
+           getline(archivoBackup, isbn)) {
+        cout << "Título: " << titulo << endl;
+        cout << "Autor: " << autor << endl;
+        cout << "Fecha de publicación: " << fecha << endl;
+        cout << "ISBN: " << isbn << endl;
+        cout << "------" << endl;
+    }
+
+    archivoBackup.close();
+    cout << "\nRestauración completada con éxito." << endl;
 }
