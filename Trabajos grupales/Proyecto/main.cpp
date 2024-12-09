@@ -1,5 +1,5 @@
-#include <iostream>
 #include "Menu.cpp"
+#include <iostream>
 #include "Libro.h"
 #include "Libro.cpp"
 #include "Autor.cpp" 
@@ -49,7 +49,6 @@ int main(){
         switch (op)
         {
         case 1:{
-            op = book_entry_menu.coursor("INGRESO DE LIBROS");
             cout << "Ingrese el titulo del libro: ";
             cin.ignore();
             getline(cin, titulo);
@@ -104,4 +103,6 @@ int main(){
         }
 
     }while(op!=5);
+    
+
 }

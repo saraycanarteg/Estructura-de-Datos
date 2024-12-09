@@ -2,6 +2,7 @@
 #define LIBROS_LISTA
 
 #include "Libro.h"
+#include <string>
 using namespace std;
 
 // Nodo para la lista doblemente enlazada circular de Libros

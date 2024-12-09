@@ -1,4 +1,4 @@
-#include "Lista.cpp"
+#include "lista.cpp"
 
 class Menu{
 private:
