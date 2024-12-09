@@ -41,6 +41,7 @@ void ListaLibros::registrarLibro(const Libro& libro) {
     generarBackup();
 }
 
+
 // Búsqueda de libros
 Libro* ListaLibros::buscarLibroPorTitulo(const string& titulo) {
     if (cabeza == nullptr)
@@ -166,7 +167,7 @@ void ListaLibros::generarBackup() const {
     // Abrir el archivo en modo append para preservar backups anteriores
     std::ofstream archivoBackup(nombreArchivo.str(), std::ios_base::app);
     if (!archivoBackup.is_open()) {
-        std::cerr << "Error al crear el archivo de respaldo." << std::endl;
+        std::cerr << "\n\nError al crear el archivo de respaldo." << std::endl;
         return;
     }
 
@@ -184,7 +185,7 @@ void ListaLibros::generarBackup() const {
     } while (actual != cabeza);
 
     archivoBackup.close();
-    std::cout << "Respaldo generado con éxito: " << nombreArchivo.str() << std::endl;
+    std::cout << "\n\nRespaldo generado con exito: " << nombreArchivo.str() << std::endl;
 }
 
 void ListaLibros::restaurarBackup(const string& fechaHora) const {
@@ -193,11 +194,11 @@ void ListaLibros::restaurarBackup(const string& fechaHora) const {
     std::ifstream archivoBackup(nombreArchivo);
     
     if (!archivoBackup.is_open()) {
-        cout << "No se encontró un archivo de respaldo con la fecha y hora ingresada." << endl;
+        cout << "\nNo se encontro un archivo de respaldo con la fecha y hora ingresada." << endl;
         return;
     }
 
-    cout << "Restaurando libros desde el respaldo...\n";
+    cout << "\nRestaurando libros desde el respaldo...\n";
 
     // Ignorar la primera línea de encabezado
     string linea;

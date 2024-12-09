@@ -41,14 +41,13 @@ int main(){
     search_menu.set_menu("3. Regresar");
 
     Menu show_menu;
-    show_menu.set_menu("1. Mostrar por autor");
-    show_menu.set_menu("2. Mostrar por libros");
-    show_menu.set_menu("3. Regresar");
+    show_menu.set_menu("1. Mostrar por libros");
+    show_menu.set_menu("2. Regresar");
 
     Menu elimination_menu;
     elimination_menu.set_menu("1. Eliminar por titulo");
-    elimination_menu.set_menu("2. Eliminar por isbn");
-    elimination_menu.set_menu("3. Regresar");
+    //elimination_menu.set_menu("2. Eliminar por isbn");
+    elimination_menu.set_menu("2. Regresar");
 
     Menu help_menu;
     help_menu.set_menu("1. Ver Ayuda");
@@ -108,7 +107,7 @@ int main(){
                     if (validacion_isbn.validate_isbn(isbn)) {
                         isbn_valido = true; // ISBN válido
                     } else {
-                        cout << "El ISBN ingresado no es válido. Por favor, intente nuevamente." << endl;
+                        cout << "\n\nEl ISBN ingresado no es valido. Por favor, intente nuevamente." << endl;
                     }
                 } while (!isbn_valido);
 
@@ -141,10 +140,22 @@ int main(){
                 }
                 break;
             }
-            case 2:
+            case 2:{
                 cout<<"\nBUSQUEDA POR ISBN\n\n";
+                    bool isbn_valido = false;
+                do {
+                    cout << "\nIngrese el ISBN del libro: ";
+                    isbn = validacion_string.enter_a_char_or_string_only_nums(10); // Captura la entrada completa del usuario
+
+                    if (validacion_isbn.validate_isbn(isbn)) {
+                        isbn_valido = true; // ISBN válido
+                    } else {
+                        cout << "\n\nEl ISBN ingresado no es valido. Por favor, intente nuevamente." << endl;
+                    }
+                } while (!isbn_valido);
+                listaLibros.buscarLibroPorIsbn(isbn);
                 system("pause");
-                break;
+                break;}
             case 3:
                 break;
             }
@@ -155,16 +166,11 @@ int main(){
             system("cls");
             switch (sub_menu_op){
             case 1:
-                cout<<"LIBROS DEL AUTOR: "<<endl;
-                //TODO
-                system("pause");
-                break;
-            case 2:
                 listaLibros.imprimirLibros();
                 system("pause");
                 break;
-            case 3:
-                /* code */
+                
+            case 2:
                 break;
             }
 
@@ -182,27 +188,20 @@ int main(){
                 cout<<endl<<endl;
 
                 if (listaLibros.eliminarLibroPorTitulo(titulo)) {
-                    cout << "Libro eliminado exitosamente." << endl;
+                    cout << "\nLibro eliminado exitosamente." << endl;
                 } else {
-                    cout << "No se encontro un libro con ese titulo." << endl;
+                    cout << "\nNo se encontro un libro con ese titulo." << endl;
                 }
                 system("pause");
                 break;
-            }
-            case 2:{
-                cout<<"ELIMINACION POR ISBN"<<endl;
-                /* code */
-                system("pause");
-                break;
-            }
-            case 3:
+            }case 2:
                 break;
             }
             break;
         }
             case 5: { // Nueva opción para restaurar backup
             string fechaHoraIngresada;
-            cout << "Ingrese la fecha y hora del respaldo en el formato dd.mm.aaaa.HH.MM.SS: ";
+            cout << "\nIngrese la fecha y hora del respaldo en el formato dd.mm.aaaa.HH.MM.SS: ";
             cin >> fechaHoraIngresada;
             listaLibros.restaurarBackup(fechaHoraIngresada);
             system("pause");
@@ -214,8 +213,7 @@ int main(){
                 break;
         }
             default:
-                cout<<"GRACIAS POR USARNOS\n";
-                cout<<op;
+                cout<<"\nGRACIAS POR USARNOS\n";
             break;
         }
     }while(op!=7);
