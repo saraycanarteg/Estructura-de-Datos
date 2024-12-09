@@ -44,7 +44,7 @@ T Validation<T>::enter_a_char_or_string(int data_size){
     char cad[data_size], c;
     int i = 0;
      while(((c = getch())!=13)){
-        if ((c>='a' && c <= 'z') || (c>='A'&&c<='Z') /*|| (c==' ')*/ ){
+        if ((c>='a' && c <= 'z') || (c>='A'&&c<='Z') || (c==' ') ){
             printf("%c", c);
             cad[i++] = c;
 
@@ -53,6 +53,38 @@ T Validation<T>::enter_a_char_or_string(int data_size){
             i--;
         }
     }
+    cad[i++]='\0';
+    return cad;
+}
+
+
+template <typename T>
+T Validation<T>::enter_a_char_or_string_with_may(int data_size){
+    char cad[data_size], c;
+    int i = 0;
+    while(((c = getch())!=13)){
+        if ((c>='a' && c <= 'z') || (c>='A'&&c<='Z') ){
+            
+            if(c>='a' && c <= 'z') {
+                if((i == 0 || cad[i-1]==' ')){
+                c = c-32;//A mayúsculas 
+              }
+            }else if((c>='A'&&c<='Z')){
+                if(cad[i-1]!=' ' && i!=0){
+                    c =c+32;//A minúsculas 
+                }
+            }
+            printf("%c", c);
+            cad[i++] = c;
+        }else if(c == ' '){
+            printf("%c", c);
+            cad[i++] = c;
+        }else if(c==8 && i > 0){
+            printf("\b \b");
+            i--;
+        }
+    }
+
     cad[i++]='\0';
     return cad;
 }

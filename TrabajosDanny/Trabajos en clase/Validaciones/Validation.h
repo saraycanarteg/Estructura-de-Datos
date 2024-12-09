@@ -12,8 +12,10 @@ public:
     Validation();
     
     T enter_a_number(char *data_type);
+    T enter_a_char_or_string_with_may(int data_size);
     T enter_a_char_or_string(int data_size);
     T data_convertion_to_number(char *cad, char *data_type);
+    T primera_letra_a_mayuscula();
 };
 
 

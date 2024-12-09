@@ -9,9 +9,14 @@ int main(){
     Validation<string> validation_string;
     Validation<int> validation_int;
     Validation<float> validation_float;
-    char nombre[12];
-    string apellido = validation_string.enter_a_char_or_string(12);
-    strcpy(nombre, apellido.c_str());
+    char nombres_char[20], apellidos_char[20];
+    cout<<"Nombres:";
+    string nombres = validation_string.enter_a_char_or_string_with_may(20);
+    strcpy(nombres_char, nombres.c_str());
+    cout<<endl<<"Apellidos: ";
+    string apellidos = validation_string.enter_a_char_or_string_with_may(12);
+    strcpy(apellidos_char, apellidos.c_str());
+    cout<<endl;
     
-    cout<<nombre;
+    cout<<nombres_char<<"----"<<apellidos_char;
 }
