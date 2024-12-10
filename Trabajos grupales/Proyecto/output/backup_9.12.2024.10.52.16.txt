@@ -1,0 +1,7 @@
+Backup de libros (fecha y hora: backup_9.12.2024.10.52.16.txt):
+
+Titulo: Joaquito
+Autor: Helena Perez
+Fecha de publicacion: 12/02/3
+ISBN: 9783140464079
+---
