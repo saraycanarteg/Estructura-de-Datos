@@ -349,7 +349,58 @@ void ListaLibros::buscarLibrosPorAutor(const string& idAutor, ListaLibros& resul
         }
     }
 } 
+void ListaLibros::generarArchivoCSV() const {
+    std::ofstream archivoCSV("libros.csv", std::ios::app);
+    
+    if (!archivoCSV.is_open()) {
+        std::cerr << "\nError al abrir el archivo CSV para guardar los libros." << std::endl;
+        return;
+    }
 
+    // Si es la primera vez que se abre el archivo, escribir los encabezados
+    std::ifstream archivoExistente("libros.csv");
+    if (archivoExistente.peek() == std::ifstream::traits_type::eof()) {
+        archivoCSV << "Titulo,Autor,Fecha de Publicacion,ISBN,Editorial\n";
+    }
+    archivoExistente.close();
+
+    // Si la lista está vacía
+    if (cabeza == nullptr) {
+        archivoCSV.close();
+        return;
+    }
+
+    // Recorrer la lista circular y escribir cada libro
+    NodoLibro* actual = cabeza;
+    do {
+        std::string titulo = actual->libro.getTitulo();
+        std::string nombreCompleto = actual->libro.getAutor().getNombre() + " " + 
+                                     actual->libro.getAutor().getApellido();
+        std::string fechaPublicacion = std::to_string(actual->libro.getFechaPublicacion().getDia()) + "/" + 
+                                       std::to_string(actual->libro.getFechaPublicacion().getMes()) + "/" + 
+                                       std::to_string(actual->libro.getFechaPublicacion().getAnio());
+        std::string isbn = actual->libro.getIsbn();
+        std::string editorial = actual->libro.getEditorial();
+        
+        // Reemplazar comas con punto y coma si existen
+        std::replace(titulo.begin(), titulo.end(), ',', ';');
+        std::replace(nombreCompleto.begin(), nombreCompleto.end(), ',', ';');
+        std::replace(fechaPublicacion.begin(), fechaPublicacion.end(), ',', ';');
+        std::replace(editorial.begin(), editorial.end(), ',', ';');
+
+        // Agregar al final del archivo
+        archivoCSV << titulo << ","
+                   << nombreCompleto << ","
+                   << fechaPublicacion << ","
+                   << isbn << ","
+                   << editorial << "\n";
+
+        actual = actual->siguiente;
+    } while (actual != cabeza);
+
+    archivoCSV.close();
+    std::cout << "\nLibro agregado al archivo CSV: libros.csv" << std::endl;
+}
 
 
 void ListaLibros::filtrarLibrosPorRangoDeAnios(int anioInicio, int anioFin) const {

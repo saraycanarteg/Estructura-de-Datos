@@ -40,3 +40,15 @@ Autor: Rick Rae
 Fecha de publicacion: 12/01/1
 ISBN: 9780060883287
 ---
+Fecha Ingreso: 11.12.2024.12.10.20
+Titulo: Er
+Autor: We Ds
+Fecha de publicacion: 14/04/987
+ISBN: 9780060883287
+---
+Fecha Ingreso: 11.12.2024.12.13.45
+Titulo: Hola
+Autor: Pepe Ar
+Fecha de publicacion: 17/08/7
+ISBN: 9780060114183
+---

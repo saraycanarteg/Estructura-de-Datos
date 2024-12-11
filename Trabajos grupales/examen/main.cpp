@@ -344,14 +344,14 @@ int main() {
             int anioInicio, anioFin;
 
             
-            cout << "\nIngrese el año inicial del rango: ";
+            cout << "\nIngrese el anio inicial del rango: ";
             anioInicio = validacion_int.enter_a_number("int");
-            cout << "\nIngrese el año final del rango: ";
+            cout << "\nIngrese el anio final del rango: ";
             anioFin = validacion_int.enter_a_number("int");
 
             
             if (anioInicio > anioFin) {
-                cout << "\nEl año inicial no puede ser mayor que el año final. Intente de nuevo." << endl;
+                cout << "\nEl anio inicial no puede ser mayor que el anio final. Intente de nuevo." << endl;
                 break;
             }
 
