@@ -32,11 +32,21 @@ void Fecha::setAnio(int anio) {
     }
 }
 
-string Fecha::getFechaComoString() const {
-    stringstream ss;
-    ss << setfill('0') 
-       << setw(2) << dia << "/"
-       << setw(2) << mes << "/"
-       << anio;
+std::string Fecha::getFechaComoString() const {
+    std::stringstream ss;
+    
+    // Aseguramos que el día y mes tengan dos dígitos
+    ss << std::setfill('0') 
+       << std::setw(2) << dia << "/" 
+       << std::setw(2) << mes << "/";
+
+    // Verificamos si el año es de 2 dígitos, si es así, lo completamos a 4
+    if (anio < 1000) {
+        ss << "20" << std::setw(2) << std::setfill('0') << anio;
+    } else {
+        ss << anio;
+    }
+    
+    std::cout << "Generando fecha como string: " << ss.str() << std::endl;
     return ss.str();
 }

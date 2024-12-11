@@ -376,9 +376,7 @@ void ListaLibros::generarArchivoCSV() const {
         std::string titulo = actual->libro.getTitulo();
         std::string nombreCompleto = actual->libro.getAutor().getNombre() + " " + 
                                      actual->libro.getAutor().getApellido();
-        std::string fechaPublicacion = std::to_string(actual->libro.getFechaPublicacion().getDia()) + "/" + 
-                                       std::to_string(actual->libro.getFechaPublicacion().getMes()) + "/" + 
-                                       std::to_string(actual->libro.getFechaPublicacion().getAnio());
+        std::string fechaPublicacion = actual->libro.getFechaPublicacion().getFechaComoString();
         std::string isbn = actual->libro.getIsbn();
         std::string editorial = actual->libro.getEditorial();
         

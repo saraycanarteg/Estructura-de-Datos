@@ -52,3 +52,33 @@ Autor: Pepe Ar
 Fecha de publicacion: 17/08/7
 ISBN: 9780060114183
 ---
+Fecha Ingreso: 11.12.2024.12.24.47
+Titulo: Sdfd
+Autor: Dfsd Sdf
+Fecha de publicacion: 17/08/0
+ISBN: 9783140464079
+---
+Fecha Ingreso: 11.12.2024.12.28.47
+Titulo: Programacion Tres
+Autor: Pepito Flores
+Fecha de publicacion: 29/02/2000
+ISBN: 9783140464079
+---
+Fecha Ingreso: 11.12.2024.12.29.53
+Titulo: Programacion Tres
+Autor: Pepito Flores
+Fecha de publicacion: 29/02/2000
+ISBN: 9783140464079
+---
+Fecha Ingreso: 11.12.2024.12.29.53
+Titulo: Programacion 
+Autor: Pepito Flores
+Fecha de publicacion: 17/08/2004
+ISBN: 9780060883287
+---
+Fecha Ingreso: 11.12.2024.12.35.41
+Titulo: El Principito
+Autor: Saint Laor
+Fecha de publicacion: 17/08/20980
+ISBN: 9783462037197
+---
