@@ -1,7 +1,0 @@
-Backup de libros (fecha y hora: backup_9.12.2024.10.38.18.txt):
-
-Titulo: Principito
-Autor: Kelly Hamon
-Fecha de publicacion: 12/02/4
-ISBN: 9783140464079
----
