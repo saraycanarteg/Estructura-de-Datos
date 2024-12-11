@@ -50,7 +50,7 @@ public:
     // Suma recursiva de matrices
     template<typename U>
     Matrix<T> recursiveSum(const Matrix<U>& other) const {
-        if (rows != oth6+er.getRows() || cols != other.getCols()) {
+        if (rows != other.getRows() || cols != other.getCols()) {
             throw std::invalid_argument("Matrices must have the same dimensions");
         }
         
