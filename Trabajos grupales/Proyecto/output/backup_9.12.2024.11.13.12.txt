@@ -1,7 +1,0 @@
-Backup de libros (fecha y hora: backup_9.12.2024.11.13.12.txt):
-
-Titulo: Percy Jackson
-Autor: Rick Riordan
-Fecha de publicacion: 12/05/4
-ISBN: 9783140464079
----
