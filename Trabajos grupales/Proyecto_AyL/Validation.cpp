@@ -40,11 +40,29 @@ T Validation<T>::enter_a_number(char *data_type){
 }
 
 template <typename T>
-T Validation<T>::enter_a_char_or_string(int data_size){
+T Validation<T>::enter_a_char_or_string_letters_only(int data_size){
     char cad[data_size], c;
     int i = 0;
      while(((c = getch())!=13)){
         if ((c>='a' && c <= 'z') || (c>='A'&&c<='Z') || (c==' ') ){
+            printf("%c", c);
+            cad[i++] = c;
+
+        }else if(c==8 && i > 0){
+            printf("\b \b");
+            i--;
+        }
+    }
+    cad[i++]='\0';
+    return cad;
+}
+
+template <typename T>
+T Validation<T>::enter_a_char_or_string_letters_with_nums(int data_size){
+    char cad[data_size], c;
+    int i = 0;
+     while(((c = getch())!=13)){
+        if ((c>='a' && c <= 'z') || (c>='A'&&c<='Z') || (c==' ') || (c>='0' && c<='9')){
             printf("%c", c);
             cad[i++] = c;
 
@@ -121,6 +139,19 @@ T Validation<T>::data_convertion_to_number(char *value, char *data_type){
     return 0;
 }
 
+// *******************OTHER VALIDATIONS********************
+template <typename T>
+bool Validation<T>::validar_id_autor(string id_autor){
+    string aux = id_autor;
+    aux[0]='0';
+    int parte_numerica_id = stoi(aux);
+
+    if((id_autor[0] == 'A') && parte_numerica_id<999){
+        return true;
+    }
+
+    return false;
+}
 
 template <typename T>
 bool Validation<T>::validate_isbn(const string &isbn) {

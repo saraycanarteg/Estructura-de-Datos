@@ -6,9 +6,9 @@ using namespace std;
 
 class Autor {
 private:
+    string id; 
     string nombre;
     string apellido;
-    string id; 
     string nacionalidad;
  // Asociación con libros
 

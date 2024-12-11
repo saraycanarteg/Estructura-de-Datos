@@ -15,7 +15,6 @@ using namespace std;
 int main() {
     Validation<string> validacion_string;
     Validation<string> validacion_isbn;
-
     ListaLibros listaLibros;
     ListaAutores listaAutores;
 
@@ -92,18 +91,23 @@ int main() {
                         nombreAutor = validacion_string.enter_a_char_or_string_with_may(20);
                         cout << "\nIngrese los apellidos del autor: ";
                         apellidoAutor = validacion_string.enter_a_char_or_string_with_may(20);
-                        cout << "\nIngrese el ID del autor: ";
-                        id = validacion_string.enter_a_char_or_string_with_may(20);
+                        cout << "\nIngrese el ID del autor (Formato: A001): ";
+                        id = validacion_string.enter_a_char_or_string_letters_with_nums(4);
                         cout << "\nIngrese la nacionalidad del autor: ";
                         nacionalidad = validacion_string.enter_a_char_or_string_with_may(20);
                         cout << "\n--------------------------------------";
 
-                        if (titulo.empty() || nombreAutor.empty() || apellidoAutor.empty()) {
+                        if (titulo.empty() || nombreAutor.empty() || apellidoAutor.empty() || id.empty() || nacionalidad.empty()) {
                             cout << "\n\nDebe ingresar todos los campos requeridos. Intente de nuevo...\n" << endl;
                             system("pause");
                             system("cls");
+                        }else if(!validacion_string.validar_id_autor(id)){
+                            cout << "\n\nId no valido. Intente de nuevo...\n" << endl;
+                            system("pause");
+                            system("cls");                            
                         }
-                    } while (titulo.empty() || nombreAutor.empty() || apellidoAutor.empty());
+
+                    } while (titulo.empty() || nombreAutor.empty() || apellidoAutor.empty() || id.empty() || nacionalidad.empty() || !validacion_string.validar_id_autor(id));
 
                     Autor autorLibro(nombreAutor, apellidoAutor, id, nacionalidad);
                     string fechaIngresada = validacion_string.enter_date();

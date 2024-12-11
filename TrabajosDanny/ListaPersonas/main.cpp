@@ -100,11 +100,11 @@ int main() {
                 cout << "\n\nIngrese el caracter a reemplazar: ";
                 cin>>original;
                 fflush(stdin);
-                cout << "\nCaracter a reemplazar: "<<original;
+                cout << "Caracter a reemplazar: "<<original;
                 cout << "\nIngrese el caracter por el cual reemplazar: ";
                 cin>>reemplazo;
                 fflush(stdin);
-                cout << "\nCaracter a reemplazar: "<<reemplazo<<endl;
+                cout << "Caracter a reemplazar: "<<reemplazo<<endl;
 
                 // Crear una copia de la lista original para modificarla
                 listaModificada = listaOriginal;
@@ -117,6 +117,7 @@ int main() {
             case 7:
                 cout << "\n\nIngrese la cedula de la persona a buscar: ";
                 cedula=validation_string.enter_a_string_as_num(10);
+                cout<<endl;
                 if (validarCedula(cedula)) {
                     listaOriginal.buscarPorCedula(cedula);
                 } else {
@@ -127,6 +128,7 @@ int main() {
             case 8:
                 cout << "\n\nIngrese la cedula de la persona a eliminar: ";
                 cedula=validation_string.enter_a_string_as_num(10);
+                cout<<endl;
                 if (validarCedula(cedula)) {
                     listaOriginal.eliminarPorCedula(cedula);
                 } else {
@@ -141,6 +143,7 @@ int main() {
             default:
                 cout << "\nOpcion invalida.\n";
         }
+        cout<<endl;
         system("pause");
     } while (opcion != 9);
 

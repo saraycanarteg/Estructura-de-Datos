@@ -1,15 +1,5 @@
-Titulo: Cronica De Una Muerte Anunciada
-Autor: Gabriel Garcia Marquez
-Fecha de publicacion: 12/04/987
-ISBN: 9789295055025
----
-Titulo: El Principito
-Autor: Antoine De Saint Exupery
-Fecha de publicacion: 12/04/943
-ISBN: 9783140464079
----
-Titulo: Cien Anios De Soledad
-Autor: Gabriel Garcia Marquez
-Fecha de publicacion: 14/05/967
-ISBN: 9789510445365
+Titulo: Ana Frank
+Autor: Ana Frank
+Fecha de publicacion: 12/02/20
+ISBN: 9780060883287
 ---
