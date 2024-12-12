@@ -348,10 +348,12 @@ case 8: {
     // Solicitar la fecha de inicio
     cout << "Ingrese la fecha de inicio (formato dd.MM.yyyy.HH.mm.ss): ";
     getline(cin, fechaInicio);
+    fflush(stdin);
     
     // Solicitar la fecha de fin
     cout << "Ingrese la fecha de fin (formato dd.MM.yyyy.HH.mm.ss): ";
     getline(cin, fechaFin);
+    fflush(stdin);
     
     // Llamar al método de búsqueda por rango de fechas
     listaLibros.buscarLibrosPorFechaIngreso(fechaInicio, fechaFin);

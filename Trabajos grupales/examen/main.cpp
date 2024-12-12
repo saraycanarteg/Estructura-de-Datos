@@ -26,10 +26,9 @@ int main() {
     main_menu.set_menu("3. Mostrar libreria");
     main_menu.set_menu("4. Eliminar libro");
     main_menu.set_menu("5. Recuperar Backup");
-    main_menu.set_menu("6. Ayuda");
-    main_menu.set_menu("7. Gestion de Autores");
-    main_menu.set_menu("8. Buscar por anio de publicacion");
-    main_menu.set_menu("9. Salir");
+    main_menu.set_menu("6. Gestion de Autores");
+    main_menu.set_menu("7. Buscar por anio de publicacion");
+    main_menu.set_menu("8. Salir");
 
     Menu book_entry_menu;
     book_entry_menu.set_menu("1. Ingresar libro");
@@ -245,26 +244,30 @@ int main() {
                 system("pause");
                 break;
             }
-            case 6: { // Ayuda
-                Ayuda::mostrarAyuda();
-                system("pause");
-                break;
-            }
-            case 7: {
+            case 6: {
                 op = autor_menu.coursor("GESTIÓN DE AUTORES");
                 system("cls");
                 switch (op) {
                     case 1: { // Registrar autor
                         string nombreAutor, apellidoAutor, id, nacionalidad;
-                        cout << "REGISTRO DE AUTOR\n\n";
-                        cout << "Ingrese los nombres del autor: ";
-                        nombreAutor = validacion_string.enter_a_char_or_string_with_may(20);
-                        cout << "Ingrese los apellidos del autor: ";
-                        apellidoAutor = validacion_string.enter_a_char_or_string_with_may(20);
-                        cout << "Ingrese el ID del autor: ";
-                        id = validacion_string.enter_a_char_or_string_with_may(10);
-                        cout << "Ingrese la nacionalidad del autor: ";
-                        nacionalidad = validacion_string.enter_a_char_or_string_with_may(20);
+                        do{
+                            cout << "REGISTRO DE AUTOR\n\n";
+                            cout << "\nIngrese los nombres del autor: ";
+                            nombreAutor = validacion_string.enter_a_char_or_string_with_may(20);
+                            cout << "\nIngrese los apellidos del autor: ";
+                            apellidoAutor = validacion_string.enter_a_char_or_string_with_may(20);
+                            cout << "\nIngrese el ID del autor: ";
+                            id = validacion_string.enter_a_char_or_string_with_may(10);
+                            cout << "\nIngrese la nacionalidad del autor: ";
+                            nacionalidad = validacion_string.enter_a_char_or_string_with_may(20);
+
+                            if(nombreAutor.empty() || apellidoAutor.empty() || id.empty() || nacionalidad.empty()){
+                                cout<<"\n\nDebe ingresar los campos requeridos:"<<endl;
+                                system("pause");
+                                system("cls");
+                            }
+
+                        }while(nombreAutor.empty() || apellidoAutor.empty() || id.empty() || nacionalidad.empty());
 
                         Autor nuevoAutor(nombreAutor, apellidoAutor, id, nacionalidad);
                         listaAutores.registrarAutor(nuevoAutor);
@@ -340,7 +343,7 @@ int main() {
                 }
                 break;
             }
-        case 8: {
+            case 7: {
             int anioInicio, anioFin;
 
             
