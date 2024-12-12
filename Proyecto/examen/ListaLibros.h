@@ -41,6 +41,10 @@ public:
     bool eliminarLibroPorIsbn(const string& isbn);        // Eliminar por ISBN
     bool modificarLibroPorTitulo(const string& titulo, const Libro& nuevoLibro); // Modificar libro
     void buscarLibrosPorAutor(const string& idAutor, ListaLibros& resultados);
+    vector<Libro> cargarLibrosDeAutor(const Autor& autor);
+    vector<Autor> cargarAutoresDesdeCSV();
+    void guardarLibrosDeAutor(const Autor& autor);
+    void guardarAutorCSV(const Autor& autor);
    
     // Métodos auxiliares
     void imprimirLibros() const;                          // Imprimir la lista de libros
