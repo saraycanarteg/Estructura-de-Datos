@@ -21,8 +21,6 @@ int main() {
     ListaAutores listaAutores;
 
     listaLibros.cargarLibrosDesdeCSV();
-    listaLibros.imprimirLibros();
-    system("pause");
 
     Menu main_menu;
     main_menu.set_menu("1. Ingresar libro");
