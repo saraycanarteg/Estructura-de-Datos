@@ -52,6 +52,18 @@ void ListaLibros::guardarLibrosEnArchivo() const {
 
 // Registro de libros
 void ListaLibros::registrarLibro(const Libro& libro) {
+     // Verificar si el libro ya existe
+    std::vector<Libro> librosExistentes = cargarLibrosDesdeCSV();
+    
+    for (const auto& libroExistente : librosExistentes) {
+        if (libroExistente.getIsbn() == libro.getIsbn()) {
+            std::cout << "El libro ya existe en la biblioteca." << std::endl;
+            return;
+        }
+    }
+
+    guardarAutorCSV(libro.getAutor());
+
     NodoLibro* nuevoNodo = new NodoLibro(libro);
 
     if (cabeza == nullptr) {
@@ -69,8 +81,10 @@ void ListaLibros::registrarLibro(const Libro& libro) {
 
     tamano++;
     generarArchivoCSV();
+    guardarLibrosDeAutor(libro.getAutor());
     generarBackup(); 
 }
+
 bool ListaLibros::modificarLibroPorTitulo(const string& titulo, const Libro& nuevoLibro) {
     NodoLibro* actual = cabeza;
     if (actual == nullptr)
@@ -431,4 +445,192 @@ void ListaLibros::filtrarLibrosPorRangoDeAnios(int anioInicio, int anioFin) cons
     if (!encontrado) {
         std::cout << "No se encontraron libros publicados en el rango especificado." << std::endl;
     }
+}
+
+void ListaLibros::guardarAutorCSV(const Autor& autor) {
+    // Abrir el archivo de autores en modo append
+    std::ofstream archivoAutores("autores.csv", std::ios::app);
+    
+    if (!archivoAutores.is_open()) {
+        std::cerr << "Error al abrir el archivo de autores." << std::endl;
+        return;
+    }
+
+    // Verificar si el archivo está vacío para agregar encabezados
+    std::ifstream archivoExistente("autores.csv");
+    if (archivoExistente.peek() == std::ifstream::traits_type::eof()) {
+        archivoAutores << "ID,Nombre,Apellido,Nacionalidad\n";
+    }
+    archivoExistente.close();
+
+    // Verificar si el autor ya existe antes de agregarlo
+    std::vector<Autor> autoresExistentes = cargarAutoresDesdeCSV();
+    for (const auto& autorExistente : autoresExistentes) {
+        if (autorExistente.getId() == autor.getId()) {
+            archivoAutores.close();
+            return; // El autor ya existe
+        }
+    }
+
+    // Reemplazar comas con punto y coma para evitar problemas de parseo
+    std::string nombre = autor.getNombre();
+    std::string apellido = autor.getApellido();
+    std::string nacionalidad = autor.getNacionalidad();
+
+    std::replace(nombre.begin(), nombre.end(), ',', ';');
+    std::replace(apellido.begin(), apellido.end(), ',', ';');
+    std::replace(nacionalidad.begin(), nacionalidad.end(), ',', ';');
+
+    // Guardar autor en el CSV
+    archivoAutores << autor.getId() << ","
+                   << nombre << ","
+                   << apellido << ","
+                   << nacionalidad << "\n";
+
+    archivoAutores.close();
+    std::cout << "\nAutor guardado: " << nombre << " " << apellido << std::endl;
+}
+
+std::vector<Autor> ListaLibros::cargarAutoresDesdeCSV() {
+    std::vector<Autor> autoresLeidos;
+    std::ifstream archivoCSV("autores.csv");
+
+    if (!archivoCSV.is_open()) {
+        std::cerr << "Error al abrir el archivo CSV de autores." << std::endl;
+        return autoresLeidos;
+    }
+
+    // Saltar la línea de encabezados
+    std::string encabezados;
+    std::getline(archivoCSV, encabezados);
+
+    std::string linea;
+    while (std::getline(archivoCSV, linea)) {
+        std::stringstream ss(linea);
+        std::string id, nombre, apellido, nacionalidad;
+
+        // Leer cada campo
+        std::getline(ss, id, ',');
+        std::getline(ss, nombre, ',');
+        std::getline(ss, apellido, ',');
+        std::getline(ss, nacionalidad);
+
+        // Restaurar comas reemplazadas
+        std::replace(nombre.begin(), nombre.end(), ';', ',');
+        std::replace(apellido.begin(), apellido.end(), ';', ',');
+        std::replace(nacionalidad.begin(), nacionalidad.end(), ';', ',');
+
+        // Crear objeto Autor
+        Autor autor(nombre, apellido, id, nacionalidad);
+        autoresLeidos.push_back(autor);
+    }
+
+    archivoCSV.close();
+    return autoresLeidos;
+}
+
+void ListaLibros::guardarLibrosDeAutor(const Autor& autor) {
+    std::ofstream archivoLibrosAutor("libros_" + autor.getId() + ".csv", std::ios::app);
+    
+    if (!archivoLibrosAutor.is_open()) {
+        std::cerr << "Error al abrir el archivo de libros del autor." << std::endl;
+        return;
+    }
+
+    // Verificar si el archivo está vacío para agregar encabezados
+    std::ifstream archivoExistente("libros_" + autor.getId() + ".csv");
+    if (archivoExistente.peek() == std::ifstream::traits_type::eof()) {
+        archivoLibrosAutor << "Titulo,Fecha de Publicacion,ISBN,Editorial\n";
+    }
+    archivoExistente.close();
+
+    // Cargar libros existentes para evitar duplicados
+    std::vector<Libro> librosDelAutor = cargarLibrosDeAutor(autor);
+
+    // Recorrer la lista de libros y guardar solo los del autor actual
+    NodoLibro* actual = cabeza;
+    
+    // Protección contra lista vacía
+    if (actual == nullptr) {
+        archivoLibrosAutor.close();
+        return;
+    }
+
+    do {
+        if (actual->libro.getAutor().getId() == autor.getId()) {
+            // Verificar si el libro ya existe en el archivo
+            bool libroExiste = std::any_of(librosDelAutor.begin(), librosDelAutor.end(), 
+                [&](const Libro& libro) { 
+                    return libro.getIsbn() == actual->libro.getIsbn(); 
+                });
+
+            if (!libroExiste) {
+                std::string titulo = actual->libro.getTitulo();
+                std::string fechaPublicacion = 
+                    std::to_string(actual->libro.getFechaPublicacion().getDia()) + "/" + 
+                    std::to_string(actual->libro.getFechaPublicacion().getMes()) + "/" + 
+                    std::to_string(actual->libro.getFechaPublicacion().getAnio());
+                std::string isbn = actual->libro.getIsbn();
+                std::string editorial = actual->libro.getEditorial();
+
+                // Reemplazar comas con punto y coma
+                std::replace(titulo.begin(), titulo.end(), ',', ';');
+                std::replace(fechaPublicacion.begin(), fechaPublicacion.end(), ',', ';');
+                std::replace(editorial.begin(), editorial.end(), ',', ';');
+
+                archivoLibrosAutor << titulo << ","
+                                   << fechaPublicacion << ","
+                                   << isbn << ","
+                                   << editorial << "\n";
+                
+                std::cout << "Libro guardado para el autor: " << titulo << std::endl;
+            }
+        }
+        actual = actual->siguiente;
+    } while (actual != cabeza);
+
+    archivoLibrosAutor.close();
+}
+
+std::vector<Libro> ListaLibros::cargarLibrosDeAutor(const Autor& autor) {
+    std::vector<Libro> librosDelAutor;
+    std::ifstream archivoLibrosAutor("libros_" + autor.getId() + ".csv");
+
+    if (!archivoLibrosAutor.is_open()) {
+        // No es un error crítico si no existe el archivo aún
+        return librosDelAutor;
+    }
+
+    // Saltar la línea de encabezados
+    std::string encabezados;
+    std::getline(archivoLibrosAutor, encabezados);
+
+    std::string linea;
+    while (std::getline(archivoLibrosAutor, linea)) {
+        std::stringstream ss(linea);
+        std::string titulo, fechaStr, isbn, editorial;
+
+        std::getline(ss, titulo, ',');
+        std::getline(ss, fechaStr, ',');
+        std::getline(ss, isbn, ',');
+        std::getline(ss, editorial);
+
+        // Restaurar comas
+        std::replace(titulo.begin(), titulo.end(), ';', ',');
+        std::replace(fechaStr.begin(), fechaStr.end(), ';', ',');
+        std::replace(editorial.begin(), editorial.end(), ';', ',');
+
+        // Parsear fecha
+        int dia, mes, anio;
+        std::stringstream fechaSS(fechaStr);
+        char delimiter;
+        fechaSS >> dia >> delimiter >> mes >> delimiter >> anio;
+
+        // Crear libro (nota: necesitarás pasar el autor completo)
+        Libro libro(titulo, autor, Fecha(dia, mes, anio), isbn, editorial);
+        librosDelAutor.push_back(libro);
+    }
+
+    archivoLibrosAutor.close();
+    return librosDelAutor;
 }
