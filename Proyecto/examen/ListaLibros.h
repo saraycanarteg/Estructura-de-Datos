@@ -47,6 +47,7 @@ public:
     vector<Autor> cargarAutoresDesdeCSV();
     void guardarLibrosDeAutor(const Autor &autor);
     void guardarAutorCSV(const Autor &autor);
+    bool existeAutorPorId(const string& id);
 
     // Métodos auxiliares
     void imprimirLibros() const;                         // Imprimir la lista de libros

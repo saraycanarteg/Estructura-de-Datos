@@ -72,9 +72,8 @@ int main()
     autor_menu.set_menu("1. Registrar autor");
     autor_menu.set_menu("2. Buscar autor por ID");
     autor_menu.set_menu("3. Eliminar autor");
-    autor_menu.set_menu("4. Modificar autor");
-    autor_menu.set_menu("5. Mostrar autores");
-    autor_menu.set_menu("6. Regresar");
+    autor_menu.set_menu("4. Mostrar autores");
+    autor_menu.set_menu("5. Regresar");
 
     Menu buscar_autor_menu;
     buscar_autor_menu.set_menu("1. Buscar por titulo");
@@ -111,15 +110,38 @@ int main()
                     cout << "Ingrese el titulo del libro: ";
                     titulo = validacion_string.enter_a_char_or_string_with_may_and_nums(20);
                     cout << "\n--------------------------------------";
-                    cout << "\nIngrese los nombres del autor: ";
-                    nombreAutor = validacion_string.enter_a_char_or_string_with_may(20);
-                    cout << "\nIngrese los apellidos del autor: ";
-                    apellidoAutor = validacion_string.enter_a_char_or_string_with_may(20);
+
                     cout << "\nIngrese el ID del autor (Formato: A001): ";
                     id = validacion_string.enter_a_char_or_string_with_may_and_nums(4);
-                    cout << "\nIngrese la nacionalidad del autor: ";
-                    nacionalidad = validacion_string.enter_a_char_or_string_with_may(20);
+                    //bool autorExistente = false;
+
+                    if (listaLibros.existeAutorPorId(id)) {
+                        bool autorExistente = true;
+                        cout << "\n\nEl autor con ID " << id << " ya existe. Se utilizará la información existente." << endl;
+                        //autorExistente = true;
+                        
+                        // Optionally, retrieve existing author's details
+                        std::vector<Autor> autoresExistentes = listaLibros.cargarAutoresDesdeCSV();
+                        for (const auto& autorExistente : autoresExistentes) {
+                            if (autorExistente.getId() == id) {
+                                nombreAutor = autorExistente.getNombre();
+                                apellidoAutor = autorExistente.getApellido();
+                                nacionalidad = autorExistente.getNacionalidad();
+                                break;
+                            }
+                        }
+                    } else {        
+                        cout << "\nIngrese los nombres del autor: ";
+                        nombreAutor = validacion_string.enter_a_char_or_string_with_may(20);
+                        cout << "\nIngrese los apellidos del autor: ";
+                        apellidoAutor = validacion_string.enter_a_char_or_string_with_may(20);
+                        cout << "\nIngrese la nacionalidad del autor: ";
+                        nacionalidad = validacion_string.enter_a_char_or_string_with_may(20);
+                        cout << "\n--------------------------------------";
+                        //autorExistente = false;
+                    }
                     cout << "\n--------------------------------------";
+
 
                     if (titulo.empty() || nombreAutor.empty() || apellidoAutor.empty() || nacionalidad.empty() || !validacion_string.validar_id_autor(id))
                     {
@@ -202,33 +224,22 @@ int main()
                 }
                 break;
             }
-            case 2:
-            {
+            case 2:{
                 string idAutor;
                 cout << "BUSQUEDA DE LIBROS POR AUTOR\n\n";
                 cout << "Ingrese el ID del autor: ";
                 idAutor = validacion_string.enter_a_char_or_string_with_may_and_nums(10);
 
-                Autor *autorBuscado = listaAutores.buscarAutorPorId(idAutor);
-                if (autorBuscado)
-                {
-                    ListaLibros librosDelAutor;
-                    listaLibros.buscarLibrosPorAutor(idAutor, librosDelAutor);
-
-                    if (librosDelAutor.obtenerTamano() > 0)
-                    {
-                        cout << "\nLibros del autor " << autorBuscado->getNombreCompleto() << ":\n";
-                        librosDelAutor.imprimirLibros();
-                    }
-                    else
-                    {
-                        cout << "\nNo se encontraron libros para este autor." << endl;
-                    }
+                /*Autor* autorEncontrado = listaAutores.buscarAutorPorId(idAutor);
+                
+                if (autorEncontrado != nullptr) {
+                    ListaLibros resultados; // Crear una instancia que puedes pasar por referencia
+                    listaLibros.buscarLibrosPorAutor(idAutor, resultados);
                 }
                 else
                 {
                     cout << "\nNo se encontro un autor con ese ID." << endl;
-                }
+                } */
                 system("pause");
                 break;
             }

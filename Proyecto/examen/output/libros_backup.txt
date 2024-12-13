@@ -108,3 +108,21 @@ Fecha de publicacion: 12/05/2007
 ISBN: 9780192827609
 >>>>>>> 97a829377962c70ca2e22a1ca6689e3efb897e0c
 ---
+Fecha Ingreso: 13.12.2024.09.05.43
+Titulo: Manitas Felices
+Autor: Pedro Pascal
+Fecha de publicacion: 18/04/20978
+ISBN: 9786584956261
+---
+Fecha Ingreso: 13.12.2024.09.08.18
+Titulo: Lalaland
+Autor: Pedro Pascal
+Fecha de publicacion: 14/06/2001
+ISBN: 9788497403573
+---
+Fecha Ingreso: 13.12.2024.09.43.18
+Titulo: Metastasis
+Autor: Pedro Pascal
+Fecha de publicacion: 12/03/20978
+ISBN: 9781416989417
+---

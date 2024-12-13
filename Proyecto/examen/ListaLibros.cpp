@@ -26,36 +26,8 @@ ListaLibros::~ListaLibros()
     }
 }
 
-void ListaLibros::guardarLibrosEnArchivo() const
-{
-    std::ofstream archivo("libros.txt");
-    if (!archivo.is_open())
-    {
-        std::cerr << "Error al abrir el archivo para guardar los libros." << std::endl;
-        return;
-    }
 
-    NodoLibro *actual = cabeza;
-    if (actual == nullptr)
-    {
-        archivo << "No hay libros en la biblioteca." << std::endl;
-        archivo.close();
-        return;
-    }
 
-    do
-    {
-        archivo << "Titulo: " << actual->libro.getTitulo() << "\n";
-        archivo << "Autor: " << actual->libro.getAutor().getNombreCompleto() << "\n";
-        archivo << "Fecha de publicacion: " << actual->libro.getFechaPublicacion().getFechaComoString() << "\n";
-        archivo << "ISBN: " << actual->libro.getIsbn() << "\n";
-        archivo << "---\n";
-        actual = actual->siguiente;
-    } while (actual != cabeza);
-
-    archivo.close();
-    std::cout << "\nArchivo actualizado: libros.txt" << std::endl;
-}
 
 // Registro de libros
 void ListaLibros::registrarLibro(const Libro &libro)
@@ -72,7 +44,9 @@ void ListaLibros::registrarLibro(const Libro &libro)
         }
     }
 
-    guardarAutorCSV(libro.getAutor());
+    if (!existeAutorPorId(libro.getAutor().getId())) {
+        guardarAutorCSV(libro.getAutor());
+    }
 
     NodoLibro *nuevoNodo = new NodoLibro(libro);
 
@@ -109,7 +83,7 @@ bool ListaLibros::modificarLibroPorTitulo(const string &titulo, const Libro &nue
         if (actual->libro.getTitulo() == titulo)
         {
             actual->libro = nuevoLibro;
-            guardarLibrosEnArchivo(); // Actualizar archivo después de modificar
+            //guardarLibrosEnArchivo(); // Actualizar archivo después de modificar
             return true;
         }
         actual = actual->siguiente;
@@ -138,7 +112,7 @@ bool ListaLibros::eliminarLibroPorTitulo(const string &titulo)
             delete actual;
             tamano--;
 
-            guardarLibrosEnArchivo(); // <-- Llama a este método después de eliminar
+            //guardarLibrosEnArchivo(); // <-- Llama a este método después de eliminar
             return true;
         }
         actual = actual->siguiente;
@@ -165,7 +139,7 @@ bool ListaLibros::eliminarLibroPorIsbn(const string &isbn)
             actual->siguiente->anterior = actual->anterior;
             delete actual;
             tamano--;
-            guardarLibrosEnArchivo(); // Actualizar archivo después de eliminar
+            //guardarLibrosEnArchivo(); 
             return true;
         }
         actual = actual->siguiente;
@@ -480,15 +454,39 @@ void ListaLibros::restaurarBackup(const string &fechaHora) const
 
 void ListaLibros::buscarLibrosPorAutor(const string &idAutor, ListaLibros &resultados)
 {
-    // Cargar libros desde CSV
-    std::vector<Libro> libros = cargarLibrosDesdeCSV();
-
-    for (const auto &libro : libros)
+    // Verificar primero si existe un autor con ese ID
+    std::vector<Autor> autoresExistentes = cargarAutoresDesdeCSV();
+    auto it = std::find_if(autoresExistentes.begin(), autoresExistentes.end(), 
+                            [&idAutor](const Autor& autor) { return autor.getId() == idAutor; });
+    
+    if (it == autoresExistentes.end())
     {
-        if (libro.getAutor().getId() == idAutor)
-        {
-            resultados.registrarLibro(libro);
-        }
+        std::cout << "No se encontró un autor con el ID: " << idAutor << std::endl;
+        return;
+    }
+
+    Autor autorSeleccionado = *it;
+
+    std::vector<Libro> librosDelAutor = cargarLibrosDeAutor(autorSeleccionado);
+
+    if (librosDelAutor.empty())
+    {
+        std::cout << "No se encontraron libros para el autor con ID: " << idAutor << std::endl;
+        return;
+    }
+
+
+    std::cout << "Libros del autor " << autorSeleccionado.getNombre() << " " << autorSeleccionado.getApellido() << ":\n";
+    for (const auto &libro : librosDelAutor)
+    {
+        std::cout << "Título: " << libro.getTitulo() << std::endl;
+        std::cout << "ISBN: " << libro.getIsbn() << std::endl;
+        std::cout << "Fecha de Publicación: " << libro.getFechaPublicacion().getFechaComoString() << std::endl;
+        std::cout << "Editorial: " << libro.getEditorial() << std::endl;
+        std::cout << "------------------------\n";
+
+        // Opcionalmente, también registrar el libro en la lista de resultados
+        resultados.registrarLibro(libro);
     }
 }
 
@@ -672,6 +670,20 @@ std::vector<Autor> ListaLibros::cargarAutoresDesdeCSV()
     return autoresLeidos;
 }
 
+bool ListaLibros::existeAutorPorId(const string& id) {
+    // Reuse the existing cargarAutoresDesdeCSV method
+    std::vector<Autor> autoresExistentes = cargarAutoresDesdeCSV();
+    
+    // Check if the ID already exists
+    for (const auto& autorExistente : autoresExistentes) {
+        if (autorExistente.getId() == id) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
 void ListaLibros::guardarLibrosDeAutor(const Autor &autor)
 {
     std::ofstream archivoLibrosAutor("libros_" + autor.getId() + ".csv", std::ios::app);
@@ -717,10 +729,7 @@ void ListaLibros::guardarLibrosDeAutor(const Autor &autor)
             if (!libroExiste)
             {
                 std::string titulo = actual->libro.getTitulo();
-                std::string fechaPublicacion =
-                    std::to_string(actual->libro.getFechaPublicacion().getDia()) + "/" +
-                    std::to_string(actual->libro.getFechaPublicacion().getMes()) + "/" +
-                    std::to_string(actual->libro.getFechaPublicacion().getAnio());
+                std::string fechaPublicacion = actual->libro.getFechaPublicacion().getFechaComoString();
                 std::string isbn = actual->libro.getIsbn();
                 std::string editorial = actual->libro.getEditorial();
 
