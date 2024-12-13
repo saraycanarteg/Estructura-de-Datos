@@ -16,4 +16,5 @@ public:
     void print_menu_option(string, string);
     int search_data(string);
     int coursor(string);
+    string coursor_string(string titulo);
 };
