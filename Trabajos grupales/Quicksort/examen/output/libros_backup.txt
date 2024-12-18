@@ -1,0 +1,134 @@
+Fecha Ingreso: 11.12.2024.10.14.22
+Titulo: Cronica De Una Muerte Anunciada
+Autor: Gabriel Garcia Marquez
+Fecha de publicacion: 12/05/1978
+ISBN: 9780140430721
+---
+Fecha Ingreso: 11.12.2024.10.15.34
+Titulo: Cronica De Una Muerte Anunciada
+Autor: Gabriel Garcia Marquez
+Fecha de publicacion: 12/05/1978
+ISBN: 9780140430721
+---
+Fecha Ingreso: 11.12.2024.10.15.36
+Titulo: Cien Anios De Soledad
+Autor: Gabriel  Garcia Marquez
+Fecha de publicacion: 14/07/1970
+ISBN: 9780140434262
+---
+Fecha Ingreso: 11.12.2024.10.16.42
+Titulo: Cronica De Una Muerte Anunciada
+Autor: Gabriel Garcia Marquez
+Fecha de publicacion: 12/05/1978
+ISBN: 9780140430721
+---
+Fecha Ingreso: 11.12.2024.10.16.44
+Titulo: Cien Anios De Soledad
+Autor: Gabriel  Garcia Marquez
+Fecha de publicacion: 14/07/1970
+ISBN: 9780140434262
+---
+Fecha Ingreso: 11.12.2024.10.16.56
+Titulo: Percy Jackson
+Autor: Rick Riordan
+Fecha de publicacion: 14/05/2004
+ISBN: 9780192827609
+---
+Fecha Ingreso: 11.12.2024.11.53.22
+Titulo: Amanecer Rojo
+Autor: Rick Rae
+Fecha de publicacion: 12/01/1
+ISBN: 9780060883287
+---
+Fecha Ingreso: 11.12.2024.12.10.20
+Titulo: Er
+Autor: We Ds
+Fecha de publicacion: 14/04/987
+ISBN: 9780060883287
+---
+Fecha Ingreso: 11.12.2024.12.13.45
+Titulo: Hola
+Autor: Pepe Ar
+Fecha de publicacion: 17/08/7
+ISBN: 9780060114183
+---
+Fecha Ingreso: 11.12.2024.12.24.47
+Titulo: Sdfd
+Autor: Dfsd Sdf
+Fecha de publicacion: 17/08/0
+ISBN: 9783140464079
+---
+Fecha Ingreso: 11.12.2024.12.28.47
+Titulo: Programacion Tres
+Autor: Pepito Flores
+Fecha de publicacion: 29/02/2000
+ISBN: 9783140464079
+---
+Fecha Ingreso: 11.12.2024.12.29.53
+Titulo: Programacion Tres
+Autor: Pepito Flores
+Fecha de publicacion: 29/02/2000
+ISBN: 9783140464079
+---
+Fecha Ingreso: 11.12.2024.12.29.53
+Titulo: Programacion 
+Autor: Pepito Flores
+Fecha de publicacion: 17/08/2004
+ISBN: 9780060883287
+---
+Fecha Ingreso: 11.12.2024.12.35.41
+Titulo: El Principito
+Autor: Saint Laor
+Fecha de publicacion: 17/08/20980
+ISBN: 9783462037197
+---
+Fecha Ingreso: 11.12.2024.19.04.40
+Titulo: Programa 3
+Autor: Kevin  Guamangallo
+Fecha de publicacion: 12/02/2004
+ISBN: 9780060883287
+---
+Fecha Ingreso: 11.12.2024.19.27.06
+Titulo: Asd
+Autor: Asd Asd
+Fecha de publicacion: 12/02/2004
+ISBN: 9780060883287
+---
+<<<<<<< HEAD
+Fecha Ingreso: 11.12.2024.23.14.06
+Titulo: Asd
+Autor: Asd Asd
+Fecha de publicacion: 12/02/2000
+ISBN: 9780060883287
+=======
+Fecha Ingreso: 11.12.2024.23.24.09
+Titulo: Kinestesis
+Autor: Monica Teran
+Fecha de publicacion: 12/05/2007
+ISBN: 9780192827609
+>>>>>>> 97a829377962c70ca2e22a1ca6689e3efb897e0c
+---
+Fecha Ingreso: 13.12.2024.09.05.43
+Titulo: Manitas Felices
+Autor: Pedro Pascal
+Fecha de publicacion: 18/04/20978
+ISBN: 9786584956261
+---
+Fecha Ingreso: 13.12.2024.09.08.18
+Titulo: Lalaland
+Autor: Pedro Pascal
+Fecha de publicacion: 14/06/2001
+ISBN: 9788497403573
+---
+Fecha Ingreso: 13.12.2024.09.43.18
+Titulo: Metastasis
+Autor: Pedro Pascal
+Fecha de publicacion: 12/03/20978
+ISBN: 9781416989417
+---
+Fecha Ingreso: 17.12.2024.21.43.51
+Titulo: El Amor En Tiempos De Colera
+Autor: Gabriel  Garcia Marquez
+Fecha de publicacion: 12/04/20985
+ISBN: 9788439735427
+---
