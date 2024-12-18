@@ -1,24 +1,15 @@
 #include "persona.h"
-#include <iostream>
 
-// Constructor por defecto
-Persona::Persona() : id(0), nombre(""), apellido("") {}
-
-// Constructor parametrizado
-Persona::Persona(int _id, std::string _nombre, std::string _apellido)
-    : id(_id), nombre(_nombre), apellido(_apellido) {}
+// Constructor
+Persona::Persona(string cedula, string apellido, string nombre) 
+    : cedula(cedula), apellido(apellido), nombre(nombre) {}
 
 // Getters
-int Persona::getId() const { return id; }
-std::string Persona::getNombre() const { return nombre; }
-std::string Persona::getApellido() const { return apellido; }
+string Persona::getCedula() const { return cedula; }
+string Persona::getApellido() const { return apellido; }
+string Persona::getNombre() const { return nombre; }
 
 // Setters
-void Persona::setId(int _id) { id = _id; }
-void Persona::setNombre(std::string _nombre) { nombre = _nombre; }
-void Persona::setApellido(std::string _apellido) { apellido = _apellido; }
-
-// Método mostrar
-void Persona::mostrar() const {
-    std::cout << "ID: " << id << ", Nombre: " << nombre << " " << apellido << std::endl;
-}
+void Persona::setCedula(string cedula) { this->cedula = cedula; }
+void Persona::setApellido(string apellido) { this->apellido = apellido; }
+void Persona::setNombre(string nombre) { this->nombre = nombre; }

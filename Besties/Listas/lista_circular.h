@@ -1,18 +1,44 @@
 #ifndef LISTA_CIRCULAR_H
 #define LISTA_CIRCULAR_H
 
-#include "lista_base.h"
+#include <iostream>
+using namespace std;
 
-class ListaCircular : public ListaBase {
+template <typename T>
+class NodoCircular {
 public:
-    ListaCircular();
+    T data;
+    NodoCircular* siguiente;
+    NodoCircular* anterior;
 
-    void insertar(const Persona& p) override;
-    bool eliminar(int id) override;
-    Persona* buscar(int id) override;
-    void mostrar() override;
-    void ordenar() override;
-    bool exportarACSV(const std::string& nombreArchivo) override;
+    NodoCircular(T data) : data(data), siguiente(nullptr), anterior(nullptr) {}
 };
 
-#endif // LISTA_CIRCULAR_H
+template <typename T>
+class ListaCircular {
+private:
+    NodoCircular<T>* cabeza;
+    NodoCircular<T>* cola;
+
+    // Función auxiliar para copiar una ListaCircular
+    void copiarListaCircular(const NodoCircular<T>* otraCabeza);
+
+public:
+    ListaCircular();
+    ~ListaCircular();
+
+    ListaCircular(const ListaCircular& otra);            // Constructor de copia
+    ListaCircular& operator=(const ListaCircular& otra); // Operador de asignación
+
+    void insertarPorCabeza(T data);
+    void insertarPorCola(T data);
+    void eliminarPorCabeza();
+    void eliminarPorCedula(string cedula);
+    void mostrarLista() const;
+    void mostrarListaInversa() const; // Nueva función para mostrar la lista en orden inverso
+    void eliminarCaracter(char c);
+    void reemplazarCaracter(char original, char reemplazo);
+    void buscarPorCedula(string cedula);
+};
+
+#endif

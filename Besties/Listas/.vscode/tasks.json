@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Compilar proyecto completo",
+            "command": "C:/MinGW/bin/g++.exe",
+            "args": [
+                "-std=c++11",
+                "-Wall",
+                "-Wextra",
+                "-g",
+                "${workspaceFolder}/main.cpp",
+                "${workspaceFolder}/Menu_listas.cpp",
+                "-o",
+                "${workspaceFolder}/output/main.exe"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "detail": "Compila todos los archivos fuente del proyecto"
+        }
+    ]
+}

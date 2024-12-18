@@ -1,99 +1,225 @@
-#include "lista_circular.h"
 #include <iostream>
+#include <algorithm>
+#include "Lista_circular.h"
+using namespace std;
 
-ListaCircular::ListaCircular() : ListaBase(true) {}
+template <typename T>
+ListaCircular<T>::ListaCircular() : cabeza(nullptr), cola(nullptr) {}
 
-void ListaCircular::insertar(const Persona& p) {
-    Nodo* nuevoNodo = new Nodo(p);
+template <typename T>
+ListaCircular<T>::~ListaCircular() {
+    if (!cabeza) return;
+
+    // Romper el enlace circular
+    cola->siguiente = nullptr;
     
-    if (!cabeza) {
-        cabeza = nuevoNodo;
-        cabeza->setSiguiente(cabeza);
-    } else {
-        Nodo* temp = cabeza;
-        while (temp->getSiguiente() != cabeza) {
-            temp = temp->getSiguiente();
-        }
-        temp->setSiguiente(nuevoNodo);
-        nuevoNodo->setSiguiente(cabeza);
-    }
-}
-
-bool ListaCircular::eliminar(int id) {
-    if (!cabeza) return false;
-
-    // Caso especial: primer nodo
-    if (cabeza->getDato().getId() == id) {
-        if (cabeza->getSiguiente() == cabeza) {
-            // Solo un nodo
-            delete cabeza;
-            cabeza = nullptr;
-            return true;
-        }
-
-        // Más de un nodo
-        Nodo* ultimoNodo = cabeza;
-        while (ultimoNodo->getSiguiente() != cabeza) {
-            ultimoNodo = ultimoNodo->getSiguiente();
-        }
-
-        Nodo* temp = cabeza;
-        cabeza = cabeza->getSiguiente();
-        ultimoNodo->setSiguiente(cabeza);
+    while (cabeza != nullptr) {
+        NodoCircular<T>* temp = cabeza;
+        cabeza = cabeza->siguiente;
         delete temp;
-        return true;
     }
-
-    // Buscar en el resto de la lista
-    Nodo* actual = cabeza;
-    do {
-        if (actual->getSiguiente()->getDato().getId() == id) {
-            Nodo* aEliminar = actual->getSiguiente();
-            actual->setSiguiente(aEliminar->getSiguiente());
-            delete aEliminar;
-            return true;
-        }
-        actual = actual->getSiguiente();
-    } while (actual != cabeza);
-
-    return false;
 }
 
-Persona* ListaCircular::buscar(int id) {
-    if (!cabeza) return nullptr;
-
-    Nodo* actual = cabeza;
-    do {
-        if (actual->getDato().getId() == id) {
-            return &(actual->getDato());
-        }
-        actual = actual->getSiguiente();
-    } while (actual != cabeza);
-
-    return nullptr;
-}
-
-void ListaCircular::mostrar() {
+template <typename T>
+void ListaCircular<T>::insertarPorCabeza(T data) {
+    NodoCircular<T>* nuevo = new NodoCircular<T>(data);
+    
     if (!cabeza) {
-        std::cout << "Lista vacía.\n";
-        return;
+        // Primera inserción
+        cabeza = cola = nuevo;
+        nuevo->siguiente = nuevo;
+        nuevo->anterior = nuevo;
+    } else {
+        // Insertar al principio de la ListaCircular circular
+        nuevo->siguiente = cabeza;
+        nuevo->anterior = cola;
+        cabeza->anterior = nuevo;
+        cola->siguiente = nuevo;
+        cabeza = nuevo;
     }
+}
 
-    Nodo* actual = cabeza;
+template <typename T>
+void ListaCircular<T>::insertarPorCola(T data) {
+    NodoCircular<T>* nuevo = new NodoCircular<T>(data);
+    
+    if (!cola) {
+        // Primera inserción
+        cabeza = cola = nuevo;
+        nuevo->siguiente = nuevo;
+        nuevo->anterior = nuevo;
+    } else {
+        // Insertar al final de la ListaCircular circular
+        nuevo->anterior = cola;
+        nuevo->siguiente = cabeza;
+        cola->siguiente = nuevo;
+        cabeza->anterior = nuevo;
+        cola = nuevo;
+    }
+}
+
+
+template <typename T>
+void ListaCircular<T>::eliminarPorCabeza() {
+    if (!cabeza) return;
+
+    if (cabeza == cola) {
+        // Último elemento
+        delete cabeza;
+        cabeza = cola = nullptr;
+    } else {
+        NodoCircular<T>* temp = cabeza;
+        cabeza = cabeza->siguiente;
+        cabeza->anterior = cola;
+        cola->siguiente = cabeza;
+        delete temp;
+    }
+}
+
+template <typename T>
+void ListaCircular<T>::eliminarPorCedula(string cedula) {
+    if (!cabeza) return;
+
+    NodoCircular<T>* actual = cabeza;
     do {
-        actual->getDato().mostrar();
-        actual = actual->getSiguiente();
+        if (actual->data.getCedula() == cedula) {
+            if (actual == cabeza) {
+                eliminarPorCabeza();
+            } else if (actual == cola) {
+                // Si es el último elemento
+                cola = actual->anterior;
+                cola->siguiente = cabeza;
+                cabeza->anterior = cola;
+                delete actual;
+            } else {
+                // Elemento en medio de la ListaCircular
+                actual->anterior->siguiente = actual->siguiente;
+                actual->siguiente->anterior = actual->anterior;
+                delete actual;
+            }
+            cout << "Persona con cedula " << cedula << " eliminada exitosamente" << endl;
+            return;
+        }
+        actual = actual->siguiente;
+    } while (actual != cabeza);
+    
+    cout << "No se encontro ninguna persona con la cedula " << cedula << endl;
+}
+
+
+template <typename T>
+void ListaCircular<T>::mostrarLista() const {
+    if (!cabeza) return;
+
+    NodoCircular<T>* actual = cabeza;
+    do {
+        cout << actual->data.getCedula() << " "
+             << actual->data.getApellido() << " "
+             << actual->data.getNombre() << endl;
+        actual = actual->siguiente;
     } while (actual != cabeza);
 }
 
-void ListaCircular::ordenar() {
-    if (!cabeza || cabeza->getSiguiente() == cabeza) return;
+template <typename T>
+void ListaCircular<T>::mostrarListaInversa() const {
+    if (!cola) return;
+
+    NodoCircular<T>* actual = cola;
+    do {
+        cout << actual->data.getCedula() << " "
+             << actual->data.getApellido() << " "
+             << actual->data.getNombre() << endl;
+        actual = actual->anterior;
+    } while (actual != cola);
+}
+
+template <typename T>
+void ListaCircular<T>::eliminarCaracter(char c) {
+    if (!cabeza) return;
+
+    NodoCircular<T>* actual = cabeza;
+    do {
+        string cedula = actual->data.getCedula();
+        cedula.erase(remove(cedula.begin(), cedula.end(), c), cedula.end());
+        actual->data.setCedula(cedula);
+
+        string apellido = actual->data.getApellido();
+        apellido.erase(remove(apellido.begin(), apellido.end(), c), apellido.end());
+        actual->data.setApellido(apellido);
+
+        string nombre = actual->data.getNombre();
+        nombre.erase(remove(nombre.begin(), nombre.end(), c), nombre.end());
+        actual->data.setNombre(nombre);
+
+        actual = actual->siguiente;
+    } while (actual != cabeza);
+}
+
+
+template <typename T>
+void ListaCircular<T>::reemplazarCaracter(char original, char reemplazo) {
+    if (!cabeza) return;
+
+    NodoCircular<T>* actual = cabeza;
+    do {
+        string cedula = actual->data.getCedula();
+        replace(cedula.begin(), cedula.end(), original, reemplazo);
+        actual->data.setCedula(cedula);
+
+        string apellido = actual->data.getApellido();
+        replace(apellido.begin(), apellido.end(), original, reemplazo);
+        actual->data.setApellido(apellido);
+
+        string nombre = actual->data.getNombre();
+        replace(nombre.begin(), nombre.end(), original, reemplazo);
+        actual->data.setNombre(nombre);
+
+        actual = actual->siguiente;
+    } while (actual != cabeza);
+}
+
+template <typename T>
+void ListaCircular<T>::buscarPorCedula(string cedula) {
+    if (!cabeza) return;
+
+    NodoCircular<T>* actual = cabeza;
+    do {
+        if (actual->data.getCedula() == cedula) {
+            cout << "Persona encontrada:" << endl;
+            cout << "Cedula: " << actual->data.getCedula() << endl;
+            cout << "Nombre: " << actual->data.getNombre() << endl;
+            cout << "Apellido: " << actual->data.getApellido() << endl;
+            return;
+        }
+        actual = actual->siguiente;
+    } while (actual != cabeza);
     
-    // Encontrar el último nodo
-    Nodo* ultimo = cabeza;
-    while (ultimo->getSiguiente() != cabeza) {
-        ultimo = ultimo->getSiguiente();
+    cout << "No se encontro ninguna persona con la cedula " << cedula << endl;
+}
+
+template <typename T>
+ListaCircular<T>::ListaCircular(const ListaCircular& otra) : cabeza(nullptr), cola(nullptr) {
+    copiarListaCircular(otra.cabeza);
+}
+
+template <typename T>
+ListaCircular<T>& ListaCircular<T>::operator=(const ListaCircular& otra) {
+    if (this != &otra) {
+        while (cabeza != nullptr) {
+            eliminarPorCabeza();
+        }
+        copiarListaCircular(otra.cabeza);
     }
-    
-    quickSortUtil(cabeza, ultimo);
+    return *this;
+}
+
+template <typename T>
+void ListaCircular<T>::copiarListaCircular(const NodoCircular<T>* otraCabeza) {
+    if (!otraCabeza) return;
+
+    const NodoCircular<T>* actual = otraCabeza;
+    do {
+        insertarPorCola(actual->data);
+        actual = actual->siguiente;
+    } while (actual != otraCabeza);
 }

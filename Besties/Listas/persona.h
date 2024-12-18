@@ -2,30 +2,27 @@
 #define PERSONA_H
 
 #include <string>
+using namespace std;
 
 class Persona {
 private:
-    int id;
-    std::string nombre;
-    std::string apellido;
+    string cedula;
+    string apellido;
+    string nombre;
 
 public:
-    // Constructores
-    Persona();
-    Persona(int _id, std::string _nombre, std::string _apellido);
+    // Constructor
+    Persona(string cedula, string apellido, string nombre);
 
     // Getters
-    int getId() const;
-    std::string getNombre() const;
-    std::string getApellido() const;
+    string getCedula() const;
+    string getApellido() const;
+    string getNombre() const;
 
     // Setters
-    void setId(int _id);
-    void setNombre(std::string _nombre);
-    void setApellido(std::string _apellido);
-
-    // Método para mostrar información
-    void mostrar() const;
+    void setCedula(string cedula);
+    void setApellido(string apellido);
+    void setNombre(string nombre);
 };
 
-#endif // PERSONA_H
+#endif
