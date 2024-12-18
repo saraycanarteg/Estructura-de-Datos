@@ -1,4 +1,4 @@
-#include "lista.h"
+#include "listaSimple.h"
 #include <iostream>
 #include <algorithm>
 using namespace std;
@@ -18,6 +18,17 @@ void Lista<T>::insertarPorCabeza(T data) {
     Nodo<T>* nuevo = new Nodo<T>(data);
     nuevo->siguiente = cabeza;
     cabeza = nuevo;
+}
+
+template <typename T>
+Nodo<T>* Lista<T>::get_cola() {
+    if (cabeza == nullptr) return nullptr;
+    
+    Nodo<T>* actual = cabeza;
+    while (actual->siguiente != nullptr) {
+        actual = actual->siguiente;
+    }
+    return actual;
 }
 
 template <typename T>
