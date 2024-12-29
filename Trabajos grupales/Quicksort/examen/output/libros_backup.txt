@@ -132,3 +132,9 @@ Autor: Gabriel  Garcia Marquez
 Fecha de publicacion: 12/04/20985
 ISBN: 9788439735427
 ---
+Fecha Ingreso: 17.12.2024.23.59.40
+Titulo: El Principito 
+Autor: Antoine De Saint
+Fecha de publicacion: 01/04/20943
+ISBN: 9780596520687
+---
