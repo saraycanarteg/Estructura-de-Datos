@@ -4,10 +4,7 @@
 #include "Ayuda.cpp"
 #include "Menu.h"
 
-Menu::Menu()
-{
-    numero_datos = 0;
-}
+Menu::Menu(){}
 
 int Menu::get_numero_datos()
 {
@@ -22,7 +19,6 @@ Lista<string> Menu::get_menu()
 void Menu::set_menu(string dato)
 {
     menu.insertarPorCabeza(dato);
-    numero_datos++;
 }
 
 void Menu::print_menu_option(string op, string titulo)

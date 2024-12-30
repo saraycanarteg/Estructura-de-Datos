@@ -1,4 +1,4 @@
-#include "lista.h"
+#include "ListaCircular.h"
 #include <iostream>
 #include <algorithm>
 using namespace std;

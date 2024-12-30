@@ -1,5 +1,5 @@
-#ifndef LISTA_H
-#define LISTA_H
+#ifndef LISTACIRCULAR_H
+#define LISTACIRCULAR_H
 
 #include <iostream>
 using namespace std;
@@ -19,6 +19,7 @@ class Lista {
 private:
     Nodo<T>* cabeza;
     Nodo<T>* cola;
+    int tamano;
 
     // Función auxiliar para copiar una lista
     void copiarLista(const Nodo<T>* otraCabeza);

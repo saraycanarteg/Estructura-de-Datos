@@ -13,9 +13,9 @@ using namespace std;
 
 int main()
 {
-    Validation<string> validacion_string;
-    Validation<string> validacion_isbn;
+    Validation<string> validacion_string, validacion_isbn;
     Validation<int> validacion_int;
+    
 
     ListaLibros listaLibros;
     ListaAutores listaAutores;
@@ -80,9 +80,8 @@ int main()
     buscar_autor_menu.set_menu("2. Buscar libros de un autor");
     buscar_autor_menu.set_menu("3. Regresar");
 
-    string titulo, isbn;
-    int op;
-    int sub_menu_op;
+    string titulo, isbn, nombreAutor, apellidoAutor, id, nacionalidad, editorial;
+    int op, sub_menu_op;
     Libro *libroEncontrado;
 
     do
@@ -93,8 +92,6 @@ int main()
         {
         case 1:
         {
-            string nombreAutor, apellidoAutor, id, nacionalidad, editorial;
-
             sub_menu_op = book_entry_menu.coursor("REGISTRO DE LIBROS");
             system("cls");
 
@@ -106,31 +103,32 @@ int main()
             {
                 do
                 {
-                    cout << "INGRESO DE LIBRO\n\n";
-                    cout << "Ingrese el titulo del libro: ";
+                    cout << "INGRESO DE LIBRO\n\nIngrese el titulo del libro: ";
                     titulo = validacion_string.enter_a_char_or_string_with_may_and_nums(20);
                     cout << "\n--------------------------------------";
 
                     cout << "\nIngrese el ID del autor (Formato: A001): ";
                     id = validacion_string.enter_a_char_or_string_with_may_and_nums(4);
-                    //bool autorExistente = false;
 
-                    if (listaLibros.existeAutorPorId(id)) {
+                    if (listaLibros.existeAutorPorId(id))
+                    {
                         bool autorExistente = true;
                         cout << "\n\nEl autor con ID " << id << " ya existe. Se utilizará la información existente." << endl;
-                        //autorExistente = true;
-                        
-                        // Optionally, retrieve existing author's details
+
                         std::vector<Autor> autoresExistentes = listaLibros.cargarAutoresDesdeCSV();
-                        for (const auto& autorExistente : autoresExistentes) {
-                            if (autorExistente.getId() == id) {
+                        for (const auto &autorExistente : autoresExistentes)
+                        {
+                            if (autorExistente.getId() == id)
+                            {
                                 nombreAutor = autorExistente.getNombre();
                                 apellidoAutor = autorExistente.getApellido();
                                 nacionalidad = autorExistente.getNacionalidad();
                                 break;
                             }
                         }
-                    } else {        
+                    }
+                    else
+                    {
                         cout << "\nIngrese los nombres del autor: ";
                         nombreAutor = validacion_string.enter_a_char_or_string_with_may(20);
                         cout << "\nIngrese los apellidos del autor: ";
@@ -138,10 +136,9 @@ int main()
                         cout << "\nIngrese la nacionalidad del autor: ";
                         nacionalidad = validacion_string.enter_a_char_or_string_with_may(20);
                         cout << "\n--------------------------------------";
-                        //autorExistente = false;
+                        // autorExistente = false;
                     }
                     cout << "\n--------------------------------------";
-
 
                     if (titulo.empty() || nombreAutor.empty() || apellidoAutor.empty() || nacionalidad.empty() || !validacion_string.validar_id_autor(id))
                     {
@@ -224,22 +221,12 @@ int main()
                 }
                 break;
             }
-            case 2:{
+            case 2:
+            {
                 string idAutor;
                 cout << "BUSQUEDA DE LIBROS POR AUTOR\n\n";
                 cout << "Ingrese el ID del autor: ";
                 idAutor = validacion_string.enter_a_char_or_string_with_may_and_nums(10);
-
-                /*Autor* autorEncontrado = listaAutores.buscarAutorPorId(idAutor);
-                
-                if (autorEncontrado != nullptr) {
-                    ListaLibros resultados; // Crear una instancia que puedes pasar por referencia
-                    listaLibros.buscarLibrosPorAutor(idAutor, resultados);
-                }
-                else
-                {
-                    cout << "\nNo se encontro un autor con ese ID." << endl;
-                } */
                 system("pause");
                 break;
             }
