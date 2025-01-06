@@ -797,3 +797,207 @@ std::vector<Libro> ListaLibros::cargarLibrosDeAutor(const Autor &autor)
     archivoLibrosAutor.close();
     return librosDelAutor;
 }
+
+void ListaLibros::ordenarPorISBN(std::vector<Libro>& libros) {
+    std::sort(libros.begin(), libros.end(), 
+        [](const Libro& a, const Libro& b) {
+            return a.getIsbn() < b.getIsbn();
+        });
+}
+
+// Método auxiliar para ordenar los libros por título
+void ListaLibros::ordenarPorTitulo(std::vector<Libro>& libros) {
+    std::sort(libros.begin(), libros.end(), 
+        [](const Libro& a, const Libro& b) {
+            return a.getTitulo() < b.getTitulo();
+        });
+}
+// Búsqueda binaria por prefijo ISBN
+void ListaLibros::buscarLibrosPorPrefijoISBN(const std::string& prefijo) const {
+    if (prefijo.length() < 3) {
+        std::cout << "El prefijo debe tener al menos 3 digitos." << std::endl;
+        return;
+    }
+
+    std::vector<Libro> libros = cargarLibrosDesdeCSV();
+    const_cast<ListaLibros*>(this)->ordenarPorISBN(libros);
+
+    int inicio = 0;
+    int fin = libros.size() - 1;
+    bool encontrado = false;
+
+    // Encontrar el primer libro con el prefijo
+    while (inicio <= fin) {
+        int medio = inicio + (fin - inicio) / 2;
+        std::string isbnActual = libros[medio].getIsbn().substr(0, 3);
+        
+        if (isbnActual == prefijo.substr(0, 3)) {
+            // Encontramos una coincidencia, buscar hacia atrás y adelante
+            int i = medio;
+            while (i >= 0 && libros[i].getIsbn().substr(0, 3) == prefijo.substr(0, 3)) {
+                std::cout << "\nTitulo: " << libros[i].getTitulo()
+                          << "\nISBN: " << libros[i].getIsbn()
+                          << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                          << "\n-------------------" << std::endl;
+                encontrado = true;
+                i--;
+            }
+            
+            i = medio + 1;
+            while (i < libros.size() && libros[i].getIsbn().substr(0, 3) == prefijo.substr(0, 3)) {
+                std::cout << "\nTitulo: " << libros[i].getTitulo()
+                          << "\nISBN: " << libros[i].getIsbn()
+                          << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                          << "\n-------------------" << std::endl;
+                encontrado = true;
+                i++;
+            }
+            break;
+        }
+        
+        if (isbnActual < prefijo.substr(0, 3)) {
+            inicio = medio + 1;
+        } else {
+            fin = medio - 1;
+        }
+    }
+
+    if (!encontrado) {
+        std::cout << "No se encontraron libros con el prefijo ISBN especificado." << std::endl;
+    }
+}
+
+// Búsqueda binaria por palabra clave en título
+void ListaLibros::buscarLibrosPorPalabraClave(const std::string& palabraClave) const {
+    std::vector<Libro> libros = cargarLibrosDesdeCSV();
+    const_cast<ListaLibros*>(this)->ordenarPorTitulo(libros);
+
+    // Convertir palabra clave a minúsculas
+    std::string palabraClaveMin = palabraClave;
+    std::transform(palabraClaveMin.begin(), palabraClaveMin.end(), 
+                  palabraClaveMin.begin(), ::tolower);
+
+    int inicio = 0;
+    int fin = libros.size() - 1;
+    bool encontrado = false;
+
+    while (inicio <= fin) {
+        int medio = inicio + (fin - inicio) / 2;
+        std::string tituloActual = libros[medio].getTitulo();
+        std::transform(tituloActual.begin(), tituloActual.end(), 
+                      tituloActual.begin(), ::tolower);
+
+        // Buscar coincidencia parcial
+        if (tituloActual.find(palabraClaveMin) != std::string::npos) {
+            // Encontramos una coincidencia, buscar hacia atrás y adelante
+            int i = medio;
+            while (i >= 0) {
+                std::string tituloI = libros[i].getTitulo();
+                std::transform(tituloI.begin(), tituloI.end(), tituloI.begin(), ::tolower);
+                if (tituloI.find(palabraClaveMin) != std::string::npos) {
+                    std::cout << "\nTitulo: " << libros[i].getTitulo()
+                              << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                              << "\nISBN: " << libros[i].getIsbn()
+                              << "\n-------------------" << std::endl;
+                    encontrado = true;
+                }
+                i--;
+            }
+            
+            i = medio + 1;
+            while (i < libros.size()) {
+                std::string tituloI = libros[i].getTitulo();
+                std::transform(tituloI.begin(), tituloI.end(), tituloI.begin(), ::tolower);
+                if (tituloI.find(palabraClaveMin) != std::string::npos) {
+                    std::cout << "\nTitulo: " << libros[i].getTitulo()
+                              << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                              << "\nISBN: " << libros[i].getIsbn()
+                              << "\n-------------------" << std::endl;
+                    encontrado = true;
+                }
+                i++;
+            }
+            break;
+        }
+        
+        if (tituloActual < palabraClaveMin) {
+            inicio = medio + 1;
+        } else {
+            fin = medio - 1;
+        }
+    }
+
+    if (!encontrado) {
+        std::cout << "No se encontraron libros con la palabra clave especificada." << std::endl;
+    }
+}
+
+// Búsqueda de libros próximos a cumplir década
+void ListaLibros::buscarLibrosDecada() const {
+    std::vector<Libro> libros = cargarLibrosDesdeCSV();
+    std::sort(libros.begin(), libros.end(), 
+        [](const Libro& a, const Libro& b) {
+            return a.getFechaPublicacion().getAnio() < b.getFechaPublicacion().getAnio();
+        });
+
+    // Obtener fecha actual
+    std::time_t t = std::time(nullptr);
+    std::tm* now = std::localtime(&t);
+    int anioActual = now->tm_year + 1900;
+    int mesActual = now->tm_mon + 1;
+    
+    // Buscar el año objetivo (10 años atrás)
+    int anioObjetivo = anioActual - 10;
+    
+    int inicio = 0;
+    int fin = libros.size() - 1;
+    bool encontrado = false;
+
+    // Búsqueda binaria para encontrar el primer libro cercano a una década
+    while (inicio <= fin) {
+        int medio = inicio + (fin - inicio) / 2;
+        int anioLibro = libros[medio].getFechaPublicacion().getAnio();
+        
+        if (anioLibro == anioObjetivo || anioLibro == anioObjetivo + 1) {
+            
+            int i = medio;
+            while (i >= 0) {
+                Fecha fecha = libros[i].getFechaPublicacion();
+                if (fecha.getAnio() == anioObjetivo || 
+                    (fecha.getAnio() == anioObjetivo + 1 && fecha.getMes() <= mesActual)) {
+                    std::cout << "\nTitulo: " << libros[i].getTitulo()
+                              << "\nFecha de publicacion: " << fecha.getFechaComoString()
+                              << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                              << "\n-------------------" << std::endl;
+                    encontrado = true;
+                }
+                i--;
+            }
+            
+            i = medio + 1;
+            while (i < libros.size()) {
+                Fecha fecha = libros[i].getFechaPublicacion();
+                if (fecha.getAnio() == anioObjetivo || 
+                    (fecha.getAnio() == anioObjetivo + 1 && fecha.getMes() <= mesActual)) {
+                    std::cout << "\nTitulo: " << libros[i].getTitulo()
+                              << "\nFecha de publicacion: " << fecha.getFechaComoString()
+                              << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                              << "\n-------------------" << std::endl;
+                    encontrado = true;
+                }
+                i++;
+            }
+            break;
+        }
+        
+        if (anioLibro < anioObjetivo) {
+            inicio = medio + 1;
+        } else {
+            fin = medio - 1;
+        }
+    }
+
+    if (!encontrado) {
+        std::cout << "No se encontraron libros proximos a cumplir una decada." << std::endl;
+    }
+}

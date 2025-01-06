@@ -27,7 +27,9 @@ class ListaLibros
 private:
     NodoLibro *cabeza;
     int tamano;
-
+protected: 
+    void ordenarPorISBN(std::vector<Libro>& libros);
+    void ordenarPorTitulo(std::vector<Libro>& libros);
 public:
     // Constructor y destructor
     ListaLibros();
@@ -48,7 +50,9 @@ public:
     void guardarLibrosDeAutor(const Autor &autor);
     void guardarAutorCSV(const Autor &autor);
     bool existeAutorPorId(const string& id);
-
+    void buscarLibrosDecada() const;
+    void buscarLibrosPorPrefijoISBN(const std::string& prefijo) const;
+    void buscarLibrosPorPalabraClave(const std::string& palabraClave) const;
     // Métodos auxiliares
     void imprimirLibros() const;                         // Imprimir la lista de libros
     int obtenerTamano() const;                           // Obtener el tamaño de la lista

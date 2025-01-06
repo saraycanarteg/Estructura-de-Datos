@@ -46,7 +46,6 @@ std::string Fecha::getFechaComoString() const {
     } else {
         ss << anio;
     }
-    
-    std::cout << "Generando fecha como string: " << ss.str() << std::endl;
+
     return ss.str();
 }

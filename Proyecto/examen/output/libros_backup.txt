@@ -126,3 +126,33 @@ Autor: Pedro Pascal
 Fecha de publicacion: 12/03/20978
 ISBN: 9781416989417
 ---
+Fecha Ingreso: 05.01.2025.20.33.00
+Titulo: Cronicas De Narnia
+Autor: Lewis C S
+Fecha de publicacion: 16/00/20950
+ISBN: 9780001007253
+---
+Fecha Ingreso: 05.01.2025.20.43.10
+Titulo: Victoria
+Autor: Paloma Sanchez Garnica
+Fecha de publicacion: 12/04/2024
+ISBN: 9780001857018
+---
+Fecha Ingreso: 05.01.2025.20.50.53
+Titulo: Percy Jackson Y El Laberinto
+Autor: Rick Riordan
+Fecha de publicacion: 12/08/570
+ISBN: 9780006716631
+---
+Fecha Ingreso: 05.01.2025.20.57.25
+Titulo: Percy Jackson Y El Ladron Del Rayo
+Autor: Rick Riordan
+Fecha de publicacion: 14/05/950
+ISBN: 9780006716778
+---
+Fecha Ingreso: 05.01.2025.21.00.10
+Titulo: Percy Jackson Y El Heroe Del Olimpo
+Autor: Rick Riordan
+Fecha de publicacion: 19/00/0948
+ISBN: 9780006740582
+---

@@ -31,7 +31,8 @@ int main()
     main_menu.set_menu("6. Recuperar Backup");
     main_menu.set_menu("7. Gestion de Autores");
     main_menu.set_menu("8. Buscar por anio de publicacion");
-    main_menu.set_menu("9. Salir");
+    main_menu.set_menu("9. Busquedas binarias por cabeza");
+    main_menu.set_menu("10. Salir");
 
     Menu book_entry_menu;
     book_entry_menu.set_menu("1. Ingresar libro");
@@ -79,6 +80,12 @@ int main()
     buscar_autor_menu.set_menu("1. Buscar por titulo");
     buscar_autor_menu.set_menu("2. Buscar libros de un autor");
     buscar_autor_menu.set_menu("3. Regresar");
+
+    Menu binary_search;
+    //saray
+    binary_search.set_menu("1. Buscar libros proximos a cumplir 1 decada de aniversario");
+    binary_search.set_menu("2. Buscar libros libros con el mismo prefijo de ISBN");
+    binary_search.set_menu("3. libros con titulos similares (palabras clave)");
 
     string titulo, isbn, nombreAutor, apellidoAutor, id, nacionalidad, editorial;
     int op, sub_menu_op;
@@ -488,7 +495,48 @@ int main()
             system("pause");
             break;
         }
+        case 9: 
+        {
+            system("cls");
+            sub_menu_op = binary_search.coursor("BUSQUEDAS BINARIAS");
+
+            switch (sub_menu_op)
+            {
+            case 1: 
+            {
+                system("cls");
+                cout << "BUSQUEDA DE LIBROS PROXIMOS A CUMPLIR UNA DECADA DE PUBLICACION\n\n";
+                listaLibros.buscarLibrosDecada();
+                system("pause");
+                break;
+            }
+            case 2: 
+            {
+                system("cls");
+                cout << "BUSQUEDA DE LIBROS POR PREFIJO DE ISBN\n\n";
+                string prefijo;
+                cout << "Ingrese los primeros tres digitos del ISBN: ";
+                prefijo = validacion_string.enter_a_char_or_string_only_nums(3);
+                listaLibros.buscarLibrosPorPrefijoISBN(prefijo);
+                system("pause");
+                break;
+            }
+            case 3: 
+            {
+                system("cls");
+                cout << "BUSQUEDA DE LIBROS POR PALABRA CLAVE EN EL TITULO\n\n";
+                string palabraClave;
+                cout << "Ingrese una palabra clave para buscar en los tiitulos: ";
+                palabraClave = validacion_string.enter_a_char_or_string_with_may_and_nums(20);
+                listaLibros.buscarLibrosPorPalabraClave(palabraClave);
+                system("pause");
+                break;
+            }
+            }
+            break;
         }
 
-    } while (op != 9);
+        }
+
+    } while (op != 10);
 }
