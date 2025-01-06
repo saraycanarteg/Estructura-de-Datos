@@ -53,6 +53,8 @@ public:
     void buscarLibrosDecada() const;
     void buscarLibrosPorPrefijoISBN(const std::string& prefijo) const;
     void buscarLibrosPorPalabraClave(const std::string& palabraClave) const;
+    void buscarAutoresPorDecada(int decada) const;
+    void buscarAutoresPorAnioPublicacion(int anio_publicacion) const;
     // Métodos auxiliares
     void imprimirLibros() const;                         // Imprimir la lista de libros
     int obtenerTamano() const;                           // Obtener el tamaño de la lista
@@ -64,6 +66,7 @@ public:
     vector<Libro> cargarLibrosDesdeCSV() const; // Generar archivo CSV
     void filtrarLibrosPorRangoDeAnios(int anioInicio, int anioFin) const;
     void modificarLibroEnCSV(const std::string& identificador, const std::string& campoAModificar);
+    void ordenarPorAnioPublicacion(std::vector<Libro>& libros);
 };
 
 #endif // LISTA_LIBROS_H

@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <vector>
 #include <iomanip>
+#include <set>
 
 // Constructor
 ListaLibros::ListaLibros() : cabeza(nullptr), tamano(0) {}
@@ -342,6 +343,147 @@ Libro *ListaLibros::buscarLibroPorTitulo(const string &titulo)
     }
 
     return nullptr;
+}
+
+void ListaLibros::ordenarPorAnioPublicacion(std::vector<Libro>& libros) {
+    std::sort(libros.begin(), libros.end(), 
+        [](const Libro& a, const Libro& b) {
+            return a.getFechaPublicacion().getAnio() < b.getFechaPublicacion().getAnio();
+        });
+}
+
+void ListaLibros::buscarAutoresPorAnioPublicacion(int anio_publicacion) const {
+    std::vector<Libro> libros = cargarLibrosDesdeCSV();
+    const_cast<ListaLibros*>(this)->ordenarPorAnioPublicacion(libros);
+
+    int inicio = 0;
+    int fin = libros.size() - 1;
+    bool encontrado = false;
+    std::set<std::string> autoresEncontrados; // Para evitar duplicados
+
+    // Búsqueda binaria del primer libro del año
+    while (inicio <= fin) {
+        int medio = inicio + (fin - inicio) / 2;
+        int anioActual = libros[medio].getFechaPublicacion().getAnio();
+
+        if (anioActual == anio_publicacion) {
+            // Encontramos un libro del año, buscar hacia atrás y adelante
+            int i = medio;
+            
+            // Buscar hacia atrás
+            while (i >= 0 && libros[i].getFechaPublicacion().getAnio() == anio_publicacion) {
+                std::string idAutor = libros[i].getAutor().getId();
+                if (autoresEncontrados.insert(idAutor).second) { // Si es nuevo autor
+                    std::cout << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                             << "\nID: " << idAutor
+                             << "\nLibro: " << libros[i].getTitulo()
+                             << "\nFecha: " << libros[i].getFechaPublicacion().getFechaComoString()
+                             << "\n-------------------" << std::endl;
+                    encontrado = true;
+                }
+                i--;
+            }
+            
+            // Buscar hacia adelante
+            i = medio + 1;
+            while (i < libros.size() && libros[i].getFechaPublicacion().getAnio() == anio_publicacion) {
+                std::string idAutor = libros[i].getAutor().getId();
+                if (autoresEncontrados.insert(idAutor).second) { // Si es nuevo autor
+                    std::cout << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                             << "\nID: " << idAutor
+                             << "\nLibro: " << libros[i].getTitulo()
+                             << "\nFecha: " << libros[i].getFechaPublicacion().getFechaComoString()
+                             << "\n-------------------" << std::endl;
+                    encontrado = true;
+                }
+                i++;
+            }
+            break;
+        }
+        
+        if (anioActual < anio_publicacion) {
+            inicio = medio + 1;
+        } else {
+            fin = medio - 1;
+        }
+    }
+
+    if (!encontrado) {
+        std::cout << "No se encontraron autores que publicaran en el año " << anio_publicacion << std::endl;
+    }
+}
+
+void ListaLibros::buscarAutoresPorDecada(int decada) const {
+    if (decada % 10 != 0) {
+        std::cout << "Por favor ingrese una década válida (ej: 1990, 2000, 2010, etc.)" << std::endl;
+        return;
+    }
+
+    std::vector<Libro> libros = cargarLibrosDesdeCSV();
+    const_cast<ListaLibros*>(this)->ordenarPorAnioPublicacion(libros);
+
+    int inicio = 0;
+    int fin = libros.size() - 1;
+    bool encontrado = false;
+    std::set<std::string> autoresEncontrados; // Para evitar duplicados
+
+    int anioInicio = decada;
+    int anioFin = decada + 9;
+
+    // Búsqueda binaria del primer libro en la década
+    while (inicio <= fin) {
+        int medio = inicio + (fin - inicio) / 2;
+        int anioActual = libros[medio].getFechaPublicacion().getAnio();
+
+        if (anioActual >= anioInicio && anioActual <= anioFin) {
+            // Encontramos un libro de la década, buscar hacia atrás y adelante
+            int i = medio;
+            
+            // Buscar hacia atrás
+            while (i >= 0 && libros[i].getFechaPublicacion().getAnio() >= anioInicio) {
+                if (libros[i].getFechaPublicacion().getAnio() <= anioFin) {
+                    std::string idAutor = libros[i].getAutor().getId();
+                    if (autoresEncontrados.insert(idAutor).second) { // Si es nuevo autor
+                        std::cout << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                                 << "\nID: " << idAutor
+                                 << "\nLibro: " << libros[i].getTitulo()
+                                 << "\nFecha: " << libros[i].getFechaPublicacion().getFechaComoString()
+                                 << "\n-------------------" << std::endl;
+                        encontrado = true;
+                    }
+                }
+                i--;
+            }
+            
+            // Buscar hacia adelante
+            i = medio + 1;
+            while (i < libros.size() && libros[i].getFechaPublicacion().getAnio() <= anioFin) {
+                if (libros[i].getFechaPublicacion().getAnio() >= anioInicio) {
+                    std::string idAutor = libros[i].getAutor().getId();
+                    if (autoresEncontrados.insert(idAutor).second) { // Si es nuevo autor
+                        std::cout << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                                 << "\nID: " << idAutor
+                                 << "\nLibro: " << libros[i].getTitulo()
+                                 << "\nFecha: " << libros[i].getFechaPublicacion().getFechaComoString()
+                                 << "\n-------------------" << std::endl;
+                        encontrado = true;
+                    }
+                }
+                i++;
+            }
+            break;
+        }
+        
+        if (anioActual < anioInicio) {
+            inicio = medio + 1;
+        } else {
+            fin = medio - 1;
+        }
+    }
+
+    if (!encontrado) {
+        std::cout << "No se encontraron autores que publicaran en la década de " << decada << std::endl;
+    }
 }
 
 // Métodos adicionales

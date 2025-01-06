@@ -18,46 +18,106 @@ ListaAutores::~ListaAutores() {
 void ListaAutores::registrarAutor(const Autor& autor) {
     NodoAutor* nuevoNodo = new NodoAutor(autor);
 
+    // Si la lista está vacía
     if (cabeza == nullptr) {
         cabeza = nuevoNodo;
         nuevoNodo->siguiente = nuevoNodo;
         nuevoNodo->anterior = nuevoNodo;
     } else {
-        nuevoNodo->siguiente = cabeza;
-        nuevoNodo->anterior = cabeza->anterior;
-        cabeza->anterior->siguiente = nuevoNodo;
-        cabeza->anterior = nuevoNodo;
+        // Insertar ordenadamente por ID
+        NodoAutor* actual = cabeza;
+        bool insertado = false;
+        
+        do {
+            if (autor.getId() < actual->autor.getId()) {
+                // Insertar antes del nodo actual
+                nuevoNodo->siguiente = actual;
+                nuevoNodo->anterior = actual->anterior;
+                actual->anterior->siguiente = nuevoNodo;
+                actual->anterior = nuevoNodo;
+                
+                if (actual == cabeza) {
+                    cabeza = nuevoNodo;  // Actualizar la cabeza si insertamos al inicio
+                }
+                insertado = true;
+                break;
+            }
+            actual = actual->siguiente;
+        } while (actual != cabeza);
+        
+        // Si no se insertó (es el mayor), insertar al final
+        if (!insertado) {
+            nuevoNodo->siguiente = cabeza;
+            nuevoNodo->anterior = cabeza->anterior;
+            cabeza->anterior->siguiente = nuevoNodo;
+            cabeza->anterior = nuevoNodo;
+        }
     }
-
     tamano++;
     generarArchivoCSV();
 }
 
+
 Autor* ListaAutores::buscarAutorPorId(const string& id) {
     if (cabeza == nullptr) return nullptr;
+    
+    // Si solo hay un elemento
+    if (cabeza->siguiente == cabeza) {
+        return (cabeza->autor.getId() == id) ? &(cabeza->autor) : nullptr;
+    }
 
-    NodoAutor* actual = cabeza;
-    do {
-        if (actual->autor.getId() == id) {
-            return &actual->autor;
+    NodoAutor* inicio = cabeza;
+    NodoAutor* fin = cabeza->anterior;
+    
+    while (inicio != fin && inicio->anterior != fin) {
+        // Encontrar el nodo medio
+        NodoAutor* medio = inicio;
+        NodoAutor* temp = inicio;
+        int count = 0;
+        do {
+            temp = temp->siguiente;
+            count++;
+            if (count % 2 == 0) {
+                medio = medio->siguiente;
+            }
+        } while (temp != fin->siguiente);
+        
+        if (medio->autor.getId() == id) {
+            return &(medio->autor);
         }
-        actual = actual->siguiente;
-    } while (actual != cabeza);
-
+        
+        if (id < medio->autor.getId()) {
+            fin = medio->anterior;
+        } else {
+            inicio = medio->siguiente;
+        }
+    }
+    
+    // Verificar los nodos restantes
+    if (inicio->autor.getId() == id) return &(inicio->autor);
+    if (fin->autor.getId() == id) return &(fin->autor);
+    
     return nullptr;
 }
 
 bool ListaAutores::eliminarAutorPorId(const string& id) {
-    if (cabeza == nullptr) return false;
+    Autor* autorAEliminar = buscarAutorPorId(id);
+    if (autorAEliminar == nullptr) return false;
 
+    // Encontrar el nodo que contiene el autor
     NodoAutor* actual = cabeza;
     do {
-        if (actual->autor.getId() == id) {
-            if (actual == cabeza) {
-                cabeza = (cabeza->siguiente == cabeza) ? nullptr : cabeza->siguiente;
+        if (&(actual->autor) == autorAEliminar) {
+            // Si es el único nodo
+            if (actual->siguiente == actual) {
+                cabeza = nullptr;
+            } else {
+                if (actual == cabeza) {
+                    cabeza = actual->siguiente;
+                }
+                actual->anterior->siguiente = actual->siguiente;
+                actual->siguiente->anterior = actual->anterior;
             }
-            actual->anterior->siguiente = actual->siguiente;
-            actual->siguiente->anterior = actual->anterior;
             delete actual;
             tamano--;
             return true;
