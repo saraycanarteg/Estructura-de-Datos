@@ -15,7 +15,7 @@ int main()
 {
     Validation<string> validacion_string, validacion_isbn;
     Validation<int> validacion_int;
-    
+    Validation<char> validacion_char;
 
     ListaLibros listaLibros;
     ListaAutores listaAutores;
@@ -82,10 +82,14 @@ int main()
     buscar_autor_menu.set_menu("3. Regresar");
 
     Menu binary_search;
-    //saray
+    // saray
     binary_search.set_menu("1. Buscar libros proximos a cumplir 1 decada de aniversario");
     binary_search.set_menu("2. Buscar libros libros con el mismo prefijo de ISBN");
-    binary_search.set_menu("3. libros con titulos similares (palabras clave)");
+    binary_search.set_menu("3. Libros con titulos similares (palabras clave)");
+    binary_search.set_menu("4. Buscar por letra inicial");
+    binary_search.set_menu("5. Buscar libros de la misma editorial");
+    binary_search.set_menu("6. Buscar libros publicados en la misma decada");
+    binary_search.set_menu("7. Regresar");
 
     string titulo, isbn, nombreAutor, apellidoAutor, id, nacionalidad, editorial;
     int op, sub_menu_op;
@@ -495,14 +499,14 @@ int main()
             system("pause");
             break;
         }
-        case 9: 
+        case 9:
         {
             system("cls");
             sub_menu_op = binary_search.coursor("BUSQUEDAS BINARIAS");
 
             switch (sub_menu_op)
             {
-            case 1: 
+            case 1:
             {
                 system("cls");
                 cout << "BUSQUEDA DE LIBROS PROXIMOS A CUMPLIR UNA DECADA DE PUBLICACION\n\n";
@@ -510,7 +514,7 @@ int main()
                 system("pause");
                 break;
             }
-            case 2: 
+            case 2:
             {
                 system("cls");
                 cout << "BUSQUEDA DE LIBROS POR PREFIJO DE ISBN\n\n";
@@ -521,7 +525,7 @@ int main()
                 system("pause");
                 break;
             }
-            case 3: 
+            case 3:
             {
                 system("cls");
                 cout << "BUSQUEDA DE LIBROS POR PALABRA CLAVE EN EL TITULO\n\n";
@@ -532,10 +536,57 @@ int main()
                 system("pause");
                 break;
             }
+            case 4:
+            {
+                system("cls");
+                cout << "BUSQUEDA POR LETRA INICIAL\n\n";
+                string letra;
+                cout << "Ingrese un caracter: ";
+                letra = validacion_string.enter_a_char_or_string(12);
+                cout << endl;
+                cout << endl;
+                if (letra.length() > 1)
+                {
+                    cout << "\n\nSe ha ingresado mal de un caracter. Vuelva a intentar...\n\n";
+                    system("pause");
+                    system("cls");
+                }
+                else
+                {
+                    char new_letra = letra[0];
+                    listaLibros.buscarLibrosPorLetraInicial(new_letra);
+                    system("pause");
+                }
+
+                break;
+            }
+            case 5:
+            {
+                system("cls");
+                cout << "BUSQUEDA POR EDITORIAL\n\n";
+                cout << "Ingrese una editorial: ";
+                editorial = validacion_string.enter_a_char_or_string_with_may_and_nums(25);
+                cout << endl;
+                listaLibros.buscarLibrosPorEditorial(editorial);
+                system("pause");
+                break;
+            }
+            case 6:
+            {
+                system("cls");
+                cout << "BUSQUEDA LIBROS POR DÉCADA\n\n";
+                cout << "Ingrese un año (ej: 1990, 2000): ";
+                int year = validacion_int.enter_a_number("int");
+                cout << endl;
+                listaLibros.buscarLibrosPorDecada(year);
+                system("pause");
+                break;
+            }
+            default:
+                break;
             }
             break;
         }
-
         }
 
     } while (op != 10);

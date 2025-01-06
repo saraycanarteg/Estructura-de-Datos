@@ -27,9 +27,11 @@ class ListaLibros
 private:
     NodoLibro *cabeza;
     int tamano;
-protected: 
-    void ordenarPorISBN(std::vector<Libro>& libros);
-    void ordenarPorTitulo(std::vector<Libro>& libros);
+
+protected:
+    void ordenarPorISBN(std::vector<Libro> &libros);
+    void ordenarPorTitulo(std::vector<Libro> &libros);
+
 public:
     // Constructor y destructor
     ListaLibros();
@@ -49,10 +51,10 @@ public:
     vector<Autor> cargarAutoresDesdeCSV();
     void guardarLibrosDeAutor(const Autor &autor);
     void guardarAutorCSV(const Autor &autor);
-    bool existeAutorPorId(const string& id);
+    bool existeAutorPorId(const string &id);
     void buscarLibrosDecada() const;
-    void buscarLibrosPorPrefijoISBN(const std::string& prefijo) const;
-    void buscarLibrosPorPalabraClave(const std::string& palabraClave) const;
+    void buscarLibrosPorPrefijoISBN(const std::string &prefijo) const;
+    void buscarLibrosPorPalabraClave(const std::string &palabraClave) const;
     void buscarAutoresPorDecada(int decada) const;
     void buscarAutoresPorAnioPublicacion(int anio_publicacion) const;
     // Métodos auxiliares
@@ -65,8 +67,12 @@ public:
     void generarArchivoCSV() const;
     vector<Libro> cargarLibrosDesdeCSV() const; // Generar archivo CSV
     void filtrarLibrosPorRangoDeAnios(int anioInicio, int anioFin) const;
-    void modificarLibroEnCSV(const std::string& identificador, const std::string& campoAModificar);
-    void ordenarPorAnioPublicacion(std::vector<Libro>& libros);
+    void modificarLibroEnCSV(const std::string &identificador, const std::string &campoAModificar);
+    void ordenarPorAnioPublicacion(std::vector<Libro> &libros);
+
+    void buscarLibrosPorLetraInicial(char letra) const;
+    void buscarLibrosPorEditorial(const std::string &editorial) const;
+    void buscarLibrosPorDecada(int decada) const;
 };
 
 #endif // LISTA_LIBROS_H

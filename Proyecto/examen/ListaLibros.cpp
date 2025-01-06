@@ -1143,3 +1143,202 @@ void ListaLibros::buscarLibrosDecada() const {
         std::cout << "No se encontraron libros proximos a cumplir una decada." << std::endl;
     }
 }
+
+// Añade estos métodos a tu clase ListaLibros
+
+// Búsqueda de libros por letra inicial
+void ListaLibros::buscarLibrosPorLetraInicial(char letra) const {
+    std::vector<Libro> libros = cargarLibrosDesdeCSV();
+    
+    // Convertir letra a mayúscula para hacer la búsqueda insensible a mayúsculas/minúsculas
+    letra = std::toupper(letra);
+    
+    // Ordenar libros por título
+    std::sort(libros.begin(), libros.end(), 
+        [](const Libro& a, const Libro& b) {
+            return a.getTitulo() < b.getTitulo();
+        });
+    
+    bool encontrado = false;
+    
+    // Usar búsqueda binaria para encontrar la primera coincidencia
+    int inicio = 0;
+    int fin = libros.size() - 1;
+    
+    while (inicio <= fin) {
+        int medio = inicio + (fin - inicio) / 2;
+        char primeraLetra = std::toupper(libros[medio].getTitulo()[0]);
+        
+        if (primeraLetra == letra) {
+            // Encontramos una coincidencia, buscar hacia atrás y adelante
+            int i = medio;
+            // Buscar hacia atrás
+            while (i >= 0 && std::toupper(libros[i].getTitulo()[0]) == letra) {
+                std::cout << "\nTítulo: " << libros[i].getTitulo()
+                          << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                          << "\nEditorial: " << libros[i].getEditorial()
+                          << "\n-------------------" << std::endl;
+                encontrado = true;
+                i--;
+            }
+            
+            // Buscar hacia adelante
+            i = medio + 1;
+            while (i < libros.size() && std::toupper(libros[i].getTitulo()[0]) == letra) {
+                std::cout << "\nTítulo: " << libros[i].getTitulo()
+                          << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                          << "\nEditorial: " << libros[i].getEditorial()
+                          << "\n-------------------" << std::endl;
+                encontrado = true;
+                i++;
+            }
+            break;
+        }
+        
+        if (primeraLetra < letra) {
+            inicio = medio + 1;
+        } else {
+            fin = medio - 1;
+        }
+    }
+    
+    if (!encontrado) {
+        std::cout << "No se encontraron libros que empiecen con la letra '" << letra << "'." << std::endl;
+    }
+}
+
+// Búsqueda de libros por editorial
+void ListaLibros::buscarLibrosPorEditorial(const std::string& editorial) const {
+    std::vector<Libro> libros = cargarLibrosDesdeCSV();
+    
+    // Ordenar libros por editorial
+    std::sort(libros.begin(), libros.end(), 
+        [](const Libro& a, const Libro& b) {
+            return a.getEditorial() < b.getEditorial();
+        });
+    
+    bool encontrado = false;
+    std::string editorialBuscada = editorial;
+    // Convertir a minúsculas para búsqueda insensible a mayúsculas/minúsculas
+    std::transform(editorialBuscada.begin(), editorialBuscada.end(), editorialBuscada.begin(), ::tolower);
+    
+    // Búsqueda binaria
+    int inicio = 0;
+    int fin = libros.size() - 1;
+    
+    while (inicio <= fin) {
+        int medio = inicio + (fin - inicio) / 2;
+        std::string editorialActual = libros[medio].getEditorial();
+        std::transform(editorialActual.begin(), editorialActual.end(), editorialActual.begin(), ::tolower);
+        
+        if (editorialActual == editorialBuscada) {
+            // Encontrar todos los libros de la misma editorial
+            int i = medio;
+            // Buscar hacia atrás
+            while (i >= 0) {
+                std::string editorialI = libros[i].getEditorial();
+                std::transform(editorialI.begin(), editorialI.end(), editorialI.begin(), ::tolower);
+                if (editorialI == editorialBuscada) {
+                    std::cout << "\nTítulo: " << libros[i].getTitulo()
+                              << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                              << "\nFecha: " << libros[i].getFechaPublicacion().getFechaComoString()
+                              << "\n-------------------" << std::endl;
+                    encontrado = true;
+                }
+                i--;
+            }
+            
+            // Buscar hacia adelante
+            i = medio + 1;
+            while (i < libros.size()) {
+                std::string editorialI = libros[i].getEditorial();
+                std::transform(editorialI.begin(), editorialI.end(), editorialI.begin(), ::tolower);
+                if (editorialI == editorialBuscada) {
+                    std::cout << "\nTítulo: " << libros[i].getTitulo()
+                              << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                              << "\nFecha: " << libros[i].getFechaPublicacion().getFechaComoString()
+                              << "\n-------------------" << std::endl;
+                    encontrado = true;
+                }
+                i++;
+            }
+            break;
+        }
+        
+        if (editorialActual < editorialBuscada) {
+            inicio = medio + 1;
+        } else {
+            fin = medio - 1;
+        }
+    }
+    
+    if (!encontrado) {
+        std::cout << "No se encontraron libros de la editorial '" << editorial << "'." << std::endl;
+    }
+}
+
+// Búsqueda de libros por década
+void ListaLibros::buscarLibrosPorDecada(int decada) const {
+    if (decada % 10 != 0) {
+        std::cout << "Por favor, ingrese una década válida (ej: 1990, 2000, 2010, etc.)" << std::endl;
+        return;
+    }
+    
+    std::vector<Libro> libros = cargarLibrosDesdeCSV();
+    
+    // Ordenar libros por año
+    std::sort(libros.begin(), libros.end(), 
+        [](const Libro& a, const Libro& b) {
+            return a.getFechaPublicacion().getAnio() < b.getFechaPublicacion().getAnio();
+        });
+    
+    bool encontrado = false;
+    
+    // Búsqueda binaria para encontrar el primer libro de la década
+    int inicio = 0;
+    int fin = libros.size() - 1;
+    
+    while (inicio <= fin) {
+        int medio = inicio + (fin - inicio) / 2;
+        int anioLibro = libros[medio].getFechaPublicacion().getAnio();
+        int decadaLibro = (anioLibro / 10) * 10;
+        
+        if (decadaLibro == decada) {
+            // Encontrar todos los libros de la misma década
+            int i = medio;
+            // Buscar hacia atrás
+            while (i >= 0 && (libros[i].getFechaPublicacion().getAnio() / 10) * 10 == decada) {
+                std::cout << "\nTítulo: " << libros[i].getTitulo()
+                          << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                          << "\nFecha: " << libros[i].getFechaPublicacion().getFechaComoString()
+                          << "\nEditorial: " << libros[i].getEditorial()
+                          << "\n-------------------" << std::endl;
+                encontrado = true;
+                i--;
+            }
+            
+            // Buscar hacia adelante
+            i = medio + 1;
+            while (i < libros.size() && (libros[i].getFechaPublicacion().getAnio() / 10) * 10 == decada) {
+                std::cout << "\nTítulo: " << libros[i].getTitulo()
+                          << "\nAutor: " << libros[i].getAutor().getNombreCompleto()
+                          << "\nFecha: " << libros[i].getFechaPublicacion().getFechaComoString()
+                          << "\nEditorial: " << libros[i].getEditorial()
+                          << "\n-------------------" << std::endl;
+                encontrado = true;
+                i++;
+            }
+            break;
+        }
+        
+        if (decadaLibro < decada) {
+            inicio = medio + 1;
+        } else {
+            fin = medio - 1;
+        }
+    }
+    
+    if (!encontrado) {
+        std::cout << "No se encontraron libros publicados en la década de " << decada << "." << std::endl;
+    }
+}
