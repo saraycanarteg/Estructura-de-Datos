@@ -29,16 +29,20 @@ if __name__ == "__main__":
                     cedula = Validaciones.input_cedula("\nIngresa la cédula (10 dígitos): ")
                     nombre = Validaciones.input_cadena("Ingresa el nombre: ")
                     apellido = Validaciones.input_cadena("Ingresa el apellido: ")
-                    if lista_simple.buscar(cedula):
+                    correo = (nombre[0].lower()+nombre[1].lower())+(apellido.lower())+"@espe.edu.ec"
+                    if not(lista_simple.buscar(cedula)):
                         lista_simple.crear(cedula)
-                        lista_simple.crear(nombre)
-                        lista_simple.crear(apellido)
+                        lista_simple.crear(nombre.title())
+                        lista_simple.crear(apellido.title())
+                        lista_simple.crear(correo)
                         lista_simple_modificada.crear(cedula)
-                        lista_simple_modificada.crear(nombre)
-                        lista_simple_modificada.crear(apellido)
+                        lista_simple_modificada.crear(nombre.title())
+                        lista_simple_modificada.crear(apellido.title())
+                        lista_simple_modificada.crear(correo)
                         print("Elemento añadido.")
                     else:
                         print("Elemento ya existente. Intente de nuevo...")
+                    print("\nCorreo generado: ", correo)
                     Validaciones.sys_pause()
                 elif opcion == 1:  # Buscar
                     sub_buscar = Menu("BUSCAR EN LISTA SIMPLE", op_busqueda)
@@ -53,7 +57,7 @@ if __name__ == "__main__":
                         elif opcion_buscar == 1:  # Por nombre y apellido
                             nombre = Validaciones.input_cadena("Ingresa el nombre: ")
                             apellido = Validaciones.input_cadena("Ingresa el apellido: ")
-                            persona = lista_simple.buscar_por_nombres(nombre, apellido)
+                            persona = lista_simple.buscar_por_nombres(nombre.title(), apellido.title())
                             print(persona if persona else "No encontrado.")
                             Validaciones.sys_pause()
                         elif opcion_buscar == 2:  # Regresar
@@ -64,8 +68,9 @@ if __name__ == "__main__":
                     persona = lista_simple_modificada.buscar_por_cedula(dato)
                     if persona:
                         lista_simple_modificada.eliminar(persona[0])
-                        lista_simple_modificada.eliminar(persona[1])
-                        lista_simple_modificada.eliminar(persona[2])
+                        lista_simple_modificada.eliminar(persona[1].title())
+                        lista_simple_modificada.eliminar(persona[2].title())
+                        lista_simple_modificada.eliminar(persona[3])
                         print("\nLista original:\n", lista_simple.mostrar(), "\nLista modificada:")
                     print(lista_simple_modificada.mostrar() if persona else "Elemento no encontrado.")
                     Validaciones.sys_pause()
@@ -85,17 +90,20 @@ if __name__ == "__main__":
                     cedula = Validaciones.input_cedula("Ingresa la cédula (10 dígitos): ")
                     nombre = Validaciones.input_cadena("Ingresa el nombre: ")
                     apellido = Validaciones.input_cadena("Ingresa el apellido: ")
-                    
-                    if lista_doble.buscar(cedula):
+                    correo = (nombre[0].lower()+nombre[1].lower())+(apellido.lower())+"@espe.edu.ec"
+                    if not(lista_doble.buscar(cedula)):
                         lista_doble.crear(cedula)
-                        lista_doble.crear(nombre)
-                        lista_doble.crear(apellido)
+                        lista_doble.crear(nombre.title())
+                        lista_doble.crear(apellido.title())
+                        lista_doble.crear(correo)
                         lista_doble_modificada.crear(cedula)
-                        lista_doble_modificada.crear(nombre)
-                        lista_doble_modificada.crear(apellido)
+                        lista_doble_modificada.crear(nombre.title())
+                        lista_doble_modificada.crear(apellido.title())
+                        lista_doble_modificada.crear(correo)
                         print("Elemento añadido.")
                     else: 
                         print("Elemento ya existente. Intente de nuevo...")
+                    print("\nCorreo generado: ", correo)
                     Validaciones.sys_pause()
                 elif opcion == 1:  # Buscar
                     sub_buscar = Menu("BUSCAR EN LISTA DOBLE", op_busqueda)
@@ -109,7 +117,7 @@ if __name__ == "__main__":
                         elif opcion_buscar == 1:  # Por nombre y apellido
                             nombre = Validaciones.input_cadena("Ingresa el nombre: ")
                             apellido = Validaciones.input_cadena("Ingresa el apellido: ")
-                            persona = lista_doble.buscar_por_nombres(nombre, apellido)
+                            persona = lista_doble.buscar_por_nombres(nombre.title(), apellido.title())
                             print(persona if persona else "No encontrado.")
                             Validaciones.sys_pause()
                         elif opcion_buscar == 2:  # Regresar
@@ -119,8 +127,9 @@ if __name__ == "__main__":
                     dato = Validaciones.input_cedula("Ingresa la cédula para eliminar: ")
                     persona = lista_doble_modificada.buscar_por_cedula(dato)
                     lista_doble_modificada.eliminar(persona[0])
-                    lista_doble_modificada.eliminar(persona[1])
-                    lista_doble_modificada.eliminar(persona[2])
+                    lista_doble_modificada.eliminar(persona[1].title())
+                    lista_doble_modificada.eliminar(persona[2].title())
+                    lista_doble_modificada.eliminar(persona[3])
                     print("\nLista original:\n", lista_doble.mostrar(), "\nLista modificada:\n")
                     print(lista_doble_modificada.mostrar() if persona else "Elemento no encontrado.")
                     Validaciones.sys_pause()
@@ -140,17 +149,21 @@ if __name__ == "__main__":
                     cedula = Validaciones.input_cedula("Ingresa la cédula (10 dígitos): ")
                     nombre = Validaciones.input_cadena("Ingresa el nombre: ")
                     apellido = Validaciones.input_cadena("Ingresa el apellido: ")
+                    correo = (nombre[0].lower()+nombre[1].lower())+(apellido.lower())+"@espe.edu.ec"
 
-                    if lista_circular.buscar(cedula):
+                    if not (lista_circular.buscar(cedula)):
                         lista_circular.crear(cedula)
-                        lista_circular.crear(nombre)
-                        lista_circular.crear(apellido)
+                        lista_circular.crear(nombre.title())
+                        lista_circular.crear(apellido.title())
+                        lista_circular.crear(correo)
                         lista_circular_modificada.crear(cedula)
-                        lista_circular_modificada.crear(nombre)
-                        lista_circular_modificada.crear(apellido)
+                        lista_circular_modificada.crear(nombre.title())
+                        lista_circular_modificada.crear(apellido.title())
+                        lista_circular_modificada.crear(correo)
                         print("Elemento añadido.")
                     else:
                         print("Elemento ya existente. Intente de nuevo...")
+                    print("\nCorrego generado: ", correo)
                     Validaciones.sys_pause()
                 elif opcion == 1:  # Buscar
                     sub_buscar = Menu("BUSCAR EN LISTA CIRCULAR", op_busqueda)
@@ -164,7 +177,7 @@ if __name__ == "__main__":
                         elif opcion_buscar == 1:  # Por nombre y apellido
                             nombre = Validaciones.input_cadena("Ingresa el nombre: ")
                             apellido = Validaciones.input_cadena("Ingresa el apellido: ")
-                            persona = lista_circular.buscar_por_nombres(nombre, apellido)
+                            persona = lista_circular.buscar_por_nombres(nombre.title(), apellido.title())
                             print(persona if persona else "No encontrado.")
                         elif opcion_buscar == 2:  # Regresar
                             break
@@ -173,8 +186,9 @@ if __name__ == "__main__":
                     persona = lista_circular_modificada.buscar_por_cedula(dato)
                     if persona:
                         lista_circular_modificada.eliminar(persona[0])
-                        lista_circular_modificada.eliminar(persona[1])
-                        lista_circular_modificada.eliminar(persona[2])
+                        lista_circular_modificada.eliminar(persona[1].title())
+                        lista_circular_modificada.eliminar(persona[2].title())
+                        lista_circular_modificada.eliminar(persona[3])
                         print("Lista original:\n", lista_circular, "\nLista modificada:\n")
 
                     print(lista_circular_modificada.mostrar() if persona else "Elemento no encontrado.")

@@ -58,6 +58,8 @@ class ListaSimple:
                 persona.append(actual.dato)
                 actual = actual.siguiente
                 persona.append(actual.dato)
+                actual = actual.siguiente
+                persona.append(actual.dato)
                 return persona
             else:
                 actual = actual.siguiente
@@ -80,6 +82,8 @@ class ListaSimple:
                 persona.append(actual.dato)
                 actual = actual.siguiente
                 if actual.dato == apellido:
+                    persona.append(actual.dato)
+                    actual = actual.siguiente
                     persona.append(actual.dato)
                     return persona
             else:
