@@ -18,7 +18,7 @@ def main():
 
     while True:
         limpiar_pantalla()
-        print("\n=== Sistema de Gestión de Personas ===")
+        print("\n=== Sistema de Gestion de Personas ===")
         print("1. Insertar por cabeza")
         print("2. Insertar por cola")
         print("3. Mostrar lista original")
@@ -30,7 +30,7 @@ def main():
         print("9. Salir")
         
         try:
-            opcion = int(input("\nSeleccione una opción: "))
+            opcion = int(input("\nSeleccione una opcion: "))
         except ValueError:
             input("\nOpción inválida. Presione Enter para continuar...")
             continue
