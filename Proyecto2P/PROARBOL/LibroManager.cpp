@@ -17,12 +17,11 @@
 #include <sys/stat.h>  // Para usar _stat
 #include "BackupManager.h"  // Incluir el archivo de cabecera con la declaración de la función
 #include <algorithm> 
+#include "BPlusTree.h"
 #include <cctype>
 #include <locale>
 
 using namespace std;
-
-LibroManager::LibroManager() : isbnTree(3), isniTree(3), bookTree(3) {}
 
 // trim from start (in place)
 static inline void ltrim(std::string &s) {
@@ -44,9 +43,29 @@ static inline void trim(std::string &s) {
     rtrim(s);
 }
 
+LibroManager::LibroManager() 
+    : bPlusTree(3),    
+      isbnTree(3), 
+      isniTree(3), 
+      bookTree(3),
+      generalFile("libros.txt") {}
+
+LibroManager::LibroManager(int t, const std::string& generalFile) 
+    : bPlusTree(t),    
+      isbnTree(t), 
+      isniTree(t), 
+      bookTree(t), 
+      generalFile(generalFile) {}
+
 // Agregar libro
 void LibroManager::agregarLibro(const Libro& libro) {
-    std::ofstream bookFile("book_tree.txt");
+    // Código para agregar el libro al árbol
+    //bPlusTree.insert(libro);
+
+    // Guardar el árbol en un archivo de texto después de agregar el libro
+    //bPlusTree.saveTreeToFile("libros.txt");
+
+    /*std::ofstream bookFile("book_tree.txt");
 
     // Insertar en los árboles B+
     isbnTree.insert(libro.getIsbn(), libro.getTitulo());
@@ -58,7 +77,35 @@ void LibroManager::agregarLibro(const Libro& libro) {
         isbnTree.saveToFile("isbn_tree.txt");
         isniTree.saveToFile("isni_tree.txt");
         bookTree.saveNodeToFileObject(bookTree.getRoot(), bookFile);
+    }*/
+
+    std::ifstream checkFile("book_tree.txt");
+    bool fileExists = checkFile.good();
+    checkFile.close();
+
+    std::ofstream bookFile("book_tree.txt", std::ios::app); 
+    if (!bookFile.is_open()) {
+        std::cerr << "Error al abrir el archivo" << std::endl;
+        return;
     }
+
+    const Fecha& fechaPub = libro.getFechaPublicacion();
+    const Fecha& fechaNac = libro.getAutor().getFechaNacimiento();
+   
+    bookFile << libro.getTitulo() << ";"
+        << libro.getIsbn() << ";"
+        << libro.getAutor().getNombre() << ";"
+        << libro.getAutor().getIsni() << ";"
+        << fechaNac.getDia() << "/" << fechaNac.getMes() << "/" << fechaNac.getAnio() << ";"
+        << fechaPub.getDia() << "/" << fechaPub.getMes() << "/" << fechaPub.getAnio()
+        << std::endl;
+
+    bookFile.close();
+    std::cout << "Libro guardado en book_tree.txt" << std::endl;
+
+    bookTree.insertObject(libro.getIsbn(), libro);
+    isbnTree.insert(libro.getIsbn(), libro.getTitulo());
+    isniTree.insert(libro.getAutor().getIsni(), libro.getTitulo());
 }
 
 // Imprimir todos los libros
@@ -312,7 +359,7 @@ void LibroManager::buscarLibroCercano(const string& ruta, const int anioInicio, 
 
 
 LibroManager::LibroManager(int t, const std::string& generalFile)
-    : isbnTree(t), isniTree(t), bookTree(t),  generalFile(generalFile) {}
+    : bPlusTree(t), isbnTree(t), isniTree(t), bookTree(t), generalFile(generalFile) {}
 
 void LibroManager::insertLibro(Libro* libro) {
     std::ofstream archivo(generalFile, std::ios::app);

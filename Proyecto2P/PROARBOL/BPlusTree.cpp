@@ -1,4 +1,5 @@
 #include "BPlusTree.h"
+#
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -186,7 +187,8 @@ Libro BPlusTree::searchObject(const std::string& isbn) {
 void BPlusTree::insertNonFullObject(BPlusTreeNode* node, const std::string& isbn, const Libro& libro) {
     if (node->isLeaf) {
         node->keys.push_back(isbn);
-        node->data[isbn] = libro.getIsbn();
+        node->libros.emplace(isbn, libro);
+        node->data[isbn] = isbn;
         std::sort(node->keys.begin(), node->keys.end());
     } else {
         int i = node->keys.size() - 1;
@@ -204,22 +206,6 @@ void BPlusTree::insertNonFullObject(BPlusTreeNode* node, const std::string& isbn
     }
 }
 
-void BPlusTree::saveNodeToFileObject(BPlusTreeNode* node, std::ofstream& archivo) {
-    if (node == nullptr) return;
-
-    // Guardar las claves y valores del nodo
-    for (size_t i = 0; i < node->keys.size(); ++i) {
-        archivo << node->keys[i] << ";" << node->data[node->keys[i]] << std::endl;
-    }
-
-    // Recorrer los hijos del nodo
-    if (!node->isLeaf) {
-        for (size_t i = 0; i <= node->keys.size(); ++i) {
-            saveNodeToFileObject(node->children[i], archivo);
-        }
-    }
-}
-
 void BPlusTree::collectElementsObject(BPlusTreeNode* node, std::vector<std::pair<std::string, Libro>>& elements) {
     if (node->isLeaf) {
         for (const auto& key : node->keys) {
@@ -231,5 +217,38 @@ void BPlusTree::collectElementsObject(BPlusTreeNode* node, std::vector<std::pair
             elements.emplace_back(node->keys[i], node->data[node->keys[i]]);
         }
         collectElementsObject(node->children[node->keys.size()], elements);
+    }
+}
+
+void BPlusTree::saveNodeToFileObject(BPlusTreeNode* node, std::ofstream& archivo) {
+    if (!node) return;
+
+    if (node->isLeaf) {
+        for (const auto& key : node->keys) {
+            const Libro& libro = node->data[key];
+            const Fecha& fecha = libro.getFechaPublicacion();
+            archivo << key << ";"
+                    << libro.getTitulo() << ";"
+                    << libro.getIsbn() << ";"
+                    << libro.getAutor().getNombre() << ";"
+                    << libro.getAutor().getIsni() << ";"
+                    << fecha.getDia() << "/" << fecha.getMes() << "/" << fecha.getAnio() 
+                    << std::endl;
+        }
+    } else {
+        for (size_t i = 0; i < node->keys.size(); ++i) {
+            saveNodeToFileObject(node->children[i], archivo);
+            
+            const Libro& libro = node->data[node->keys[i]];
+            const Fecha& fecha = libro.getFechaPublicacion();
+            archivo << node->keys[i] << ";"
+                    << libro.getTitulo() << ";"
+                    << libro.getIsbn() << ";"
+                    << libro.getAutor().getNombre() << ";"
+                    << libro.getAutor().getIsni() << ";"
+                    << fecha.getDia() << "/" << fecha.getMes() << "/" << fecha.getAnio() 
+                    << std::endl;
+        }
+        saveNodeToFileObject(node->children[node->keys.size()], archivo);
     }
 }

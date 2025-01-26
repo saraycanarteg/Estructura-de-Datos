@@ -26,6 +26,7 @@ private:
     BPlusTree isbnTree;
     BPlusTree isniTree;
     BPlusTree bookTree;
+    BPlusTree bPlusTree;
     std::string generalFile;
     bool evitarGuardar = false; // Para evitar guardar al restaurar un backup
     string archivoLibros = "libros.txt"; // Archivo de libros
