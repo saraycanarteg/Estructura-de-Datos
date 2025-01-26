@@ -8,6 +8,14 @@ BPlusTreeNode::BPlusTreeNode(bool leaf) : isLeaf(leaf) {}
 
 BPlusTree::BPlusTree(int t) : root(new BPlusTreeNode(true)), minDegree(t) {}
 
+BPlusTreeNode* BPlusTree::getRoot() const {
+    return root;
+}
+
+void BPlusTree::setRoot(BPlusTreeNode* newRoot) {
+    root = newRoot;
+}
+
 void BPlusTree::insert(const std::string& key, const std::string& value) {
     if (root->keys.size() == 2 * minDegree - 1) {
         BPlusTreeNode* s = new BPlusTreeNode(false);
@@ -15,7 +23,7 @@ void BPlusTree::insert(const std::string& key, const std::string& value) {
         splitChild(s, 0, root);
         root = s;
     }
-    insertNonFull(root, key, value);
+    insertNonFull(root, key, value);    
 }
 
 std::string BPlusTree::search(const std::string& key) {
@@ -38,6 +46,7 @@ void BPlusTree::saveToFile(const std::string& filename) {
     archivo.close();
 }
 
+
 void BPlusTree::saveNodeToFile(BPlusTreeNode* node, std::ofstream& archivo) {
     if (node == nullptr) return;
 
@@ -54,28 +63,7 @@ void BPlusTree::saveNodeToFile(BPlusTreeNode* node, std::ofstream& archivo) {
     }
 }
 
-void BPlusTree::loadFromFile(const std::string& filename) {
-    std::ifstream archivo(filename);
-    if (!archivo.is_open()) {
-        std::cout << "Error al abrir el archivo para cargar el árbol B+.\n";
-        return;
-    }
 
-    // Limpiar el árbol actual
-    clearTree(root);
-    root = new BPlusTreeNode(true);
-
-    // Leer y cargar las hojas del árbol B+
-    std::string line;
-    while (std::getline(archivo, line)) {
-        std::istringstream iss(line);
-        std::string key, value;
-        if (std::getline(iss, key, ';') && std::getline(iss, value, ';')) {
-            insert(key, value);
-        }
-    }
-    archivo.close();
-}
 
 void BPlusTree::insertNonFull(BPlusTreeNode* node, const std::string& key, const std::string& value) {
     if (node->isLeaf) {
@@ -175,4 +163,73 @@ void BPlusTree::clearTree(BPlusTreeNode* node) {
         }
     }
     delete node;
+}
+
+void BPlusTree::insertObject(const std::string& isbn, const Libro& libro) {
+    if (root->keys.size() == 2 * minDegree - 1) {
+        BPlusTreeNode* s = new BPlusTreeNode(false);
+        s->children.push_back(root);
+        splitChild(s, 0, root);
+        root = s;
+    }
+    insertNonFullObject(root, isbn, libro);    
+}
+
+Libro BPlusTree::searchObject(const std::string& isbn) {
+    BPlusTreeNode* node = search(root, isbn);
+    if (node && node->data.find(isbn) != node->data.end()) {
+        return node->data[isbn];
+    }
+    return Libro(); // Return a default-constructed Libro object if not found
+}
+
+void BPlusTree::insertNonFullObject(BPlusTreeNode* node, const std::string& isbn, const Libro& libro) {
+    if (node->isLeaf) {
+        node->keys.push_back(isbn);
+        node->data[isbn] = libro.getIsbn();
+        std::sort(node->keys.begin(), node->keys.end());
+    } else {
+        int i = node->keys.size() - 1;
+        while (i >= 0 && isbn < node->keys[i]) {
+            i--;
+        }
+        i++;
+        if (node->children[i]->keys.size() == 2 * minDegree - 1) {
+            splitChild(node, i, node->children[i]);
+            if (isbn > node->keys[i]) {
+                i++;
+            }
+        }
+        insertNonFullObject(node->children[i], isbn, libro);
+    }
+}
+
+void BPlusTree::saveNodeToFileObject(BPlusTreeNode* node, std::ofstream& archivo) {
+    if (node == nullptr) return;
+
+    // Guardar las claves y valores del nodo
+    for (size_t i = 0; i < node->keys.size(); ++i) {
+        archivo << node->keys[i] << ";" << node->data[node->keys[i]] << std::endl;
+    }
+
+    // Recorrer los hijos del nodo
+    if (!node->isLeaf) {
+        for (size_t i = 0; i <= node->keys.size(); ++i) {
+            saveNodeToFileObject(node->children[i], archivo);
+        }
+    }
+}
+
+void BPlusTree::collectElementsObject(BPlusTreeNode* node, std::vector<std::pair<std::string, Libro>>& elements) {
+    if (node->isLeaf) {
+        for (const auto& key : node->keys) {
+            elements.emplace_back(key, node->data[key]);
+        }
+    } else {
+        for (size_t i = 0; i < node->keys.size(); i++) {
+            collectElementsObject(node->children[i], elements);
+            elements.emplace_back(node->keys[i], node->data[node->keys[i]]);
+        }
+        collectElementsObject(node->children[node->keys.size()], elements);
+    }
 }

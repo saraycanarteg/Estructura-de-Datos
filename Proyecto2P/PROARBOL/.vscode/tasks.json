@@ -32,6 +32,7 @@
 				"isDefault": true
 			},
 			"detail": "compiler: C:/MinGW/bin/g++.exe"
-		}
+		},
+		
 	]
 }

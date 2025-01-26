@@ -22,7 +22,7 @@
 
 using namespace std;
 
-
+LibroManager::LibroManager() : isbnTree(3), isniTree(3), bookTree(3) {}
 
 // trim from start (in place)
 static inline void ltrim(std::string &s) {
@@ -46,13 +46,18 @@ static inline void trim(std::string &s) {
 
 // Agregar libro
 void LibroManager::agregarLibro(const Libro& libro) {
+    std::ofstream bookFile("book_tree.txt");
+
     // Insertar en los árboles B+
     isbnTree.insert(libro.getIsbn(), libro.getTitulo());
     isniTree.insert(libro.getAutor().getIsni(), libro.getTitulo());
+    bookTree.insertObject(libro.getIsbn(), libro);
     cout << "Libro agregado: " << libro.getTitulo() << endl;
     // Guardar solo si no se está restaurando un backup
     if (!evitarGuardar) {
-        guardarLibrosEnArchivo();
+        isbnTree.saveToFile("isbn_tree.txt");
+        isniTree.saveToFile("isni_tree.txt");
+        bookTree.saveNodeToFileObject(bookTree.getRoot(), bookFile);
     }
 }
 
@@ -122,13 +127,7 @@ void LibroManager::guardarLibrosEnArchivo() {
         return;
     }
 
-    std::ifstream archivoOriginal(generalFile);
-    std::string linea;
-    while (getline(archivoOriginal, linea)) {
-        archivo << linea << std::endl;
-    }
-    archivoOriginal.close();
-    archivo.close();
+    
 
     // Verificar si el archivo temporal se creó correctamente
     if (FILE* file = fopen("libros_temp.txt", "r")) {
@@ -313,7 +312,7 @@ void LibroManager::buscarLibroCercano(const string& ruta, const int anioInicio, 
 
 
 LibroManager::LibroManager(int t, const std::string& generalFile)
-    : isbnTree(t), isniTree(t), generalFile(generalFile) {}
+    : isbnTree(t), isniTree(t), bookTree(t),  generalFile(generalFile) {}
 
 void LibroManager::insertLibro(Libro* libro) {
     std::ofstream archivo(generalFile, std::ios::app);
@@ -381,8 +380,8 @@ void LibroManager::saveTrees() {
 }
 
 void LibroManager::loadTrees() {
-    isbnTree.loadFromFile("isbnTree.txt");
-    isniTree.loadFromFile("isniTree.txt");
+    //isbnTree.loadFromFile("isbnTree.txt");
+    //isniTree.loadFromFile("isniTree.txt");
 }
 
 void LibroManager::limpiarLista() {

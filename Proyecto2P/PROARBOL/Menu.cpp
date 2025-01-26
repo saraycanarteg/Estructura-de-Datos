@@ -21,6 +21,7 @@
 #include "funciones.h"
 #include <algorithm>
 #include "BPlusTree.h"
+#include "LibroManager.h"
 
 using namespace std;
 
@@ -69,6 +70,7 @@ int ingresarAnio(const string& mensaje) {
 }
 
 void mostrarMenu(BPlusTree& arbol) {
+    LibroManager libroManager;
     vector<string> opciones = {
         "Agregar libro",
         "Buscar libro",
@@ -164,6 +166,8 @@ void mostrarMenu(BPlusTree& arbol) {
 
                     // Agregar libro al árbol
                     arbol.insert(isbn, libroInfo);
+                    libroManager.agregarLibro(Libro(titulo, isbn, autor, fechaPublicacion));
+                    
                 }
             } else if (opciones[seleccion] == "Buscar libro") {
                 string isbn;

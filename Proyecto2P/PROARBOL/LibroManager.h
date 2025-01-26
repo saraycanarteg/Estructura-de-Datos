@@ -25,11 +25,13 @@ class LibroManager {
 private:
     BPlusTree isbnTree;
     BPlusTree isniTree;
+    BPlusTree bookTree;
     std::string generalFile;
     bool evitarGuardar = false; // Para evitar guardar al restaurar un backup
     string archivoLibros = "libros.txt"; // Archivo de libros
 
 public:
+    LibroManager();
     LibroManager(int t, const std::string& generalFile);
     void insertLibro(Libro* libro);
     Libro* searchByISBN(const std::string& isbn);
