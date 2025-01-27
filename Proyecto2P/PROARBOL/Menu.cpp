@@ -70,6 +70,7 @@ int ingresarAnio(const string& mensaje) {
 }
 
 void mostrarMenu(BPlusTree& arbol) {
+    arbol.loadFromFile("book_tree.txt");
     LibroManager libroManager;
     vector<string> opciones = {
         "Agregar libro",
@@ -127,9 +128,10 @@ void mostrarMenu(BPlusTree& arbol) {
                 } while (!Validaciones::validarIsbn(isbn));
 
                 // Verificar si el ISBN ya existe
-                if (!arbol.search(isbn).empty()) {
+                if (!arbol.search(isbn).getTitulo().empty()) {
                     cout << "El ISBN ya existe. Información del libro existente:\n";
-                    cout << arbol.search(isbn) << endl;
+                    cout << "Información del libro: " << endl;
+                    arbol.search(isbn).mostrar();
                 } else {
                     // Solicitar ISNI del autor
                     do {
@@ -166,6 +168,8 @@ void mostrarMenu(BPlusTree& arbol) {
 
                     // Agregar libro al árbol
                     arbol.insert(isbn, libroInfo);
+                    arbol.insertObject(isbn, Libro(titulo, isbn, autor, fechaPublicacion));
+                    
                     libroManager.agregarLibro(Libro(titulo, isbn, autor, fechaPublicacion));
                     
                 }
@@ -173,9 +177,10 @@ void mostrarMenu(BPlusTree& arbol) {
                 string isbn;
                 cout << "Ingrese el ISBN del libro a buscar: ";
                 cin >> ws; getline(cin, isbn);
-                string libroInfo = arbol.search(isbn);
-                if (!libroInfo.empty()) {
-                    cout << "Información del libro: " << libroInfo << endl;
+                Libro libro = arbol.search(isbn);
+                if (!libro.getTitulo().empty()) {
+                    cout << "Información del libro: " << endl;
+                    libro.mostrar();
                 } else {
                     cout << "Libro no encontrado.\n";
                 }
@@ -186,7 +191,9 @@ void mostrarMenu(BPlusTree& arbol) {
                 // Eliminar usando ISBN
                 arbol.remove(isbn); // Assuming you have a remove method in BPlusTree*/
             } else if (opciones[seleccion] == "Ver todos los libros") {
-               //rbol.traverse(); // Assuming you have a method to print all books
+               BPlusTreeNode *node;
+               ofstream archivo("book_tree.txt", std::ios::app); 
+               arbol.traverse(node, archivo); 
             } else if (opciones[seleccion] == "Exportar en archivo PDF") {
                 const std::string inputFile = "libros.txt";
                 createPDF(inputFile);

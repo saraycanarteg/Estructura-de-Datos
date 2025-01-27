@@ -13,10 +13,10 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
-#include <direct.h>  // Para mkdir en Windows
-#include <sys/stat.h>  // Para usar _stat
-#include "BackupManager.h"  // Incluir el archivo de cabecera con la declaración de la función
-#include <algorithm> 
+#include <direct.h>        // Para mkdir en Windows
+#include <sys/stat.h>      // Para usar _stat
+#include "BackupManager.h" // Incluir el archivo de cabecera con la declaración de la función
+#include <algorithm>
 #include "BPlusTree.h"
 #include <cctype>
 #include <locale>
@@ -24,46 +24,50 @@
 using namespace std;
 
 // trim from start (in place)
-static inline void ltrim(std::string &s) {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    }));
+static inline void ltrim(std::string &s)
+{
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch)
+                                    { return !std::isspace(ch); }));
 }
 
 // trim from end (in place)
-static inline void rtrim(std::string &s) {
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    }).base(), s.end());
+static inline void rtrim(std::string &s)
+{
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch)
+                         { return !std::isspace(ch); })
+                .base(),
+            s.end());
 }
 
 // trim from both ends (in place)
-static inline void trim(std::string &s) {
+static inline void trim(std::string &s)
+{
     ltrim(s);
     rtrim(s);
 }
 
-LibroManager::LibroManager() 
-    : bPlusTree(3),    
-      isbnTree(3), 
-      isniTree(3), 
+LibroManager::LibroManager()
+    : bPlusTree(3),
+      isbnTree(3),
+      isniTree(3),
       bookTree(3),
       generalFile("libros.txt") {}
 
-LibroManager::LibroManager(int t, const std::string& generalFile) 
-    : bPlusTree(t),    
-      isbnTree(t), 
-      isniTree(t), 
-      bookTree(t), 
+LibroManager::LibroManager(int t, const std::string &generalFile)
+    : bPlusTree(t),
+      isbnTree(t),
+      isniTree(t),
+      bookTree(t),
       generalFile(generalFile) {}
 
 // Agregar libro
-void LibroManager::agregarLibro(const Libro& libro) {
+void LibroManager::agregarLibro(const Libro &libro)
+{
     // Código para agregar el libro al árbol
-    //bPlusTree.insert(libro);
+    // bPlusTree.insert(libro);
 
     // Guardar el árbol en un archivo de texto después de agregar el libro
-    //bPlusTree.saveTreeToFile("libros.txt");
+    // bPlusTree.saveTreeToFile("libros.txt");
 
     /*std::ofstream bookFile("book_tree.txt");
 
@@ -83,22 +87,23 @@ void LibroManager::agregarLibro(const Libro& libro) {
     bool fileExists = checkFile.good();
     checkFile.close();
 
-    std::ofstream bookFile("book_tree.txt", std::ios::app); 
-    if (!bookFile.is_open()) {
+    std::ofstream bookFile("book_tree.txt", std::ios::app);
+    if (!bookFile.is_open())
+    {
         std::cerr << "Error al abrir el archivo" << std::endl;
         return;
     }
 
-    const Fecha& fechaPub = libro.getFechaPublicacion();
-    const Fecha& fechaNac = libro.getAutor().getFechaNacimiento();
-   
+    const Fecha &fechaPub = libro.getFechaPublicacion();
+    const Fecha &fechaNac = libro.getAutor().getFechaNacimiento();
+
     bookFile << libro.getTitulo() << ";"
-        << libro.getIsbn() << ";"
-        << libro.getAutor().getNombre() << ";"
-        << libro.getAutor().getIsni() << ";"
-        << fechaNac.getDia() << "/" << fechaNac.getMes() << "/" << fechaNac.getAnio() << ";"
-        << fechaPub.getDia() << "/" << fechaPub.getMes() << "/" << fechaPub.getAnio()
-        << std::endl;
+             << libro.getIsbn() << ";"
+             << libro.getAutor().getNombre() << ";"
+             << libro.getAutor().getIsni() << ";"
+             << fechaNac.getDia() << "/" << fechaNac.getMes() << "/" << fechaNac.getAnio() << ";"
+             << fechaPub.getDia() << "/" << fechaPub.getMes() << "/" << fechaPub.getAnio()
+             << std::endl;
 
     bookFile.close();
     std::cout << "Libro guardado en book_tree.txt" << std::endl;
@@ -109,10 +114,12 @@ void LibroManager::agregarLibro(const Libro& libro) {
 }
 
 // Imprimir todos los libros
-void LibroManager::imprimirLibros() {
+void LibroManager::imprimirLibros()
+{
     std::ifstream archivo(generalFile);
     std::string linea;
-    while (getline(archivo, linea)) {
+    while (getline(archivo, linea))
+    {
         std::cout << linea << std::endl;
     }
 }
@@ -139,14 +146,17 @@ Libro* LibroManager::buscarLibro(const string& titulo) {
 }*/
 
 // Buscar libro por ISBN
-Libro* LibroManager::buscarLibroPorIsbn(const string& isbn) {
+Libro *LibroManager::buscarLibroPorIsbn(const string &isbn)
+{
     return searchByISBN(isbn);
 }
 
 // Buscar autor por ISNI
-Persona LibroManager::buscarAutorPorIsni(const string& isni) {
-    Libro* libro = searchByISNI(isni);
-    if (libro) {
+Persona LibroManager::buscarAutorPorIsni(const string &isni)
+{
+    Libro *libro = searchByISNI(isni);
+    if (libro)
+    {
         return libro->getAutor();
     }
     return Persona();
@@ -167,48 +177,58 @@ void LibroManager::eliminarLibro(const string& titulo) {
 }*/
 
 // Guardar los libros en el archivo (actualizado)
-void LibroManager::guardarLibrosEnArchivo() {
+void LibroManager::guardarLibrosEnArchivo()
+{
     ofstream archivo("libros_temp.txt");
-    if (!archivo.is_open()) {
+    if (!archivo.is_open())
+    {
         cout << "Error al abrir el archivo temporal para guardar.\n\n";
         return;
     }
 
-    
-
     // Verificar si el archivo temporal se creó correctamente
-    if (FILE* file = fopen("libros_temp.txt", "r")) {
+    if (FILE *file = fopen("libros_temp.txt", "r"))
+    {
         fclose(file);
-    } else {
+    }
+    else
+    {
         cout << "No se pudo crear el archivo temporal correctamente.\n";
         return;
     }
 
     // Eliminar el archivo de destino si ya existe
-    if (remove(archivoLibros.c_str()) != 0) {
+    if (remove(archivoLibros.c_str()) != 0)
+    {
         // Si el archivo no se puede eliminar, mostrar error
         cout << "Error al eliminar el archivo de destino: " << archivoLibros << endl;
     }
 
     // Renombrar el archivo temporal a la ubicación final
-    if (rename("libros_temp.txt", archivoLibros.c_str()) != 0) {
+    if (rename("libros_temp.txt", archivoLibros.c_str()) != 0)
+    {
         // Mostrar error si renombrar falla
         perror("Error al renombrar el archivo temporal");
-    } else {
+    }
+    else
+    {
         cout << "Libros guardados en el archivo: " << archivoLibros << endl;
     }
 }
 
 // Cargar los libros desde el archivo
-void LibroManager::cargarLibrosDesdeArchivo() {
+void LibroManager::cargarLibrosDesdeArchivo()
+{
     ifstream archivo(archivoLibros);
-    if (!archivo.is_open()) {
+    if (!archivo.is_open())
+    {
         cout << "Error al abrir el archivo para cargar los libros.\n";
         return;
     }
 
     string linea;
-    while (getline(archivo, linea)) {
+    while (getline(archivo, linea))
+    {
         stringstream ss(linea);
         string titulo, nombreAutor, isni, fechaNacAutor, isbn, fechaPublicacion;
         getline(ss, titulo, ';');
@@ -231,9 +251,10 @@ void LibroManager::cargarLibrosDesdeArchivo() {
 }
 
 // Backup
-void LibroManager::crearBackup(const string& nombreArchivo) {
-    string carpetaBackup = "backup";  // Carpeta donde se almacenan los backups
-    
+void LibroManager::crearBackup(const string &nombreArchivo)
+{
+    string carpetaBackup = "backup"; // Carpeta donde se almacenan los backups
+
     // Asegurarnos de que la carpeta de backups exista
     BackupManager::crearCarpetaSiNoExiste(carpetaBackup);
 
@@ -242,14 +263,16 @@ void LibroManager::crearBackup(const string& nombreArchivo) {
 
     // Crear el archivo de backup
     ofstream archivo(rutaCompleta);
-    if (!archivo.is_open()) {
+    if (!archivo.is_open())
+    {
         cout << "Error al crear el archivo de backup en la ruta: " << rutaCompleta << endl;
         return;
     }
 
     std::ifstream archivoOriginal(generalFile);
     std::string linea;
-    while (getline(archivoOriginal, linea)) {
+    while (getline(archivoOriginal, linea))
+    {
         archivo << linea << std::endl;
     }
     archivoOriginal.close();
@@ -258,9 +281,11 @@ void LibroManager::crearBackup(const string& nombreArchivo) {
 }
 
 // Restaurar backup y sobreescribir archivo
-void LibroManager::restaurarBackup(const string& nombreArchivo) {
+void LibroManager::restaurarBackup(const string &nombreArchivo)
+{
     ifstream archivo(nombreArchivo);
-    if (!archivo.is_open()) {
+    if (!archivo.is_open())
+    {
         cout << "Error al abrir el archivo de backup.\n";
         return;
     }
@@ -271,7 +296,8 @@ void LibroManager::restaurarBackup(const string& nombreArchivo) {
     evitarGuardar = true; // Evitar guardar durante la restauración
 
     string linea;
-    while (getline(archivo, linea)) {
+    while (getline(archivo, linea))
+    {
         stringstream ss(linea);
         string titulo, nombreAutor, isni, fechaNacStr, isbn, fechaPubStr;
 
@@ -308,13 +334,13 @@ void LibroManager::restaurarBackup(const string& nombreArchivo) {
     cout << "Backup restaurado: " << nombreArchivo << endl;
 }
 
-
-
 // Función para imprimir todos los títulos de los libros
-void LibroManager::imprimirTitulosLibros() const {
+void LibroManager::imprimirTitulosLibros() const
+{
     std::ifstream archivo(generalFile);
     std::string linea;
-    while (getline(archivo, linea)) {
+    while (getline(archivo, linea))
+    {
         std::stringstream ss(linea);
         std::string titulo;
         getline(ss, titulo, ';');
@@ -357,11 +383,8 @@ void LibroManager::buscarLibroCercano(const string& ruta, const int anioInicio, 
     return isbnTree.searchNearby(ruta, anioInicio, anioFin);
 }*/
 
-
-LibroManager::LibroManager(int t, const std::string& generalFile)
-    : bPlusTree(t), isbnTree(t), isniTree(t), bookTree(t), generalFile(generalFile) {}
-
-void LibroManager::insertLibro(Libro* libro) {
+void LibroManager::insertLibro(Libro *libro)
+{
     std::ofstream archivo(generalFile, std::ios::app);
     archivo << libro->getTitulo() << ";"
             << libro->getAutor().getNombre() << ";"
@@ -375,17 +398,21 @@ void LibroManager::insertLibro(Libro* libro) {
     isniTree.insert(libro->getAutor().getIsni(), libro->getTitulo());
 }
 
-Libro* LibroManager::searchByISBN(const std::string& isbn) {
-    std::string titulo = isbnTree.search(isbn);
-    if (titulo.empty()) return nullptr;
+Libro *LibroManager::searchByISBN(const std::string &isbn)
+{
+    Libro libro = isbnTree.search(isbn);
+    if (libro.getTitulo().empty())
+        return nullptr;
     // Load libro from generalFile using titulo
     std::ifstream archivo(generalFile);
     std::string linea;
-    while (getline(archivo, linea)) {
+    while (getline(archivo, linea))
+    {
         std::stringstream ss(linea);
         std::string tituloArchivo, nombreAutor, isni, fechaNac, isbnArchivo, fechaPub;
         getline(ss, tituloArchivo, ';');
-        if (tituloArchivo == titulo) {
+        if (tituloArchivo == libro.getTitulo())
+        {
             getline(ss, nombreAutor, ';');
             getline(ss, isni, ';');
             getline(ss, fechaNac, ';');
@@ -398,17 +425,21 @@ Libro* LibroManager::searchByISBN(const std::string& isbn) {
     return nullptr;
 }
 
-Libro* LibroManager::searchByISNI(const std::string& isni) {
-    std::string titulo = isniTree.search(isni);
-    if (titulo.empty()) return nullptr;
+Libro *LibroManager::searchByISNI(const std::string &isni)
+{
+    Libro libro = isniTree.search(isni);
+    if (libro.getTitulo().empty())
+        return nullptr;
     // Load libro from generalFile using titulo
     std::ifstream archivo(generalFile);
     std::string linea;
-    while (getline(archivo, linea)) {
+    while (getline(archivo, linea))
+    {
         std::stringstream ss(linea);
         std::string tituloArchivo, nombreAutor, isniArchivo, fechaNac, isbn, fechaPub;
         getline(ss, tituloArchivo, ';');
-        if (tituloArchivo == titulo) {
+        if (tituloArchivo == libro.getTitulo())
+        {
             getline(ss, nombreAutor, ';');
             getline(ss, isniArchivo, ';');
             getline(ss, fechaNac, ';');
@@ -421,18 +452,19 @@ Libro* LibroManager::searchByISNI(const std::string& isni) {
     return nullptr;
 }
 
-void LibroManager::saveTrees() {
+void LibroManager::saveTrees()
+{
     isbnTree.saveToFile("isbnTree.txt");
     isniTree.saveToFile("isniTree.txt");
 }
 
-void LibroManager::loadTrees() {
-    //isbnTree.loadFromFile("isbnTree.txt");
-    //isniTree.loadFromFile("isniTree.txt");
+void LibroManager::loadTrees()
+{
+    // isbnTree.loadFromFile("isbnTree.txt");
+    // isniTree.loadFromFile("isniTree.txt");
 }
 
-void LibroManager::limpiarLista() {
+void LibroManager::limpiarLista()
+{
     // Implementation to clear the list of books
 }
-
-

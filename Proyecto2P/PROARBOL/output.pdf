@@ -53,7 +53,7 @@ ET
 S
 BT
 50 710 Td
-(Dune) Tj
+(Dinosaurio) Tj
 150 0 Td
 (Abner) Tj
 150 0 Td
@@ -71,11 +71,21 @@ BT
 150 0 Td
 (05\05706\0572002) Tj
 ET
+BT
+50 670 Td
+(Holas) Tj
+150 0 Td
+(Abner) Tj
+150 0 Td
+(0000 0000 5294 8021) Tj
+150 0 Td
+(05\05706\0572002) Tj
+ET
 
 endstream
 endobj
 6 0 obj
-339
+457
 endobj
 7 0 obj
 <<
@@ -93,8 +103,8 @@ xref
 0000000123 00000 n
 0000000184 00000 n
 0000000370 00000 n
-0000000763 00000 n
-0000000782 00000 n
+0000000881 00000 n
+0000000900 00000 n
 trailer
 <<
 /Root 1 0 R
@@ -102,5 +112,5 @@ trailer
 /Size 8
 >>
 startxref
-880
+998
 %%EOF

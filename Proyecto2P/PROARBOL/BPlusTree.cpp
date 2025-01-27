@@ -1,9 +1,7 @@
 #include "BPlusTree.h"
-#
 #include <iostream>
 #include <sstream>
 #include <fstream>
-
 
 BPlusTreeNode::BPlusTreeNode(bool leaf) : isLeaf(leaf) {}
 
@@ -17,22 +15,26 @@ void BPlusTree::setRoot(BPlusTreeNode* newRoot) {
     root = newRoot;
 }
 
-void BPlusTree::insert(const std::string& key, const std::string& value) {
+void BPlusTree::insert(const std::string& key, const Libro& value) {
     if (root->keys.size() == 2 * minDegree - 1) {
         BPlusTreeNode* s = new BPlusTreeNode(false);
         s->children.push_back(root);
         splitChild(s, 0, root);
         root = s;
     }
-    insertNonFull(root, key, value);    
+    insertNonFull(root, key, value);
 }
 
-std::string BPlusTree::search(const std::string& key) {
+Libro BPlusTree::search(const std::string& key) {
     BPlusTreeNode* node = search(root, key);
-    if (node && node->data.find(key) != node->data.end()) {
-        return node->data[key];
+    if (node) {
+        for (const auto& pair : node->data) {
+            if (pair.first == key) {
+                return pair.second;
+            }
+        }
     }
-    return "";
+    return Libro("", "", Persona(), Fecha()); // Retornar un libro vacío si no se encuentra
 }
 
 void BPlusTree::saveToFile(const std::string& filename) {
@@ -47,13 +49,18 @@ void BPlusTree::saveToFile(const std::string& filename) {
     archivo.close();
 }
 
-
 void BPlusTree::saveNodeToFile(BPlusTreeNode* node, std::ofstream& archivo) {
     if (node == nullptr) return;
 
-    // Guardar las claves y valores del nodo
-    for (size_t i = 0; i < node->keys.size(); ++i) {
-        archivo << node->keys[i] << ";" << node->data[node->keys[i]] << std::endl;
+    // Guardar los libros del nodo
+    for (const auto& pair : node->data) {
+        const Libro& libro = pair.second;
+        archivo << libro.getTitulo() << ";"
+                << libro.getAutor().getNombre() << ";"
+                << libro.getAutor().getIsni() << ";"
+                << libro.getAutor().getFechaNacimiento().mostrar() << ";"
+                << libro.getIsbn() << ";"
+                << libro.getFechaPublicacion().mostrar() << std::endl;
     }
 
     // Recorrer los hijos del nodo
@@ -64,13 +71,14 @@ void BPlusTree::saveNodeToFile(BPlusTreeNode* node, std::ofstream& archivo) {
     }
 }
 
-
-
-void BPlusTree::insertNonFull(BPlusTreeNode* node, const std::string& key, const std::string& value) {
+void BPlusTree::insertNonFull(BPlusTreeNode* node, const std::string& key, const Libro& value) {
     if (node->isLeaf) {
         node->keys.push_back(key);
-        node->data[key] = value;
+        node->data.push_back({key, value});
         std::sort(node->keys.begin(), node->keys.end());
+        std::sort(node->data.begin(), node->data.end(), [](const auto& a, const auto& b) {
+            return a.first < b.first;
+        });
     } else {
         int i = node->keys.size() - 1;
         while (i >= 0 && key < node->keys[i]) {
@@ -96,8 +104,8 @@ void BPlusTree::splitChild(BPlusTreeNode* node, int i, BPlusTreeNode* y) {
         z->children.assign(y->children.begin() + minDegree, y->children.end());
         y->children.resize(minDegree);
     } else {
-        z->data.insert(y->data.begin(), y->data.end());
-        y->data.clear();
+        z->data.assign(y->data.begin() + minDegree, y->data.end());
+        y->data.resize(minDegree - 1);
     }
 
     node->children.insert(node->children.begin() + i + 1, z);
@@ -105,17 +113,20 @@ void BPlusTree::splitChild(BPlusTreeNode* node, int i, BPlusTreeNode* y) {
     y->keys.pop_back();
 }
 
-void BPlusTree::traverse(BPlusTreeNode* node, std::ofstream& archivo) {
+void BPlusTree::traverse(BPlusTreeNode* node, std::ostream& out) {
+    node = root;
+    if (node == nullptr) return;
+
     if (node->isLeaf) {
-        for (const auto& key : node->keys) {
-            archivo << key << " " << node->data[key] << std::endl;
+        for (const auto& pair : node->data) {
+            cout << pair.first << " " << pair.second.getTitulo() << std::endl;
         }
     } else {
         for (size_t i = 0; i < node->keys.size(); i++) {
-            traverse(node->children[i], archivo);
-            archivo << node->keys[i] << std::endl;
+            traverse(node->children[i], out);
+            out << node->keys[i] << std::endl;
         }
-        traverse(node->children[node->keys.size()], archivo);
+        traverse(node->children[node->keys.size()], out);
     }
 }
 
@@ -133,25 +144,15 @@ BPlusTreeNode* BPlusTree::search(BPlusTreeNode* node, const std::string& key) {
     return search(node->children[i], key);
 }
 
-void BPlusTree::sort() {
-    std::vector<std::pair<std::string, std::string>> elements;
-    collectElements(root, elements);
-    std::sort(elements.begin(), elements.end());
-    clearTree(root);
-    for (const auto& element : elements) {
-        insert(element.first, element.second);
-    }
-}
-
-void BPlusTree::collectElements(BPlusTreeNode* node, std::vector<std::pair<std::string, std::string>>& elements) {
+void BPlusTree::collectElements(BPlusTreeNode* node, std::vector<std::pair<std::string, Libro>>& elements) {
     if (node->isLeaf) {
-        for (const auto& key : node->keys) {
-            elements.emplace_back(key, node->data[key]);
+        for (const auto& pair : node->data) {
+            elements.push_back(pair);
         }
     } else {
-        for (size_t i = 0; i < node->keys.size(); i++) {
+        for (size_t i = 0; i < node->keys.size(); ++i) {
             collectElements(node->children[i], elements);
-            elements.emplace_back(node->keys[i], node->data[node->keys[i]]);
+            elements.push_back({node->keys[i], node->data[i].second});
         }
         collectElements(node->children[node->keys.size()], elements);
     }
@@ -159,96 +160,56 @@ void BPlusTree::collectElements(BPlusTreeNode* node, std::vector<std::pair<std::
 
 void BPlusTree::clearTree(BPlusTreeNode* node) {
     if (!node->isLeaf) {
-        for (auto child : node->children) {
-            clearTree(child);
+        for (size_t i = 0; i <= node->keys.size(); ++i) {
+            clearTree(node->children[i]);
         }
     }
     delete node;
 }
 
-void BPlusTree::insertObject(const std::string& isbn, const Libro& libro) {
-    if (root->keys.size() == 2 * minDegree - 1) {
-        BPlusTreeNode* s = new BPlusTreeNode(false);
-        s->children.push_back(root);
-        splitChild(s, 0, root);
-        root = s;
+void BPlusTree::loadFromFile(const std::string& filename) {
+    std::ifstream archivo(filename);
+    if (!archivo.is_open()) {
+        std::cout << "Error al abrir el archivo para cargar el árbol B+.\n";
+        return;
     }
-    insertNonFullObject(root, isbn, libro);    
+
+    // Limpiar el árbol actual
+    clearTree(root);
+    root = new BPlusTreeNode(true);
+
+    std::string line;
+    while (std::getline(archivo, line)) {
+        std::istringstream iss(line);
+        std::string titulo, nombreAutor, isni, fechaNac, isbn, fechaPub;
+        if (std::getline(iss, titulo, ';') && std::getline(iss, isbn, ';') &&
+            std::getline(iss, nombreAutor, ';') && std::getline(iss, isni, ';') &&
+            std::getline(iss, fechaNac, ';') && std::getline(iss, fechaPub)) {
+            Persona autor(nombreAutor, isni, Fecha::crearDesdeCadena(fechaNac));
+            Libro libro(titulo, isbn, autor, Fecha::crearDesdeCadena(fechaPub));
+            insertObject(isbn, libro);
+        }
+    }
+
+    archivo.close();
+}
+
+void BPlusTree::insertObject(const std::string& isbn, const Libro& libro) {
+    insert(isbn, libro);
 }
 
 Libro BPlusTree::searchObject(const std::string& isbn) {
-    BPlusTreeNode* node = search(root, isbn);
-    if (node && node->data.find(isbn) != node->data.end()) {
-        return node->data[isbn];
-    }
-    return Libro(); // Return a default-constructed Libro object if not found
+    return search(isbn);
 }
 
 void BPlusTree::insertNonFullObject(BPlusTreeNode* node, const std::string& isbn, const Libro& libro) {
-    if (node->isLeaf) {
-        node->keys.push_back(isbn);
-        node->libros.emplace(isbn, libro);
-        node->data[isbn] = isbn;
-        std::sort(node->keys.begin(), node->keys.end());
-    } else {
-        int i = node->keys.size() - 1;
-        while (i >= 0 && isbn < node->keys[i]) {
-            i--;
-        }
-        i++;
-        if (node->children[i]->keys.size() == 2 * minDegree - 1) {
-            splitChild(node, i, node->children[i]);
-            if (isbn > node->keys[i]) {
-                i++;
-            }
-        }
-        insertNonFullObject(node->children[i], isbn, libro);
-    }
-}
-
-void BPlusTree::collectElementsObject(BPlusTreeNode* node, std::vector<std::pair<std::string, Libro>>& elements) {
-    if (node->isLeaf) {
-        for (const auto& key : node->keys) {
-            elements.emplace_back(key, node->data[key]);
-        }
-    } else {
-        for (size_t i = 0; i < node->keys.size(); i++) {
-            collectElementsObject(node->children[i], elements);
-            elements.emplace_back(node->keys[i], node->data[node->keys[i]]);
-        }
-        collectElementsObject(node->children[node->keys.size()], elements);
-    }
+    insertNonFull(node, isbn, libro);
 }
 
 void BPlusTree::saveNodeToFileObject(BPlusTreeNode* node, std::ofstream& archivo) {
-    if (!node) return;
+    saveNodeToFile(node, archivo);
+}
 
-    if (node->isLeaf) {
-        for (const auto& key : node->keys) {
-            const Libro& libro = node->data[key];
-            const Fecha& fecha = libro.getFechaPublicacion();
-            archivo << key << ";"
-                    << libro.getTitulo() << ";"
-                    << libro.getIsbn() << ";"
-                    << libro.getAutor().getNombre() << ";"
-                    << libro.getAutor().getIsni() << ";"
-                    << fecha.getDia() << "/" << fecha.getMes() << "/" << fecha.getAnio() 
-                    << std::endl;
-        }
-    } else {
-        for (size_t i = 0; i < node->keys.size(); ++i) {
-            saveNodeToFileObject(node->children[i], archivo);
-            
-            const Libro& libro = node->data[node->keys[i]];
-            const Fecha& fecha = libro.getFechaPublicacion();
-            archivo << node->keys[i] << ";"
-                    << libro.getTitulo() << ";"
-                    << libro.getIsbn() << ";"
-                    << libro.getAutor().getNombre() << ";"
-                    << libro.getAutor().getIsni() << ";"
-                    << fecha.getDia() << "/" << fecha.getMes() << "/" << fecha.getAnio() 
-                    << std::endl;
-        }
-        saveNodeToFileObject(node->children[node->keys.size()], archivo);
-    }
+void BPlusTree::collectElementsObject(BPlusTreeNode* node, std::vector<std::pair<std::string, Libro>>& elements) {
+    collectElements(node, elements);
 }

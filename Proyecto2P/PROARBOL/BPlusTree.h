@@ -11,37 +11,36 @@ public:
     bool isLeaf;
     std::vector<std::string> keys;
     std::vector<BPlusTreeNode*> children;
-    std::map<std::string, std::string> data; // For leaf nodes
+    std::vector<std::pair<std::string, Libro>> data; // Cambiar a vector de pares
 
     BPlusTreeNode(bool leaf);
 };
+
 
 class BPlusTree {
 private:
     BPlusTreeNode* root;
     int minDegree;
 
-public:
-    BPlusTreeNode* getRoot() const;
-    void setRoot(BPlusTreeNode* newRoot);
-    void insertNonFull(BPlusTreeNode* node, const std::string& key, const std::string& value);
+    void insertNonFull(BPlusTreeNode* node, const std::string& key, const Libro& value);
     void splitChild(BPlusTreeNode* node, int i, BPlusTreeNode* y);
-    void traverse(BPlusTreeNode* node, std::ofstream& archivo);
     BPlusTreeNode* search(BPlusTreeNode* node, const std::string& key);
-    void collectElements(BPlusTreeNode* node, std::vector<std::pair<std::string, std::string>>& elements);
+    void collectElements(BPlusTreeNode* node, std::vector<std::pair<std::string, Libro>>& elements);
     void clearTree(BPlusTreeNode* node);
     void saveNodeToFile(BPlusTreeNode* node, std::ofstream& archivo);
     BPlusTreeNode* loadNodeFromFile(std::ifstream& archivo);
 
 public:
+    BPlusTreeNode* getRoot() const;
+    void setRoot(BPlusTreeNode* newRoot);
+
+    void traverse(BPlusTreeNode* node, std::ostream& out);
     BPlusTree(int t);
-    void insert(const std::string& key, const std::string& value);
-    void insert_object(const std::string& key, Libro libro);
-    std::string search(const std::string& key);
+    void insert(const std::string& key, const Libro& value);
+    Libro search(const std::string& key);
     void saveToFile(const std::string& filename);
     void loadFromFile(const std::string& filename);
     void sort();
-
     // Trees objects
     void insertObject(const std::string& isbn, const Libro& libro);
     Libro searchObject(const std::string& isbn);
