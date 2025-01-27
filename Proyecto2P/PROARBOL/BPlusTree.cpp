@@ -119,7 +119,19 @@ void BPlusTree::traverse(BPlusTreeNode* node, std::ostream& out) {
 
     if (node->isLeaf) {
         for (const auto& pair : node->data) {
-            cout << pair.first << " " << pair.second.getTitulo() << std::endl;
+                cout << left << setw(41) << "Título" 
+        << setw(25) << "Autor" 
+        << setw(25) << "ISNI" 
+        << setw(20) << "ISBN"
+        << setw(15) << "Publicación" 
+        << setw(15) << "Nac. Autor" << endl;
+    cout << string(140, '-') << endl;
+    cout << left << setw(40) << pair.second.getTitulo()
+            << setw(25) << pair.second.getAutor().getNombre()
+            << setw(25) << pair.second.getAutor().getIsni() 
+            << setw(20) << pair.second.getIsbn()
+            << setw(15) << pair.second.getFechaPublicacion().mostrar()
+            << setw(15) << pair.second.getAutor().getFechaNacimiento().mostrar() << endl;
         }
     } else {
         for (size_t i = 0; i < node->keys.size(); i++) {
