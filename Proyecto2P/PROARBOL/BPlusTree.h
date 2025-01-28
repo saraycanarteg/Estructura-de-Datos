@@ -14,6 +14,7 @@ public:
     std::vector<std::pair<std::string, Libro>> data; // Cambiar a vector de pares
 
     BPlusTreeNode(bool leaf);
+ 
 };
 
 
@@ -52,6 +53,7 @@ public:
     void saveToFile(const std::string& filename);
     void loadFromFile(const std::string& filename);
     void sort();
+    void createBackup(const string& filename);
     
     // Trees objects
     void insertObject(const std::string& isbn, const Libro& libro);

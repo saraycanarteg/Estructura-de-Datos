@@ -72,6 +72,8 @@ int ingresarAnio(const string& mensaje) {
 void mostrarMenu(BPlusTree& arbol) {
     arbol.loadFromFile("book_tree.txt");
     LibroManager libroManager;
+    BackupManager backupManager;
+    backupManager.crearCarpetaSiNoExiste("backup");
     vector<string> opciones = {
         "Agregar libro",
         "Buscar libro",
@@ -84,7 +86,7 @@ void mostrarMenu(BPlusTree& arbol) {
         "Salir"
     };
     int seleccion = 0;
-    string ruta = "libros.txt"; // Ruta del archivo
+    string ruta = "book_tree.txt"; // Ruta del archivo
     int anioInicio, anioFin;
 
     while (true) {
@@ -196,28 +198,21 @@ void mostrarMenu(BPlusTree& arbol) {
                BPlusTreeNode *node;
                ofstream archivo("book_tree.txt", std::ios::app); 
                arbol.traverse(node, archivo); 
+
             } else if (opciones[seleccion] == "Exportar en archivo PDF") {
-                const std::string inputFile = "libros.txt";
+                const std::string inputFile = "book_tree.txt";
                 createPDF(inputFile);
+
             } else if (opciones[seleccion] == "Crear backup") {
                 time_t ahora = time(0);
                 tm* tiempo = localtime(&ahora);
                 stringstream ss;
                 ss << (1900 + tiempo->tm_year) << "_" << (1 + tiempo->tm_mon) << "_" << tiempo->tm_mday << "_"
-                << tiempo->tm_hour << "_" << tiempo->tm_min << "_" << tiempo->tm_sec << ".txt";
-                arbol.saveToFile(ss.str());
-            } else if (opciones[seleccion] == "Exportar en archivo PDF"){
-                const string inputFile = "book_tree.txt";
-                createPDF(inputFile);
-            } else if (opciones[seleccion] == "Crear backup") {
-                time_t ahora = time(0);
-                tm* tiempo = localtime(&ahora);
-                stringstream ss;
-                ss << (1900 + tiempo->tm_year) << "_" << (1 + tiempo->tm_mon) << "_" << tiempo->tm_mday << "_"
-                << tiempo->tm_hour << "_" << tiempo->tm_min << "_" << tiempo->tm_sec << ".txt";
-                //lista.crearBackup(ss.str());
-            }else if (opciones[seleccion] == "Restaurar backup") {
-               //BackupManager::restaurarBackup(libroManager); 
+                   << tiempo->tm_hour << "_" << tiempo->tm_min << "_" << tiempo->tm_sec << ".txt";
+                arbol.createBackup(ss.str());
+                cout << "Backup creado: " << ss.str() << endl;
+            } else if (opciones[seleccion] == "Restaurar backup") {
+                backupManager.restaurarBackup(libroManager);
             } else if (opciones[seleccion] == "Buscar por rango") {
                 /*const std::string inputFile12 = "libros.txt";
 

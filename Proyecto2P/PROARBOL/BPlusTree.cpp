@@ -64,6 +64,17 @@ void BPlusTree::saveToFile(const std::string& filename) {
     archivo.close();
 }
 
+void BPlusTree::createBackup(const string& filename) {
+    ofstream file("backup\\" + filename, ios::out | ios::trunc);
+    if (!file) {
+        cerr << "Error al abrir el archivo para guardar: " << filename << endl;
+        return;
+    }
+    BPlusTreeNode* node = root;
+    saveNodeToFile(node, file);
+    file.close();
+}
+
 void BPlusTree::saveNodeToFile(BPlusTreeNode* node, std::ofstream& archivo) {
     if (node == nullptr) return;
 
@@ -461,3 +472,4 @@ std::string BPlusTree::getSucc(BPlusTreeNode* node, int idx) {
     }
     return cur->keys[0];
 }
+

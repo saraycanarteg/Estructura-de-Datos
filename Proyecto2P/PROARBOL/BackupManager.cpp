@@ -17,7 +17,6 @@
 
 using namespace std;
 
-// Implementación de los métodos de BackupManager
 
 void BackupManager::crearCarpetaSiNoExiste(const string& ruta) {
     struct _stat st;
@@ -66,10 +65,23 @@ void BackupManager::restaurarBackup(LibroManager& lista) {
         return;
     }
 
+    // Filtrar archivos de backup
+    vector<string> archivosBackup;
+    for (const auto& archivo : archivos) {
+        if (archivo.find(".txt") != string::npos) {
+            archivosBackup.push_back(archivo);
+        }
+    }
+
+    if (archivosBackup.empty()) {
+        cout << "No se encontraron archivos de backup en la carpeta " << carpetaBackup << ".\n";
+        return;
+    }
+
     // Mostrar los archivos disponibles
     cout << "Archivos disponibles para restaurar:\n";
-    for (size_t i = 0; i < archivos.size(); ++i) {
-        cout << i + 1 << ". " << archivos[i] << endl;
+    for (size_t i = 0; i < archivosBackup.size(); ++i) {
+        cout << i + 1 << ". " << archivosBackup[i] << endl;
     }
 
     // Seleccionar archivo
@@ -77,11 +89,32 @@ void BackupManager::restaurarBackup(LibroManager& lista) {
     cout << "Seleccione un archivo para restaurar (ingrese el número): ";
     cin >> seleccion;
 
-    if (seleccion < 1 || seleccion > archivos.size()) {
+    if (seleccion < 1 || seleccion > archivosBackup.size()) {
         cout << "Selección invalida.\n";
         return;
     }
 
-    string archivoSeleccionado = carpetaBackup + "\\" + archivos[seleccion - 1];
-    lista.restaurarBackup(archivoSeleccionado);
+    string archivoSeleccionado = carpetaBackup + "\\" + archivosBackup[seleccion - 1];
+    cout << "Cargando backup desde: " << archivoSeleccionado << endl;
+
+    // Restaurar el archivo de backup
+    ifstream archivoBackup(archivoSeleccionado, ios::binary);
+    if (!archivoBackup) {
+        cerr << "Error al abrir el archivo de backup: " << archivoSeleccionado << endl;
+        return;
+    }
+
+    ofstream archivoDestino("book_tree.txt", ios::binary);
+    if (!archivoDestino) {
+        cerr << "Error al abrir el archivo de destino: book_tree.txt" << endl;
+        archivoBackup.close();
+        return;
+    }
+
+    archivoDestino << archivoBackup.rdbuf();
+
+    archivoBackup.close();
+    archivoDestino.close();
+
+    cout << "Backup restaurado: " << archivoSeleccionado << endl;
 }
