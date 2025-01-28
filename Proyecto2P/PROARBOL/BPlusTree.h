@@ -12,7 +12,7 @@ public:
     std::vector<std::string> keys;
     std::vector<BPlusTreeNode*> children;
     std::vector<std::pair<std::string, Libro>> data; // Cambiar a vector de pares
-
+    BPlusTreeNode* nextLeaf = nullptr;
     BPlusTreeNode(bool leaf);
  
 };
@@ -39,7 +39,6 @@ private:
     void borrowFromNext(BPlusTreeNode* node, int idx);
     void merge(BPlusTreeNode* node, int idx);
     int findKey(BPlusTreeNode* node, const std::string& key);
-    void easy_search(BPlusTreeNode* node, std::ostream& out);
     std::string getSucc(BPlusTreeNode* node, int idx);
     std::string getPred(BPlusTreeNode* node, int idx);
 
@@ -47,6 +46,7 @@ public:
     BPlusTreeNode* getRoot() const;
     void setRoot(BPlusTreeNode* newRoot);
 
+    void easy_search(BPlusTreeNode* node, Libro& return_value, string key);
     void traverse(BPlusTreeNode* node, std::ostream& out);
     BPlusTree(int t);
     void insert(const std::string& key, const Libro& value);

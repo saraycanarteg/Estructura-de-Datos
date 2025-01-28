@@ -177,7 +177,8 @@ void mostrarMenu(BPlusTree& arbol) {
                 string isbn;
                 cout << "Ingrese el ISBN del libro a buscar: ";
                 cin >> ws; getline(cin, isbn);
-                Libro libro = arbol.search(isbn);
+                Libro libro;
+                arbol.easy_search(arbol.getRoot(), libro, isbn);
                 if (!libro.getTitulo().empty()) {
                     cout << "Información del libro: " << endl;
                     libro.mostrar();
@@ -197,6 +198,7 @@ void mostrarMenu(BPlusTree& arbol) {
                 }
                 arbol.loadFromFile("book_tree.txt");
             } else if (opciones[seleccion] == "Ver todos los libros") {
+                arbol.loadFromFile("book_tree.txt");    
                BPlusTreeNode *node;
                ofstream archivo("book_tree.txt", std::ios::app); 
                arbol.traverse(node, archivo); 

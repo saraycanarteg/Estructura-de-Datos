@@ -25,17 +25,41 @@ void BPlusTree::insert(const std::string& key, const Libro& value) {
     insertNonFull(root, key, value);
 }
 
-Libro BPlusTree::search(const std::string& key) {
-    BPlusTreeNode* node = search(root, key);
-    if (node) {
+void BPlusTree::easy_search(BPlusTreeNode* node, Libro& return_value, string key ){
+        
+    if (node == nullptr) return;    
+    
+    if (node->isLeaf) {
         for (const auto& pair : node->data) {
-            if (pair.first == key) {
-                return pair.second;
+            if(key ==pair.second.getIsbn()){
+                return_value = pair.second;
             }
         }
-    }
+    } else {
 
-    return Libro("", "", Persona(), Fecha()); // Retornar un libro vacío si no se encuentra
+        for (size_t i = 0; i < node->keys.size(); i++) {
+            easy_search(node->children[i], return_value, key);
+        }
+        easy_search(node->children[node->keys.size()], return_value, key);
+    }
+}
+
+Libro BPlusTree::search(const std::string& key) {
+    BPlusTreeNode* current = root;
+    while (!current->isLeaf) {
+        int i = 0;
+        while (i < current->keys.size() && key > current->keys[i]) {
+            i++;
+        }
+        current = current->children[i];
+    }
+    
+    for (size_t i = 0; i < current->keys.size(); i++) {
+        if (current->keys[i] == key) {
+            return current->data[i].second;
+        }
+    }
+    return Libro();
 }
 
 Libro BPlusTree::searchByIsni(const std::string& isni) {
@@ -107,18 +131,24 @@ void BPlusTree::saveNodeToFile(BPlusTreeNode* node, std::ofstream& archivo) {
 
 void BPlusTree::insertNonFull(BPlusTreeNode* node, const std::string& key, const Libro& value) {
     int i = node->keys.size() - 1;
+
     if (node->isLeaf) {
-        node->keys.push_back(key);
-        node->data.push_back({key, value});
-        std::sort(node->keys.begin(), node->keys.end());
-        std::sort(node->data.begin(), node->data.end(), [](const auto& a, const auto& b) {
-            return a.first < b.first;
-        });
-    } else {
+        // Encontrar la posición correcta para insertar
         while (i >= 0 && key < node->keys[i]) {
             i--;
         }
         i++;
+        
+        // Insertar en la posición correcta
+        node->keys.insert(node->keys.begin() + i, key);
+        node->data.insert(node->data.begin() + i, {key, value});
+    } else {
+        // Encontrar el hijo correcto
+        while (i >= 0 && key < node->keys[i]) {
+            i--;
+        }
+        i++;
+
         if (node->children[i]->keys.size() == 2 * minDegree - 1) {
             splitChild(node, i, node->children[i]);
             if (key > node->keys[i]) {
@@ -129,22 +159,51 @@ void BPlusTree::insertNonFull(BPlusTreeNode* node, const std::string& key, const
     }
 }
 
-void BPlusTree::splitChild(BPlusTreeNode* node, int i, BPlusTreeNode* y) {
-    BPlusTreeNode* z = new BPlusTreeNode(y->isLeaf);
-    z->keys.assign(y->keys.begin() + minDegree, y->keys.end());
-    y->keys.resize(minDegree - 1);
-
-    if (!y->isLeaf) {
-        z->children.assign(y->children.begin() + minDegree, y->children.end());
-        y->children.resize(minDegree);
-    } else {
-        z->data.assign(y->data.begin() + minDegree, y->data.end());
-        y->data.resize(minDegree - 1);
+void BPlusTree::splitChild(BPlusTreeNode* parent, int index, BPlusTreeNode* child) {
+    BPlusTreeNode* newChild = new BPlusTreeNode(child->isLeaf);
+    
+    // Dividir las claves y datos
+    int mid = minDegree - 1;
+    
+    // Para nodos hoja
+    if (child->isLeaf) {
+        // Copiar la segunda mitad de las claves y datos al nuevo nodo
+        for (int i = mid; i < child->keys.size(); i++) {
+            newChild->keys.push_back(child->keys[i]);
+            newChild->data.push_back(child->data[i]);
+        }
+        
+        // Mantener la primera mitad en el nodo original
+        child->keys.resize(mid);
+        child->data.resize(mid);
+        
+        // Mantener la conexión entre nodos hoja
+        newChild->nextLeaf = child->nextLeaf;
+        child->nextLeaf = newChild;
+    } 
+    // Para nodos internos
+    else {
+        // Copiar la segunda mitad de las claves al nuevo nodo
+        for (int i = mid + 1; i < child->keys.size(); i++) {
+            newChild->keys.push_back(child->keys[i]);
+            newChild->data.push_back(child->data[i]);
+        }
+        
+        // Copiar los hijos correspondientes
+        for (int i = mid + 1; i <= child->children.size(); i++) {
+            newChild->children.push_back(child->children[i]);
+        }
+        
+        // Ajustar el nodo original
+        child->keys.resize(mid);
+        child->data.resize(mid);
+        child->children.resize(mid + 1);
     }
-
-    node->children.insert(node->children.begin() + i + 1, z);
-    node->keys.insert(node->keys.begin() + i, y->keys[minDegree - 1]);
-    y->keys.pop_back();
+    
+    // Insertar la clave media en el padre
+    parent->keys.insert(parent->keys.begin() + index, child->keys[mid]);
+    parent->data.insert(parent->data.begin() + index, child->data[mid]);
+    parent->children.insert(parent->children.begin() + index + 1, newChild);
 }
 
 void BPlusTree::traverse(BPlusTreeNode* node, std::ostream& out) {
@@ -164,9 +223,7 @@ void BPlusTree::traverse(BPlusTreeNode* node, std::ostream& out) {
 
 void BPlusTree::traverseHelper(BPlusTreeNode* node, std::ostream& out) {
     
-    if (node == nullptr) return;
-    
-    
+    if (node == nullptr) return;    
 
     if (node->isLeaf) {
         for (const auto& pair : node->data) {
