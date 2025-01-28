@@ -34,6 +34,7 @@ Libro BPlusTree::search(const std::string& key) {
             }
         }
     }
+
     return Libro("", "", Persona(), Fecha()); // Retornar un libro vacío si no se encuentra
 }
 
@@ -87,6 +88,13 @@ void BPlusTree::saveNodeToFile(BPlusTreeNode* node, std::ofstream& archivo) {
                 << libro.getAutor().getFechaNacimiento().mostrar() << ";"
                 << libro.getIsbn() << ";"
                 << libro.getFechaPublicacion().mostrar() << std::endl;
+
+        cout << endl<< libro.getTitulo() << ";"
+                << libro.getAutor().getNombre() << ";"
+                << libro.getAutor().getIsni() << ";"
+                << libro.getAutor().getFechaNacimiento().mostrar() << ";"
+                << libro.getIsbn() << ";"
+                << libro.getFechaPublicacion().mostrar() << std::endl;
     }
 
     // Recorrer los hijos del nodo
@@ -98,6 +106,7 @@ void BPlusTree::saveNodeToFile(BPlusTreeNode* node, std::ofstream& archivo) {
 }
 
 void BPlusTree::insertNonFull(BPlusTreeNode* node, const std::string& key, const Libro& value) {
+    int i = node->keys.size() - 1;
     if (node->isLeaf) {
         node->keys.push_back(key);
         node->data.push_back({key, value});
@@ -106,7 +115,6 @@ void BPlusTree::insertNonFull(BPlusTreeNode* node, const std::string& key, const
             return a.first < b.first;
         });
     } else {
-        int i = node->keys.size() - 1;
         while (i >= 0 && key < node->keys[i]) {
             i--;
         }
@@ -155,7 +163,10 @@ void BPlusTree::traverse(BPlusTreeNode* node, std::ostream& out) {
 }
 
 void BPlusTree::traverseHelper(BPlusTreeNode* node, std::ostream& out) {
+    
     if (node == nullptr) return;
+    
+    
 
     if (node->isLeaf) {
         for (const auto& pair : node->data) {

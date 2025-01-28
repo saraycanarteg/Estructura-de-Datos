@@ -18,10 +18,9 @@ int main() {
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
     
-    BackupManager::crearCarpetaSiNoExiste("backup");
+    //BackupManager::crearCarpetaSiNoExiste("backup");
 
     BPlusTree arbol(3); 
-
     mostrarMenu(arbol);
     return 0;
 }

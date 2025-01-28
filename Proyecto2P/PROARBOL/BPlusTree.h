@@ -39,6 +39,7 @@ private:
     void borrowFromNext(BPlusTreeNode* node, int idx);
     void merge(BPlusTreeNode* node, int idx);
     int findKey(BPlusTreeNode* node, const std::string& key);
+    void easy_search(BPlusTreeNode* node, std::ostream& out);
     std::string getSucc(BPlusTreeNode* node, int idx);
     std::string getPred(BPlusTreeNode* node, int idx);
 

@@ -10,7 +10,6 @@
 
 #include "Menu.h"
 #include "BackupManager.cpp"
-#include <iostream>
 #include "Validaciones.cpp" 
 #include <conio.h> 
 #include <vector>
@@ -73,7 +72,7 @@ void mostrarMenu(BPlusTree& arbol) {
     arbol.loadFromFile("book_tree.txt");
     LibroManager libroManager;
     BackupManager backupManager;
-    backupManager.crearCarpetaSiNoExiste("backup");
+    //backupManager.crearCarpetaSiNoExiste("backup");
     vector<string> opciones = {
         "Agregar libro",
         "Buscar libro",
@@ -152,6 +151,7 @@ void mostrarMenu(BPlusTree& arbol) {
                         // Crear el autor
                         Fecha fechaNacimientoAutor = Fecha::crearDesdeCadena(fechaNac);
                         autor = Persona(nombreAutor, isni, fechaNacimientoAutor);
+                        
                     }
 
 
@@ -170,6 +170,7 @@ void mostrarMenu(BPlusTree& arbol) {
                     arbol.insertObject(isbn, Libro(titulo, isbn, autor, fechaPublicacion));
                     
                     libroManager.agregarLibro(Libro(titulo, isbn, autor, fechaPublicacion));
+                    arbol.loadFromFile("book_tree.txt");
                     
                 }
             } else if (opciones[seleccion] == "Buscar libro") {
@@ -194,6 +195,7 @@ void mostrarMenu(BPlusTree& arbol) {
                 } else {
                     cout << "Libro no encontrado.\n";
                 }
+                arbol.loadFromFile("book_tree.txt");
             } else if (opciones[seleccion] == "Ver todos los libros") {
                BPlusTreeNode *node;
                ofstream archivo("book_tree.txt", std::ios::app); 
@@ -233,7 +235,7 @@ void mostrarMenu(BPlusTree& arbol) {
             } else if (opciones[seleccion] == "Salir") {
                 break;
             }
-            
+            arbol.loadFromFile("book_tree.txt");
             cout << "Presione cualquier tecla para continuar...\n";
             _getch();
         } else if (tecla == 59) { // F1
