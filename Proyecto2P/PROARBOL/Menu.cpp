@@ -75,13 +75,6 @@ void mostrarMenu(BPlusTree& arbol) {
     vector<string> opciones = {
         "Agregar libro",
         "Buscar libro",
-        // "Buscar libro con autocompletado",
-        // "Buscar libro con errores tipograficos",
-        // "Función para listar libros por primer letra del título",
-        // "Buscar libro por subcadena",
-        // "Buscar el libro más corto y el más largo",
-        // "Buscar libro por ISBN con autocompletado",
-        // "Encontrar libros cercanos a un título",
         "Eliminar libro",
         "Ver todos los libros",
         "Exportar en archivo PDF",
@@ -115,22 +108,19 @@ void mostrarMenu(BPlusTree& arbol) {
                 string fechaPub, fechaNac;
                 Persona autor;
 
-                // Solicitar titulo del libro
                 do {
                     cout << "Ingrese título del libro: ";
                     getline(cin, titulo);
                 } while (!Validaciones::validarTitulo(titulo, "Título"));
 
-                // Solicitar ISBN
                 do {
                     cout << "Ingrese ISBN: ";
                     getline(cin, isbn);
                 } while (!Validaciones::validarIsbn(isbn));
 
-                // Verificar si el ISBN ya existe
                 if (!arbol.search(isbn).getTitulo().empty()) {
                     cout << "El ISBN ya existe. Información del libro existente:\n";
-                    cout << "Información del libro: " << endl;
+                    cout << endl;
                     arbol.search(isbn).mostrar();
                 } else {
                     // Solicitar ISNI del autor
@@ -138,23 +128,30 @@ void mostrarMenu(BPlusTree& arbol) {
                         cout << "Ingrese ISNI del autor: ";
                         getline(cin, isni);
                     } while (!Validaciones::validarIsni(isni));
+                    Libro libroExistente = arbol.searchByIsni(isni);
+                    Persona autor;
+                    if (!libroExistente.getAutor().getNombre().empty()) {
+                        cout << "Autor existente encontrado. Usando información del autor.\n";
+                        autor = libroExistente.getAutor();
+                        fechaNac = autor.getFechaNacimiento().mostrar(); 
+                    } else {
+                        string nombreAutor;
+                        do {
+                            cout << "Ingrese nombre del autor: ";
+                            getline(cin, nombreAutor);
+                        } while (!Validaciones::validarTituloNombre(nombreAutor, "Nombre del Autor"));
 
-                    // Solicitar nombre del autor
-                    string nombreAutor;
-                    do {
-                        cout << "Ingrese nombre del autor: ";
-                        getline(cin, nombreAutor);
-                    } while (!Validaciones::validarTituloNombre(nombreAutor, "Nombre del Autor"));
+                        // Solicitar fecha de nacimiento del autor
+                        do {
+                            cout << "Ingrese fecha de nacimiento del autor (DD-MM-YYYY): ";
+                            getline(cin, fechaNac);
+                        } while (!Validaciones::validarFecha(fechaNac));
 
-                    // Solicitar fecha de nacimiento del autor
-                    do {
-                        cout << "Ingrese fecha de nacimiento del autor (DD-MM-YYYY): ";
-                        getline(cin, fechaNac);
-                    } while (!Validaciones::validarFecha(fechaNac));
+                        // Crear el autor
+                        Fecha fechaNacimientoAutor = Fecha::crearDesdeCadena(fechaNac);
+                        autor = Persona(nombreAutor, isni, fechaNacimientoAutor);
+                    }
 
-                    // Crear el autor
-                    Fecha fechaNacimientoAutor = Fecha::crearDesdeCadena(fechaNac);
-                    autor = Persona(nombreAutor, isni, fechaNacimientoAutor);
 
                     // Solicitar fecha de publicación del libro
                     do {
@@ -185,11 +182,16 @@ void mostrarMenu(BPlusTree& arbol) {
                     cout << "Libro no encontrado.\n";
                 }
             } else if (opciones[seleccion] == "Eliminar libro") {
-            /*ng isbn;
+                string isbn;
                 cout << "Ingrese el ISBN del libro a eliminar: ";
                 cin >> ws; getline(cin, isbn);
-                // Eliminar usando ISBN
-                arbol.remove(isbn); // Assuming you have a remove method in BPlusTree*/
+                Libro libro = arbol.search(isbn);
+                if (!libro.getTitulo().empty()) {
+                    arbol.remove(isbn);
+                    cout << "Libro eliminado exitosamente.\n";
+                } else {
+                    cout << "Libro no encontrado.\n";
+                }
             } else if (opciones[seleccion] == "Ver todos los libros") {
                BPlusTreeNode *node;
                ofstream archivo("book_tree.txt", std::ios::app); 
@@ -204,8 +206,18 @@ void mostrarMenu(BPlusTree& arbol) {
                 ss << (1900 + tiempo->tm_year) << "_" << (1 + tiempo->tm_mon) << "_" << tiempo->tm_mday << "_"
                 << tiempo->tm_hour << "_" << tiempo->tm_min << "_" << tiempo->tm_sec << ".txt";
                 arbol.saveToFile(ss.str());
-            } else if (opciones[seleccion] == "Restaurar backup") {
-               // BackupManager::restaurarBackup(arbol);  // Llama a la función para restaurar el backup
+            } else if (opciones[seleccion] == "Exportar en archivo PDF"){
+                const string inputFile = "book_tree.txt";
+                createPDF(inputFile);
+            } else if (opciones[seleccion] == "Crear backup") {
+                time_t ahora = time(0);
+                tm* tiempo = localtime(&ahora);
+                stringstream ss;
+                ss << (1900 + tiempo->tm_year) << "_" << (1 + tiempo->tm_mon) << "_" << tiempo->tm_mday << "_"
+                << tiempo->tm_hour << "_" << tiempo->tm_min << "_" << tiempo->tm_sec << ".txt";
+                //lista.crearBackup(ss.str());
+            }else if (opciones[seleccion] == "Restaurar backup") {
+               //BackupManager::restaurarBackup(libroManager); 
             } else if (opciones[seleccion] == "Buscar por rango") {
                 /*const std::string inputFile12 = "libros.txt";
 

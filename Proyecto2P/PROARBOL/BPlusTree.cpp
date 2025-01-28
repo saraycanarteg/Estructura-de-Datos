@@ -37,6 +37,22 @@ Libro BPlusTree::search(const std::string& key) {
     return Libro("", "", Persona(), Fecha()); // Retornar un libro vacío si no se encuentra
 }
 
+Libro BPlusTree::searchByIsni(const std::string& isni) {
+    BPlusTreeNode* currentNode = root;
+    while (currentNode != nullptr) {
+        for (const auto& pair : currentNode->data) {
+            if (pair.second.getAutor().getIsni() == isni) {
+                return pair.second;
+            }
+        }
+        if (currentNode->isLeaf) {
+            break;
+        }
+        currentNode = currentNode->children[0]; // Avanzar al siguiente nodo
+    }
+    return Libro(); // Retornar un libro vacío si no se encuentra
+}
+
 void BPlusTree::saveToFile(const std::string& filename) {
     std::ofstream archivo(filename);
     if (!archivo.is_open()) {
@@ -44,7 +60,6 @@ void BPlusTree::saveToFile(const std::string& filename) {
         return;
     }
 
-    // Recorrer y guardar las hojas del árbol B+
     saveNodeToFile(root, archivo);
     archivo.close();
 }
@@ -114,31 +129,37 @@ void BPlusTree::splitChild(BPlusTreeNode* node, int i, BPlusTreeNode* y) {
 }
 
 void BPlusTree::traverse(BPlusTreeNode* node, std::ostream& out) {
-    node = root;
+    if (root == nullptr) return;
+
+    // Imprimir la cabecera de la tabla
+    std::cout << left << setw(41) << "Título" 
+              << setw(25) << "Autor" 
+              << setw(25) << "ISNI" 
+              << setw(20) << "ISBN"
+              << setw(15) << "Publicación" 
+              << setw(15) << "Nac. Autor" << endl;
+    std::cout << string(140, '-') << endl;
+
+    traverseHelper(root, std::cout);
+}
+
+void BPlusTree::traverseHelper(BPlusTreeNode* node, std::ostream& out) {
     if (node == nullptr) return;
 
     if (node->isLeaf) {
         for (const auto& pair : node->data) {
-                cout << left << setw(41) << "Título" 
-        << setw(25) << "Autor" 
-        << setw(25) << "ISNI" 
-        << setw(20) << "ISBN"
-        << setw(15) << "Publicación" 
-        << setw(15) << "Nac. Autor" << endl;
-    cout << string(140, '-') << endl;
-    cout << left << setw(40) << pair.second.getTitulo()
-            << setw(25) << pair.second.getAutor().getNombre()
-            << setw(25) << pair.second.getAutor().getIsni() 
-            << setw(20) << pair.second.getIsbn()
-            << setw(15) << pair.second.getFechaPublicacion().mostrar()
-            << setw(15) << pair.second.getAutor().getFechaNacimiento().mostrar() << endl;
+            std::cout << left << setw(40) << pair.second.getTitulo()
+                      << setw(25) << pair.second.getAutor().getNombre()
+                      << setw(25) << pair.second.getAutor().getIsni() 
+                      << setw(20) << pair.second.getIsbn()
+                      << setw(15) << pair.second.getFechaPublicacion().mostrar()
+                      << setw(15) << pair.second.getAutor().getFechaNacimiento().mostrar() << endl;
         }
     } else {
         for (size_t i = 0; i < node->keys.size(); i++) {
-            traverse(node->children[i], out);
-            out << node->keys[i] << std::endl;
+            traverseHelper(node->children[i], out);
         }
-        traverse(node->children[node->keys.size()], out);
+        traverseHelper(node->children[node->keys.size()], out);
     }
 }
 
@@ -224,4 +245,219 @@ void BPlusTree::saveNodeToFileObject(BPlusTreeNode* node, std::ofstream& archivo
 
 void BPlusTree::collectElementsObject(BPlusTreeNode* node, std::vector<std::pair<std::string, Libro>>& elements) {
     collectElements(node, elements);
+}
+
+//Metodos para eliminacion
+
+void BPlusTree::remove(const std::string& key) {
+    if (!root) {
+        std::cout << "El árbol está vacío.\n";
+        return;
+    }
+
+    removeNode(root, key);
+
+    if (root->keys.size() == 0) {
+        BPlusTreeNode* temp = root;
+        if (root->isLeaf) {
+            root = nullptr;
+        } else {
+            root = root->children[0];
+        }
+        delete temp;
+    }
+
+    // Update the book_tree.txt file
+    std::ifstream infile("book_tree.txt");
+    std::ofstream temp("temp.txt");
+    std::string line;
+    while (getline(infile, line)) {
+        std::istringstream iss(line);
+        std::string titulo, isbn, nombreAutor, isni, fechaNac, fechaPub;
+        getline(iss, titulo, ';');
+        getline(iss, isbn, ';');
+        getline(iss, nombreAutor, ';');
+        getline(iss, isni, ';');
+        getline(iss, fechaNac, ';');
+        getline(iss, fechaPub, ';');
+        if (isbn != key) {
+            temp << line << std::endl;
+        }
+    }
+    infile.close();
+    temp.close();
+    remove("book_tree.txt");
+    rename("temp.txt", "book_tree.txt");
+}
+
+void BPlusTree::removeNode(BPlusTreeNode* node, const std::string& key) {
+    int idx = findKey(node, key);
+
+    if (idx < node->keys.size() && node->keys[idx] == key) {
+        if (node->isLeaf) {
+            removeFromLeaf(node, idx);
+        } else {
+            removeFromNonLeaf(node, idx);
+        }
+    } else {
+        if (node->isLeaf) {
+            std::cout << "La clave " << key << " no existe en el árbol.\n";
+            return;
+        }
+
+        bool flag = ((idx == node->keys.size()) ? true : false);
+
+        if (node->children[idx]->keys.size() < minDegree) {
+            fill(node, idx);
+        }
+
+        if (flag && idx > node->keys.size()) {
+            removeNode(node->children[idx - 1], key);
+        } else {
+            removeNode(node->children[idx], key);
+        }
+    }
+}
+
+void BPlusTree::removeFromLeaf(BPlusTreeNode* node, int idx) {
+    for (int i = idx + 1; i < node->keys.size(); ++i) {
+        node->keys[i - 1] = node->keys[i];
+    }
+    node->keys.resize(node->keys.size() - 1);
+}
+
+void BPlusTree::removeFromNonLeaf(BPlusTreeNode* node, int idx) {
+    std::string key = node->keys[idx];
+
+    if (node->children[idx]->keys.size() >= minDegree) {
+        std::string pred = getPred(node, idx);
+        node->keys[idx] = pred;
+        removeNode(node->children[idx], pred);
+    } else if (node->children[idx + 1]->keys.size() >= minDegree) {
+        std::string succ = getSucc(node, idx);
+        node->keys[idx] = succ;
+        removeNode(node->children[idx + 1], succ);
+    } else {
+        merge(node, idx);
+        removeNode(node->children[idx], key);
+    }
+}
+
+void BPlusTree::fill(BPlusTreeNode* node, int idx) {
+    if (idx != 0 && node->children[idx - 1]->keys.size() >= minDegree) {
+        borrowFromPrev(node, idx);
+    } else if (idx != node->keys.size() && node->children[idx + 1]->keys.size() >= minDegree) {
+        borrowFromNext(node, idx);
+    } else {
+        if (idx != node->keys.size()) {
+            merge(node, idx);
+        } else {
+            merge(node, idx - 1);
+        }
+    }
+}
+
+void BPlusTree::borrowFromPrev(BPlusTreeNode* node, int idx) {
+    BPlusTreeNode* child = node->children[idx];
+    BPlusTreeNode* sibling = node->children[idx - 1];
+
+    for (int i = child->keys.size() - 1; i >= 0; --i) {
+        child->keys[i + 1] = child->keys[i];
+    }
+
+    if (!child->isLeaf) {
+        for (int i = child->children.size() - 1; i >= 0; --i) {
+            child->children[i + 1] = child->children[i];
+        }
+    }
+
+    child->keys[0] = node->keys[idx - 1];
+
+    if (!node->isLeaf) {
+        child->children[0] = sibling->children[sibling->keys.size()];
+    }
+
+    node->keys[idx - 1] = sibling->keys[sibling->keys.size() - 1];
+
+    sibling->keys.resize(sibling->keys.size() - 1);
+}
+
+void BPlusTree::borrowFromNext(BPlusTreeNode* node, int idx) {
+    BPlusTreeNode* child = node->children[idx];
+    BPlusTreeNode* sibling = node->children[idx + 1];
+
+    child->keys[child->keys.size()] = node->keys[idx];
+
+    if (!(child->isLeaf)) {
+        child->children[(child->keys.size()) + 1] = sibling->children[0];
+    }
+
+    node->keys[idx] = sibling->keys[0];
+
+    for (int i = 1; i < sibling->keys.size(); ++i) {
+        sibling->keys[i - 1] = sibling->keys[i];
+    }
+
+    if (!sibling->isLeaf) {
+        for (int i = 1; i <= sibling->children.size(); ++i) {
+            sibling->children[i - 1] = sibling->children[i];
+        }
+    }
+
+    sibling->keys.resize(sibling->keys.size() - 1);
+}
+
+void BPlusTree::merge(BPlusTreeNode* node, int idx) {
+    BPlusTreeNode* child = node->children[idx];
+    BPlusTreeNode* sibling = node->children[idx + 1];
+
+    child->keys[minDegree - 1] = node->keys[idx];
+
+    for (int i = 0; i < sibling->keys.size(); ++i) {
+        child->keys[i + minDegree] = sibling->keys[i];
+    }
+
+    if (!child->isLeaf) {
+        for (int i = 0; i <= sibling->children.size(); ++i) {
+            child->children[i + minDegree] = sibling->children[i];
+        }
+    }
+
+    for (int i = idx + 1; i < node->keys.size(); ++i) {
+        node->keys[i - 1] = node->keys[i];
+    }
+
+    for (int i = idx + 2; i <= node->children.size(); ++i) {
+        node->children[i - 1] = node->children[i];
+    }
+
+    child->keys.resize(minDegree - 1 + sibling->keys.size());
+    node->keys.resize(node->keys.size() - 1);
+    node->children.resize(node->children.size() - 1);
+
+    delete sibling;
+}
+
+int BPlusTree::findKey(BPlusTreeNode* node, const std::string& key) {
+    int idx = 0;
+    while (idx < node->keys.size() && node->keys[idx] < key) {
+        ++idx;
+    }
+    return idx;
+}
+
+std::string BPlusTree::getPred(BPlusTreeNode* node, int idx) {
+    BPlusTreeNode* cur = node->children[idx];
+    while (!cur->isLeaf) {
+        cur = cur->children[cur->keys.size()];
+    }
+    return cur->keys[cur->keys.size() - 1];
+}
+
+std::string BPlusTree::getSucc(BPlusTreeNode* node, int idx) {
+    BPlusTreeNode* cur = node->children[idx + 1];
+    while (!cur->isLeaf) {
+        cur = cur->children[0];
+    }
+    return cur->keys[0];
 }

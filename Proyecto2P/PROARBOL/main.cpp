@@ -20,14 +20,7 @@ int main() {
     
     BackupManager::crearCarpetaSiNoExiste("backup");
 
-    BPlusTree arbol(3); // Assuming a minimum degree of 3 for the B+ Tree
-    // Cargar los libros desde el archivo al iniciar
-    /*try {
-        arbol.loadFromFile("libros.txt");
-    } catch (const std::invalid_argument& e) {
-        std::cerr << "Error al cargar los libros desde el archivo: " << e.what() << std::endl;
-        return 1;
-    }*/
+    BPlusTree arbol(3); 
 
     mostrarMenu(arbol);
     return 0;

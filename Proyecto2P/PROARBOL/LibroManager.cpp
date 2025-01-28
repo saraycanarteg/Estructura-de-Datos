@@ -103,10 +103,10 @@ void LibroManager::agregarLibro(const Libro &libro)
              << libro.getAutor().getIsni() << ";"
              << fechaNac.getDia() << "/" << fechaNac.getMes() << "/" << fechaNac.getAnio() << ";"
              << fechaPub.getDia() << "/" << fechaPub.getMes() << "/" << fechaPub.getAnio()
-             << std::endl;
+             << endl;
 
     bookFile.close();
-    std::cout << "Libro guardado en book_tree.txt" << std::endl;
+    std::cout << "Libro guardado en book_tree.txt" << endl;
 
     bookTree.insertObject(libro.getIsbn(), libro);
     isbnTree.insert(libro.getIsbn(), libro.getTitulo());
@@ -145,36 +145,6 @@ Libro* LibroManager::buscarLibro(const string& titulo) {
     return nullptr;
 }*/
 
-// Buscar libro por ISBN
-Libro *LibroManager::buscarLibroPorIsbn(const string &isbn)
-{
-    return searchByISBN(isbn);
-}
-
-// Buscar autor por ISNI
-Persona LibroManager::buscarAutorPorIsni(const string &isni)
-{
-    Libro *libro = searchByISNI(isni);
-    if (libro)
-    {
-        return libro->getAutor();
-    }
-    return Persona();
-}
-
-/* Eliminar libro y actualizar archivo
-void LibroManager::eliminarLibro(const string& titulo) {
-    Libro* libro = buscarLibro(titulo);
-    if (libro) {
-        isbnTree.remove(libro->getIsbn());
-        isniTree.remove(libro->getAutor().getIsni());
-        cout << "Libro eliminado: " << titulo << endl;
-        // Actualizar el archivo después de la eliminación
-        guardarLibrosEnArchivo();
-    } else {
-        cout << "Libro no encontrado: " << titulo << endl;
-    }
-}*/
 
 // Guardar los libros en el archivo (actualizado)
 void LibroManager::guardarLibrosEnArchivo()
@@ -348,41 +318,6 @@ void LibroManager::imprimirTitulosLibros() const
     }
 }
 
-/*/ Buscar libro con autocompletado
-vector<string> LibroManager::buscarLibroConAutocompletado(const string& prefijo) {
-    return isbnTree.autocomplete(prefijo);
-}
-
-// Buscar libro con autocompletado y sugerencias basadas en errores tipográficos
-vector<string> LibroManager::buscarLibroConErroresTipograficos(const string& prefijo) {
-    return isbnTree.suggestWithTypos(prefijo);
-}
-
-// Listar libros por primer letra del título
-void LibroManager::listarLibrosPorLetra(const char letra) {
-    return isbnTree.listByFirstLetter(letra);
-}
-
-// Buscar el libro más corto y el más largo
-void LibroManager::buscarLibroCortoLargo() {
-    return isbnTree.findShortestAndLongest();
-}
-
-// Buscar libros que contengan una subcadena
-void LibroManager::buscarLibroPorSubcadena(const string& subcadena) {
-    return isbnTree.searchBySubstring(subcadena);
-}
-
-// Buscar por ISBN con autocompletado
-void LibroManager::buscarLibroPorIsbnConAutocompletado(const string& prefijo) {
-    return isbnTree.autocomplete(prefijo);
-}
-
-// Función para encontrar libros cercanos a un título
-void LibroManager::buscarLibroCercano(const string& ruta, const int anioInicio, const int anioFin) {
-    return isbnTree.searchNearby(ruta, anioInicio, anioFin);
-}*/
-
 void LibroManager::insertLibro(Libro *libro)
 {
     std::ofstream archivo(generalFile, std::ios::app);
@@ -398,73 +333,12 @@ void LibroManager::insertLibro(Libro *libro)
     isniTree.insert(libro->getAutor().getIsni(), libro->getTitulo());
 }
 
-Libro *LibroManager::searchByISBN(const std::string &isbn)
-{
-    Libro libro = isbnTree.search(isbn);
-    if (libro.getTitulo().empty())
-        return nullptr;
-    // Load libro from generalFile using titulo
-    std::ifstream archivo(generalFile);
-    std::string linea;
-    while (getline(archivo, linea))
-    {
-        std::stringstream ss(linea);
-        std::string tituloArchivo, nombreAutor, isni, fechaNac, isbnArchivo, fechaPub;
-        getline(ss, tituloArchivo, ';');
-        if (tituloArchivo == libro.getTitulo())
-        {
-            getline(ss, nombreAutor, ';');
-            getline(ss, isni, ';');
-            getline(ss, fechaNac, ';');
-            getline(ss, isbnArchivo, ';');
-            getline(ss, fechaPub, ';');
-            Persona autor(nombreAutor, isni, Fecha::crearDesdeCadena(fechaNac));
-            return new Libro(tituloArchivo, isbnArchivo, autor, Fecha::crearDesdeCadena(fechaPub));
-        }
-    }
-    return nullptr;
-}
+void LibroManager::limpiarLista() {
 
-Libro *LibroManager::searchByISNI(const std::string &isni)
-{
-    Libro libro = isniTree.search(isni);
-    if (libro.getTitulo().empty())
-        return nullptr;
-    // Load libro from generalFile using titulo
-    std::ifstream archivo(generalFile);
-    std::string linea;
-    while (getline(archivo, linea))
-    {
-        std::stringstream ss(linea);
-        std::string tituloArchivo, nombreAutor, isniArchivo, fechaNac, isbn, fechaPub;
-        getline(ss, tituloArchivo, ';');
-        if (tituloArchivo == libro.getTitulo())
-        {
-            getline(ss, nombreAutor, ';');
-            getline(ss, isniArchivo, ';');
-            getline(ss, fechaNac, ';');
-            getline(ss, isbn, ';');
-            getline(ss, fechaPub, ';');
-            Persona autor(nombreAutor, isniArchivo, Fecha::crearDesdeCadena(fechaNac));
-            return new Libro(tituloArchivo, isbn, autor, Fecha::crearDesdeCadena(fechaPub));
-        }
-    }
-    return nullptr;
 }
 
 void LibroManager::saveTrees()
 {
     isbnTree.saveToFile("isbnTree.txt");
     isniTree.saveToFile("isniTree.txt");
-}
-
-void LibroManager::loadTrees()
-{
-    // isbnTree.loadFromFile("isbnTree.txt");
-    // isniTree.loadFromFile("isniTree.txt");
-}
-
-void LibroManager::limpiarLista()
-{
-    // Implementation to clear the list of books
 }
