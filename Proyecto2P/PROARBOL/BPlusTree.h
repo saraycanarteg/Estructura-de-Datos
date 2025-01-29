@@ -56,6 +56,8 @@ public:
     void loadFromFile(const std::string& filename);
     void sort();
     void createBackup(const string& filename);
+    void collectBooksByAuthor(BPlusTreeNode* node, const std::string& isni, vector<Libro>& librosEncontrados);
+    vector<Libro> searchBooksByAuthor(const std::string& isni);
     
     // Trees objects
     void insertObject(const std::string& isbn, const Libro& libro);

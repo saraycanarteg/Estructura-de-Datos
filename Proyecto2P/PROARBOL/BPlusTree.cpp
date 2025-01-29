@@ -96,6 +96,27 @@ Libro BPlusTree::searchByIsni(const std::string& isni) {
     return Libro(); // Retornar un libro vacío si no se encuentra
 }
 
+vector<Libro> BPlusTree::searchBooksByAuthor(const std::string& isni) {
+    vector<Libro> librosEncontrados;
+    collectBooksByAuthor(root, isni, librosEncontrados);
+    return librosEncontrados;
+}
+
+void BPlusTree::collectBooksByAuthor(BPlusTreeNode* node, const std::string& isni, vector<Libro>& librosEncontrados) {
+    if (node == nullptr) return;
+
+    for (const auto& pair : node->data) {
+        if (pair.second.getAutor().getIsni() == isni) {
+            librosEncontrados.push_back(pair.second);
+        }
+    }
+
+    if (!node->isLeaf) {
+        for (auto child : node->children) {
+            collectBooksByAuthor(child, isni, librosEncontrados);
+        }
+    }
+}
 void BPlusTree::saveToFile(const std::string& filename) {
     std::ofstream archivo(filename);
     if (!archivo.is_open()) {

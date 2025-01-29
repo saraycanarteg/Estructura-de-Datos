@@ -89,6 +89,7 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
     vector<string> opciones = {
         "Agregar libro",
         "Buscar libro",
+        "Buscar autor",
         "Eliminar libro",
         "Ver todos los libros",
         "Exportar en archivo PDF",
@@ -221,6 +222,43 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
                     cout << "Libro no encontrado.\n";
                 }
             }
+
+            else if (opciones[seleccion] == "Buscar autor") {
+                string isni; 
+                cout << "Ingrese el ISNI del autor a buscar: ";
+                cin >> ws; getline(cin, isni);
+
+                Libro autor = arbol.searchByIsni(isni);
+                if (autor.getAutor().getIsni() == isni) {
+                    cout << "Autor encontrado:\n";
+                    cout << "ISNI: " << autor.getAutor().getIsni() << "\n";
+                    cout << "Nombre: " << autor.getAutor().getNombre() << "\n";
+                    cout << "Fecha de Nacimiento: " << autor.getAutor().getFechaNacimiento().mostrar() << "\n";
+                    cout << endl;
+                    vector<Libro> libros = arbol.searchBooksByAuthor(isni);
+                    if (!libros.empty()) {
+                        cout << left << setw(41) << "Título" 
+                             << setw(25) << "Autor" 
+                             << setw(25) << "ISNI" 
+                             << setw(20) << "ISBN"
+                             << setw(15) << "Publicación" 
+                             << setw(15) << "Nac. Autor" << endl;
+                        cout << string(140, '-') << endl;
+                        for (const auto& libro : libros) {
+                            cout << left << setw(40) << libro.getTitulo()
+                                 << setw(25) << libro.getAutor().getNombre()
+                                 << setw(25) << libro.getAutor().getIsni() 
+                                 << setw(20) << libro.getIsbn()
+                                 << setw(15) << libro.getFechaPublicacion().mostrar()
+                                 << setw(15) << libro.getAutor().getFechaNacimiento().mostrar() << endl;
+                        }
+                    } else {
+                        cout << "Libros no encontrados.\n";
+                    }
+                } else {
+                    cout << "Autor no encontrado.\n";
+                }   
+            }                                                      
             else if (opciones[seleccion] == "Eliminar libro")
             {
                 string isbn;
