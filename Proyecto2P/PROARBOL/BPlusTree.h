@@ -59,7 +59,7 @@ public:
     void createBackup(const string& filename);
     void collectBooksByAuthor(BPlusTreeNode* node, const std::string& isni, vector<Libro>& librosEncontrados);
     vector<Libro> searchBooksByAuthor(const std::string& isni);
-    
+    void search_by_isbn_prefix(BPlusTreeNode* node, const std::string& prefix);
     // Trees objects
     void insertObject(const std::string& isbn, const Libro& libro);
     Libro searchObject(const std::string& isbn);

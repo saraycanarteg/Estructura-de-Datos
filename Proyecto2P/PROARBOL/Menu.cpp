@@ -90,7 +90,9 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
         "Agregar libro",
         "Buscar libro",
         "Buscar autor",
+        //busquedas binarias
         "Buscar por palabra inicial",
+        "Buscar por prefijo de ISBN",
         "Eliminar libro",
         "Ver todos los libros",
         "Exportar en archivo PDF",
@@ -208,9 +210,12 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
             else if (opciones[seleccion] == "Buscar libro")
             {
                 string isbn;
-                cout << "Ingrese el ISBN del libro a buscar: ";
-                cin >> ws;
-                getline(cin, isbn);
+                do
+                {
+                    cout << "Ingrese el ISBN del libro a buscar: ";
+                    getline(cin, isbn);
+                } while (!Validaciones::validarIsbn(isbn));
+
                 Libro libro;
                 arbol.easy_search(arbol.getRoot(), libro, isbn);
                 if (!libro.getTitulo().empty())
@@ -227,9 +232,10 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
             else if (opciones[seleccion] == "Buscar autor")
             {
                 string isni;
+                do{
                 cout << "Ingrese el ISNI del autor a buscar: ";
-                cin >> ws;
                 getline(cin, isni);
+                }while (!Validaciones::validarIsni(isni));
 
                 Libro autor = arbol.searchByIsni(isni);
                 if (autor.getAutor().getIsni() == isni)
@@ -289,12 +295,34 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
                 cout << string(120, '-') << endl; // Línea divisoria
                 arbol.search_by_first_word(arbol.getRoot(), palabra);
             }
+            else if (opciones[seleccion] == "Buscar por prefijo de ISBN")
+            {
+                string prefix;
+                do {
+                    cout << "Ingrese los primeros 4 dígitos del ISBN: ";
+                    cin >> ws;
+                    getline(cin, prefix);
+                } while (prefix.length() != 4 || !Validaciones::validarTextoNoVacio(prefix, "Prefijo de ISBN")); 
+
+                cout << endl << left;
+                cout << setw(40) << "Título"
+                     << setw(25) << "Autor"
+                     << setw(22) << "ISNI"
+                     << setw(20) << "ISBN"
+                     << setw(15) << "Publicación"
+                     << "Nac. Autor" << endl;
+
+                cout << string(120, '-') << endl; // Línea divisoria
+                arbol.search_by_isbn_prefix(arbol.getRoot(), prefix);
+            }
             else if (opciones[seleccion] == "Eliminar libro")
             {
                 string isbn;
-                cout << "Ingrese el ISBN del libro a eliminar: ";
-                cin >> ws;
-                getline(cin, isbn);
+                do
+                {
+                    cout << "Ingrese el ISBN del libro a eliminar: ";
+                    getline(cin, isbn);
+                } while (!Validaciones::validarIsbn(isbn));
                 Libro libro = arbol.search(isbn);
                 if (!libro.getTitulo().empty())
                 {

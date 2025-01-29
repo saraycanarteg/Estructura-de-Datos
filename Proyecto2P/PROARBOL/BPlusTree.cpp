@@ -613,3 +613,24 @@ std::string BPlusTree::getSucc(BPlusTreeNode* node, int idx) {
     return cur->keys[0];
 }
 
+void BPlusTree::search_by_isbn_prefix(BPlusTreeNode* node, const std::string& prefix) {
+    if (node == nullptr) return;
+
+    if (node->isLeaf) {
+        for (const auto& pair : node->data) {
+            if (pair.second.getIsbn().substr(0, prefix.size()) == prefix) {
+                const Libro& libro = pair.second;
+                std::cout << left << setw(40) << libro.getTitulo()
+                          << setw(25) << libro.getAutor().getNombre()
+                          << setw(25) << libro.getAutor().getIsni()
+                          << setw(20) << libro.getIsbn()
+                          << setw(15) << libro.getFechaPublicacion().mostrar()
+                          << setw(15) << libro.getAutor().getFechaNacimiento().mostrar() << endl;
+            }
+        }
+    } else {
+        for (size_t i = 0; i <= node->keys.size(); i++) {
+            search_by_isbn_prefix(node->children[i], prefix);
+        }
+    }
+}
