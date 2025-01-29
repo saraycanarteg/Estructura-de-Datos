@@ -300,9 +300,11 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
                 string prefix;
                 do {
                     cout << "Ingrese los primeros 4 dígitos del ISBN: ";
-                    cin >> ws;
                     getline(cin, prefix);
-                } while (prefix.length() != 4 || !Validaciones::validarTextoNoVacio(prefix, "Prefijo de ISBN")); 
+                    if (prefix.length() != 4 || !all_of(prefix.begin(), prefix.end(), ::isdigit)) {
+                        cout << "Error: Ingrese exactamente 4 dígitos numéricos.\n";
+                    }
+                } while (prefix.length() != 4 || !all_of(prefix.begin(), prefix.end(), ::isdigit));
 
                 cout << endl << left;
                 cout << setw(40) << "Título"
