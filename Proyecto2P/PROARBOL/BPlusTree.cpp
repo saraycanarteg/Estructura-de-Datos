@@ -125,17 +125,17 @@ void BPlusTree::saveNodeToFile(BPlusTreeNode* node, std::ofstream& archivo) {
     for (const auto& pair : node->data) {
         const Libro& libro = pair.second;
         archivo << libro.getTitulo() << ";"
+                << libro.getIsbn() << ";"
                 << libro.getAutor().getNombre() << ";"
                 << libro.getAutor().getIsni() << ";"
                 << libro.getAutor().getFechaNacimiento().mostrar() << ";"
-                << libro.getIsbn() << ";"
                 << libro.getFechaPublicacion().mostrar() << std::endl;
 
         cout << endl<< libro.getTitulo() << ";"
+                << libro.getIsbn() << ";"
                 << libro.getAutor().getNombre() << ";"
                 << libro.getAutor().getIsni() << ";"
                 << libro.getAutor().getFechaNacimiento().mostrar() << ";"
-                << libro.getIsbn() << ";"
                 << libro.getFechaPublicacion().mostrar() << std::endl;
     }
 
