@@ -81,3 +81,63 @@ void buscarPorRango(const std::string& rutaArchivo, int anioInicio, int anioFin)
 
     archivo.close();
 }
+
+void buscar10Aniversario(const std::string& rutaArchivo) {
+    ifstream archivo(rutaArchivo);
+    if (!archivo.is_open()) {
+        cerr << "No se pudo abrir el archivo." << endl;
+        return;
+    }
+
+    string linea;
+    // Obtener el año actual
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+    int anioActual = 1900 + ltm->tm_year;
+    
+    // Lambda para verificar si el libro está próximo a cumplir 10 años
+    auto proximoA10Anos = [anioActual](const string& fecha) {
+        int anioPublicacion = stoi(fecha.substr(fecha.size() - 4));
+        int edad = anioActual - anioPublicacion;
+        // Consideramos "próximo" si está a 1 año antes o después de cumplir 10 años
+        return edad >= 9 && edad <= 11;
+    };
+
+    bool cabeceraImprimida = false;
+
+    while (getline(archivo, linea)) {
+        vector<string> campos = dividir(linea, ';');
+        if (campos.size() >= 6) {
+            string titulo = campos[0];
+            string autor = campos[1];
+            string isni = campos[2];
+            string fechaNacimiento = campos[3];
+            string isbn = campos[4];
+            string fechaPublicacion = campos[5];
+
+            // Usamos la lambda para filtrar libros próximos a 10 años
+            if (proximoA10Anos(fechaPublicacion)) {
+                if (!cabeceraImprimida) {
+                    cout << "\nLibros próximos a cumplir 10 años de publicación:\n";
+                    imprimirCabecera();
+                    cabeceraImprimida = true;
+                }
+
+                // Imprimimos el registro formateado
+                cout << left;
+                cout << setw(40) << titulo
+                    << setw(25) << autor
+                    << setw(22) << isni
+                    << setw(20) << isbn
+                    << setw(15) << fechaPublicacion
+                    << fechaNacimiento << endl;
+            }
+        }
+    }
+
+    if (!cabeceraImprimida) {
+        cout << "\nNo se encontraron libros próximos a cumplir 10 años.\n";
+    }
+
+    archivo.close();
+}

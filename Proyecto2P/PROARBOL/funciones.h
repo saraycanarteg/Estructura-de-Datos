@@ -7,5 +7,6 @@
 // Declaración de funciones
 std::vector<std::string> dividir(const std::string& linea, char delimitador);
 void buscarPorRango(const std::string& rutaArchivo, int anioInicio, int anioFin);
+void buscar10Aniversario(const std::string& rutaArchivo);
 void imprimirCabecera();
 #endif

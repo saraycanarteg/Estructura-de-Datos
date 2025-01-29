@@ -100,6 +100,7 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
         "Crear backup",
         "Restaurar backup",
         "Buscar por rango",
+        "Buscar por 10 aniversario",
         "Salir"};
     int seleccion = 0;
     string ruta = "book_tree.txt"; // Ruta del archivo
@@ -323,7 +324,6 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
                 string isbn;
                 do
                 {
-                    cout << "Está la función nueva :p";
                     cout << "Ingrese el ISBN del libro a eliminar: ";
                     getline(cin, isbn);
                 } while (!Validaciones::validarIsbn(isbn));
@@ -376,6 +376,11 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
 
                 cout << "Registros encontrados entre " << anioInicio << " y " << anioFin << ":\n";
                 buscarPorRango(ruta, anioInicio, anioFin); // Assuming you have a method for range search
+            }
+            else if (opciones[seleccion] == "Buscar por 10 aniversario")
+            {
+                const std::string inputFile12 = "book_tree.txt";
+                buscar10Aniversario(ruta);
             }
             else if (opciones[seleccion] == "Salir")
             {
