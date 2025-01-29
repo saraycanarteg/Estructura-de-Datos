@@ -62,9 +62,9 @@ void createPDF(const std::string& inputFile) {
     // Títulos de las columnas
     HPDF_Page_BeginText(page);
     HPDF_Page_TextOut(page, xPosition, yPosition, "Titulo");
-    HPDF_Page_TextOut(page, xPosition + 150, yPosition, "Autor");
-    HPDF_Page_TextOut(page, xPosition + 300, yPosition, "ISBN");
-    HPDF_Page_TextOut(page, xPosition + 450, yPosition, "Anio");
+    HPDF_Page_TextOut(page, xPosition + 150, yPosition, "ISBN");
+    HPDF_Page_TextOut(page, xPosition + 300, yPosition, "Autor");
+    HPDF_Page_TextOut(page, xPosition + 450, yPosition, "ISNI");
     HPDF_Page_EndText(page);
 
     // Dibuja la línea que separa los títulos de los datos
