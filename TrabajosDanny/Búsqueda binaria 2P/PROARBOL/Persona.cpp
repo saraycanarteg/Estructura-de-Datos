@@ -1,6 +1,6 @@
 /********************************************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                                       *
- * Proposito:                      Archivo principal de proyecto                            *
+ * Proposito:                      Clase persona                                            *
  * Autor:                          Abner Arboleda, Christian Acuña, Christian Bonifaz       *
  * Fecha de creacion:              01/12/2024                                               *
  * Fecha de modificacion:          08/11/2024                                               *
@@ -8,21 +8,25 @@
  * NRC :                           1992                                                     *
  ********************************************************************************************/
 
-#include "LibroManager.cpp"
-#include "Menu.cpp"
-#include "BPlusTree.h"
+#include "Persona.h"
 #include <iostream>
 
-int main() {
-    // Configurar la consola para usar UTF-8
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
-    
-    //BackupManager::crearCarpetaSiNoExiste("backup");
+Persona::Persona(string n, string isni, Fecha fn) : nombre(n), isni(isni), fechaNacimiento(fn) {}
 
-    BPlusTree arbol(3); 
-    BPlusTree arbol_fechas(3);
-    mostrarMenu(arbol, arbol_fechas);
-    return 0;
+string Persona::getNombre() const { return nombre; }
+
+string Persona::getIsni() const { return isni; }
+
+Fecha Persona::getFechaNacimiento() const { return fechaNacimiento; }
+
+void Persona::setNombre(const string& n) { nombre = n; }
+
+void Persona::setIsni(const string& isni) { this->isni = isni; }
+
+void Persona::setFechaNacimiento(const Fecha& fn) { fechaNacimiento = fn; }
+
+void Persona::mostrar() const {
+    cout << "Nombre: " << nombre 
+        << ", ISNI: " << isni 
+        << ", Fecha de nacimiento: " << fechaNacimiento.mostrar() << endl;
 }
-

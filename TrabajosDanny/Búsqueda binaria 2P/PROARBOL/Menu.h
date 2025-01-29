@@ -1,6 +1,6 @@
 /********************************************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                                       *
- * Proposito:                      Archivo principal de proyecto                            *
+ * Proposito:                      Interfaz Menu principal                                  *
  * Autor:                          Abner Arboleda, Christian Acuña, Christian Bonifaz       *
  * Fecha de creacion:              01/12/2024                                               *
  * Fecha de modificacion:          08/11/2024                                               *
@@ -8,21 +8,12 @@
  * NRC :                           1992                                                     *
  ********************************************************************************************/
 
-#include "LibroManager.cpp"
-#include "Menu.cpp"
-#include "BPlusTree.h"
-#include <iostream>
+#ifndef MENU_H
+#define MENU_H
 
-int main() {
-    // Configurar la consola para usar UTF-8
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
-    
-    //BackupManager::crearCarpetaSiNoExiste("backup");
+#include "LibroManager.h"
+#include <vector>
 
-    BPlusTree arbol(3); 
-    BPlusTree arbol_fechas(3);
-    mostrarMenu(arbol, arbol_fechas);
-    return 0;
-}
+void mostrarMenu(LibroManager& lista);
 
+#endif

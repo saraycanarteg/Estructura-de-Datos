@@ -1,6 +1,6 @@
 /********************************************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                                       *
- * Proposito:                      Archivo principal de proyecto                            *
+ * Proposito:                      Interfaz para Clase persona                              *
  * Autor:                          Abner Arboleda, Christian Acuña, Christian Bonifaz       *
  * Fecha de creacion:              01/12/2024                                               *
  * Fecha de modificacion:          08/11/2024                                               *
@@ -8,21 +8,30 @@
  * NRC :                           1992                                                     *
  ********************************************************************************************/
 
-#include "LibroManager.cpp"
-#include "Menu.cpp"
-#include "BPlusTree.h"
-#include <iostream>
+#ifndef PERSONA_H
+#define PERSONA_H
 
-int main() {
-    // Configurar la consola para usar UTF-8
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
-    
-    //BackupManager::crearCarpetaSiNoExiste("backup");
+#include <string>
+#include "Fecha.h"
 
-    BPlusTree arbol(3); 
-    BPlusTree arbol_fechas(3);
-    mostrarMenu(arbol, arbol_fechas);
-    return 0;
-}
+using namespace std;
 
+class Persona {
+private:
+    string nombre;
+    string isni; // ISNI añadido
+    Fecha fechaNacimiento;
+
+public:
+    Persona(string n = "", string isni = "", Fecha fn = Fecha());
+    string getNombre() const;
+    string getIsni() const; // Getter para ISNI
+    Fecha getFechaNacimiento() const;
+    void setNombre(const string& n);
+    void setIsni(const string& isni); // Setter para ISNI
+    void setFechaNacimiento(const Fecha& fn);
+    void mostrar() const;
+};
+
+
+#endif // PERSONA_H

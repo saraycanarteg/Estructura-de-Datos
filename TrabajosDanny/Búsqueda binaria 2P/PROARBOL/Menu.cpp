@@ -82,6 +82,7 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
     arbol.loadFromFile("book_tree.txt");
     arbol_fechas.change_to_date(arbol.getRoot());
 
+    system("pause");
     LibroManager libroManager;
     BackupManager backupManager;
 

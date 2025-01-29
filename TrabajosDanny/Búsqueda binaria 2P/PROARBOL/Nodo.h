@@ -1,6 +1,6 @@
 /********************************************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                                       *
- * Proposito:                      Archivo principal de proyecto                            *
+ * Proposito:                      Interfaz de nodo para el uso de listas                   *
  * Autor:                          Abner Arboleda, Christian Acuña, Christian Bonifaz       *
  * Fecha de creacion:              01/12/2024                                               *
  * Fecha de modificacion:          08/11/2024                                               *
@@ -8,21 +8,16 @@
  * NRC :                           1992                                                     *
  ********************************************************************************************/
 
-#include "LibroManager.cpp"
-#include "Menu.cpp"
-#include "BPlusTree.h"
-#include <iostream>
+#ifndef NODO_H
+#define NODO_H
 
-int main() {
-    // Configurar la consola para usar UTF-8
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
-    
-    //BackupManager::crearCarpetaSiNoExiste("backup");
+#include "Libro.cpp"
 
-    BPlusTree arbol(3); 
-    BPlusTree arbol_fechas(3);
-    mostrarMenu(arbol, arbol_fechas);
-    return 0;
-}
+// Nodo de la lista circular doblemente enlazada
+struct Nodo {
+    Libro libro;       // Ahora contiene un objeto de tipo Libro
+    Nodo* siguiente;
+    Nodo* anterior;
+};
 
+#endif
