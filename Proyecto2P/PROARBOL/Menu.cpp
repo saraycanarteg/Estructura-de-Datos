@@ -90,6 +90,7 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
         "Agregar libro",
         "Buscar libro",
         "Buscar autor",
+        "Buscar por palabra inicial",
         "Eliminar libro",
         "Ver todos los libros",
         "Exportar en archivo PDF",
@@ -223,42 +224,71 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
                 }
             }
 
-            else if (opciones[seleccion] == "Buscar autor") {
-                string isni; 
+            else if (opciones[seleccion] == "Buscar autor")
+            {
+                string isni;
                 cout << "Ingrese el ISNI del autor a buscar: ";
-                cin >> ws; getline(cin, isni);
+                cin >> ws;
+                getline(cin, isni);
 
                 Libro autor = arbol.searchByIsni(isni);
-                if (autor.getAutor().getIsni() == isni) {
+                if (autor.getAutor().getIsni() == isni)
+                {
                     cout << "Autor encontrado:\n";
                     cout << "ISNI: " << autor.getAutor().getIsni() << "\n";
                     cout << "Nombre: " << autor.getAutor().getNombre() << "\n";
                     cout << "Fecha de Nacimiento: " << autor.getAutor().getFechaNacimiento().mostrar() << "\n";
                     cout << endl;
                     vector<Libro> libros = arbol.searchBooksByAuthor(isni);
-                    if (!libros.empty()) {
-                        cout << left << setw(41) << "Título" 
-                             << setw(25) << "Autor" 
-                             << setw(25) << "ISNI" 
+                    if (!libros.empty())
+                    {
+                        cout << left << setw(41) << "Título"
+                             << setw(25) << "Autor"
+                             << setw(25) << "ISNI"
                              << setw(20) << "ISBN"
-                             << setw(15) << "Publicación" 
+                             << setw(15) << "Publicación"
                              << setw(15) << "Nac. Autor" << endl;
                         cout << string(140, '-') << endl;
-                        for (const auto& libro : libros) {
+                        for (const auto &libro : libros)
+                        {
                             cout << left << setw(40) << libro.getTitulo()
                                  << setw(25) << libro.getAutor().getNombre()
-                                 << setw(25) << libro.getAutor().getIsni() 
+                                 << setw(25) << libro.getAutor().getIsni()
                                  << setw(20) << libro.getIsbn()
                                  << setw(15) << libro.getFechaPublicacion().mostrar()
                                  << setw(15) << libro.getAutor().getFechaNacimiento().mostrar() << endl;
                         }
-                    } else {
+                    }
+                    else
+                    {
                         cout << "Libros no encontrados.\n";
                     }
-                } else {
+                }
+                else
+                {
                     cout << "Autor no encontrado.\n";
-                }   
-            }                                                      
+                }
+            }
+            else if (opciones[seleccion] == "Buscar por palabra inicial")
+            {
+                string palabra;
+                do
+                {
+                    cout << "Ingrese título del libro: ";
+                    getline(cin, palabra);
+                } while (!Validaciones::validarTitulo(palabra, "Título"));
+
+                cout <<endl <<left;
+                cout << setw(40) << "Título"
+                     << setw(25) << "Autor"
+                     << setw(22) << "ISNI"
+                     << setw(20) << "ISBN"
+                     << setw(15) << "Publicación"
+                     << "Nac. Autor" << endl;
+
+                cout << string(120, '-') << endl; // Línea divisoria
+                arbol.search_by_first_word(arbol.getRoot(), palabra);
+            }
             else if (opciones[seleccion] == "Eliminar libro")
             {
                 string isbn;
@@ -303,22 +333,26 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
             }
             else if (opciones[seleccion] == "Buscar por rango")
             {
-                /*const std::string inputFile12 = "libros.txt";
+                const std::string inputFile12 = "book_tree.txt";
 
-                while (true) {
+                while (true)
+                {
                     anioFin = ingresarAnio("Ingrese el año de fin (0001 a 2024): ");
                     anioInicio = ingresarAnio("Ingrese el año de inicio (0001 a 2024): ");
 
                     // Validar que el año final sea mayor al inicial
-                    if (anioFin > anioInicio) {
+                    if (anioFin > anioInicio)
+                    {
                         break;
-                    } else {
+                    }
+                    else
+                    {
                         cout << "Error: El año de fin debe ser mayor al año de inicio, y no pueden ser iguales." << endl;
                     }
                 }
 
                 cout << "Registros encontrados entre " << anioInicio << " y " << anioFin << ":\n";
-                arbol.buscarLibroCercano(ruta, anioInicio, anioFin); // Assuming you have a method for range search*/
+                buscarPorRango(ruta, anioInicio, anioFin); // Assuming you have a method for range search
             }
             else if (opciones[seleccion] == "Salir")
             {

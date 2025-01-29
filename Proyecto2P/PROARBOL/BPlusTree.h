@@ -47,9 +47,10 @@ public:
     void setRoot(BPlusTreeNode* newRoot);
 
     void change_to_date(BPlusTreeNode* node);
+    BPlusTree(int t);
+    void search_by_first_word(BPlusTreeNode* node, const std::string& key);
     void easy_search(BPlusTreeNode* node, Libro& return_value, string key);
     void traverse();
-    BPlusTree(int t);
     void insert(const std::string& key, const Libro& value);
     Libro search(const std::string& key);
     void saveToFile(const std::string& filename);

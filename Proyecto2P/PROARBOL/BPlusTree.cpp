@@ -25,6 +25,38 @@ void BPlusTree::insert(const std::string& key, const Libro& value) {
     insertNonFull(root, key, value);
 }
 
+void BPlusTree::search_by_first_word(BPlusTreeNode* node, const std::string& firstWord) {
+    if (node == nullptr) return;
+
+    if (node->isLeaf) {
+        // Examinar cada libro en el nodo hoja
+        for (const auto& pair : node->data) {
+            // Obtener la primera palabra del título
+            const string& titulo = pair.second.getTitulo();
+            size_t spacePos = titulo.find(' ');
+            string currentFirstWord = spacePos != string::npos ? 
+                                    titulo.substr(0, spacePos) : 
+                                    titulo;
+            
+            // Si coincide con la palabra buscada, imprimir el libro
+            if (currentFirstWord == firstWord) {
+                const Libro& libro = pair.second;
+                std::cout << left << setw(40) << libro.getTitulo()
+                      << setw(25) << libro.getAutor().getNombre()
+                      << setw(25) << libro.getAutor().getIsni() 
+                      << setw(20) << libro.getIsbn()
+                      << setw(15) << libro.getFechaPublicacion().mostrar()
+                      << setw(15) << libro.getAutor().getFechaNacimiento().mostrar() << endl;
+            }
+        }
+    } else {
+        // En nodos internos, recorrer todos los hijos
+        for (size_t i = 0; i <= node->keys.size(); i++) {
+            search_by_first_word(node->children[i], firstWord);
+        }
+    }
+}
+
 void BPlusTree::change_to_date(BPlusTreeNode* node) {
     
     if (node == nullptr) return;    
@@ -42,6 +74,7 @@ void BPlusTree::change_to_date(BPlusTreeNode* node) {
     }
 
 }
+
 
 void BPlusTree::easy_search(BPlusTreeNode* node, Libro& return_value, string key ){
         
