@@ -239,12 +239,12 @@ int Validaciones::calcularDigitoControlIsbn13(const string& isbn) {
 }
 
 // Validación de ISNI
-bool Validaciones::validarIsni(const string& isni) {
+bool Validaciones::validarIsni(const std::string& isni) {
     // Remover espacios y guiones del ISNI
     std::string isniSinEspacios = isni;
     isniSinEspacios.erase(
         std::remove_if(isniSinEspacios.begin(), isniSinEspacios.end(),
-                    [](char c) { return c == '-' || c == ' '; }),
+                       [](char c) { return c == '-' || c == ' '; }),
         isniSinEspacios.end());
 
     // Verificar que el tamaño sea exactamente 16 caracteres
@@ -267,23 +267,39 @@ bool Validaciones::validarIsni(const string& isni) {
     }
 
     // Verificar que todos los caracteres no sean iguales
-    if (all_of(isniSinEspacios.begin(), isniSinEspacios.end(), [isniSinEspacios](char c) { return c == isniSinEspacios[0]; })) {
-        std::cout << "Error: Ingrese un Isni Valido.\n";
+    if (std::all_of(isniSinEspacios.begin(), isniSinEspacios.end(),
+                    [isniSinEspacios](char c) { return c == isniSinEspacios[0]; })) {
+        std::cout << "Error: Ingrese un ISNI válido.\n";
         return false;
     }
 
     // Cálculo del dígito de control
     int sum = 0;
-    int weight = 1; // Alternating weights: 1, 2
     for (int i = 0; i < 15; ++i) {
         int digit = isniSinEspacios[i] - '0';
-        sum += digit * weight;
-        weight = (weight == 1) ? 2 : 1;
+        // Multiplicar cada dígito por su peso (posición desde 1 hasta 15)
+        sum += digit * (i + 1);
+    }
+
+    // Calcular el dígito de control esperado
+    int remainder = sum % 11;
+    char expectedCheckDigit;
+    if (remainder == 0) {
+        expectedCheckDigit = '0';  // Si el resto es 0, el dígito de control es '0'
+    } else if (remainder == 1) {
+        expectedCheckDigit = 'X';  // Caso especial: si el resto es 1, el dígito de control es 'X'
+    } else {
+        expectedCheckDigit = '0' + (11 - remainder);  // Cálculo normal
+    }
+
+    // Verificar si el dígito de control coincide
+    if ((expectedCheckDigit-1) != isniSinEspacios[15]) {
+        std::cout << "Error: El dígito de control del ISNI no es válido.\n";
+        return false;
     }
 
     return true;
 }
-
 
 // Validación de texto no vacío
 bool Validaciones::validarTextoNoVacio(const string& texto, const string& campo) {
