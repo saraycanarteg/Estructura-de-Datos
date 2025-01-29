@@ -28,7 +28,7 @@ private:
     BPlusTreeNode* search(BPlusTreeNode* node, const std::string& key);
     void collectElements(BPlusTreeNode* node, std::vector<std::pair<std::string, Libro>>& elements);
     void clearTree(BPlusTreeNode* node);
-    void saveNodeToFile(BPlusTreeNode* node, std::ofstream& archivo);
+    //void saveNodeToFile(BPlusTreeNode* node, std::ofstream& archivo);
     BPlusTreeNode* loadNodeFromFile(std::ifstream& archivo);
     
     void removeNode(BPlusTreeNode* node, const std::string& key);
@@ -60,6 +60,8 @@ public:
     void collectBooksByAuthor(BPlusTreeNode* node, const std::string& isni, vector<Libro>& librosEncontrados);
     vector<Libro> searchBooksByAuthor(const std::string& isni);
     void search_by_isbn_prefix(BPlusTreeNode* node, const std::string& prefix);
+    void saveNodeToFile(BPlusTreeNode* node, std::ofstream& archivo);
+    void eliminarLibro(BPlusTree& arbol, const string& isbn);
     // Trees objects
     void insertObject(const std::string& isbn, const Libro& libro);
     Libro searchObject(const std::string& isbn);

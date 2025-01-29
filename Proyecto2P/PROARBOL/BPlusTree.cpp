@@ -400,14 +400,15 @@ void BPlusTree::collectElementsObject(BPlusTreeNode* node, std::vector<std::pair
 
 //Metodos para eliminacion
 
-void BPlusTree::remove(const std::string& key) {
+void BPlusTree::remove(const std::string& isbn) {
     if (!root) {
-        std::cout << "El árbol está vacío.\n";
         return;
     }
 
-    removeNode(root, key);
+    // Modificar removeNode para trabajar con el ISBN
+    removeNode(root, isbn);
 
+    // Si el root quedó vacío
     if (root->keys.size() == 0) {
         BPlusTreeNode* temp = root;
         if (root->isLeaf) {
@@ -417,56 +418,49 @@ void BPlusTree::remove(const std::string& key) {
         }
         delete temp;
     }
-
-    // Update the book_tree.txt file
-    std::ifstream infile("book_tree.txt");
-    std::ofstream temp("temp.txt");
-    std::string line;
-    while (getline(infile, line)) {
-        std::istringstream iss(line);
-        std::string titulo, isbn, nombreAutor, isni, fechaNac, fechaPub;
-        getline(iss, titulo, ';');
-        getline(iss, isbn, ';');
-        getline(iss, nombreAutor, ';');
-        getline(iss, isni, ';');
-        getline(iss, fechaNac, ';');
-        getline(iss, fechaPub, ';');
-        if (isbn != key) {
-            temp << line << std::endl;
-        }
-    }
-    infile.close();
-    temp.close();
-    remove("book_tree.txt");
-    rename("temp.txt", "book_tree.txt");
 }
 
-void BPlusTree::removeNode(BPlusTreeNode* node, const std::string& key) {
-    int idx = findKey(node, key);
-
-    if (idx < node->keys.size() && node->keys[idx] == key) {
-        if (node->isLeaf) {
-            removeFromLeaf(node, idx);
-        } else {
-            removeFromNonLeaf(node, idx);
+void BPlusTree::removeNode(BPlusTreeNode* node, const std::string& isbn) {
+    int idx = 0;
+    
+    // Buscar el índice que corresponde al ISBN en este nodo
+    while (idx < node->keys.size()) {
+        const auto& libro = node->data[idx].second;
+        if (libro.getIsbn() == isbn) {
+            break;
         }
-    } else {
-        if (node->isLeaf) {
-            std::cout << "La clave " << key << " no existe en el árbol.\n";
+        idx++;
+    }
+
+    // Si encontramos el ISBN en este nodo y es una hoja
+    if (idx < node->keys.size() && node->isLeaf) {
+        if (node->data[idx].second.getIsbn() == isbn) {
+            // Eliminar la clave y el dato
+            node->keys.erase(node->keys.begin() + idx);
+            node->data.erase(node->data.begin() + idx);
             return;
         }
+    }
 
-        bool flag = ((idx == node->keys.size()) ? true : false);
+    // Si no es hoja o no encontramos el ISBN aquí
+    if (node->isLeaf) {
+        return;  // No se encontró en esta hoja
+    }
 
-        if (node->children[idx]->keys.size() < minDegree) {
-            fill(node, idx);
-        }
+    // Determinar el hijo donde podría estar el ISBN
+    bool lastChild = (idx == node->keys.size());
+    BPlusTreeNode* child = node->children[idx];
 
-        if (flag && idx > node->keys.size()) {
-            removeNode(node->children[idx - 1], key);
-        } else {
-            removeNode(node->children[idx], key);
-        }
+    // Si el hijo tiene muy pocas claves, rellenarlo
+    if (child->keys.size() < minDegree) {
+        fill(node, idx);
+    }
+
+    // Si el último hijo se fusionó, necesitamos buscar en el hijo anterior
+    if (lastChild && idx > node->keys.size()) {
+        removeNode(node->children[idx - 1], isbn);
+    } else {
+        removeNode(node->children[idx], isbn);
     }
 }
 
@@ -632,5 +626,66 @@ void BPlusTree::search_by_isbn_prefix(BPlusTreeNode* node, const std::string& pr
         for (size_t i = 0; i <= node->keys.size(); i++) {
             search_by_isbn_prefix(node->children[i], prefix);
         }
+    }
+}
+
+void eliminarLibro(BPlusTree& arbol, const string& isbn) {
+    try {
+        // 1. Encontrar el libro por ISBN y obtener su clave completa
+        Libro libroAEliminar = arbol.searchObject(isbn);
+        if (libroAEliminar.getTitulo().empty()) {
+            cout << "Libro no encontrado.\n";
+            return;
+        }
+
+        // 2. Eliminar el libro del árbol usando el ISBN
+        arbol.remove(isbn);
+
+        // 3. Actualizar el archivo eliminando solo la línea con el ISBN específico
+        ifstream inFile("book_tree.txt");
+        if (!inFile) {
+            throw runtime_error("Error al abrir el archivo para lectura");
+        }
+
+        // Archivo temporal para escribir
+        ofstream tempFile("temp.txt");
+        if (!tempFile) {
+            inFile.close();
+            throw runtime_error("Error al crear archivo temporal");
+        }
+
+        string linea;
+        bool encontrado = false;
+        
+        // Copiar todas las líneas excepto la que contiene el ISBN a eliminar
+        while (getline(inFile, linea)) {
+            if (linea.find(isbn) == string::npos) {
+                tempFile << linea << endl;
+            } else {
+                encontrado = true;
+            }
+        }
+
+        inFile.close();
+        tempFile.close();
+
+        // Reemplazar el archivo original con el temporal
+        if (remove("book_tree.txt") != 0) {
+            throw runtime_error("Error al eliminar archivo original");
+        }
+        if (rename("temp.txt", "book_tree.txt") != 0) {
+            throw runtime_error("Error al renombrar archivo temporal");
+        }
+
+        if (encontrado) {
+            cout << "Libro eliminado exitosamente.\n";
+        } else {
+            cout << "El libro no se encontró en el archivo.\n";
+        }
+    }
+    catch (const exception& e) {
+        cout << "Error durante la eliminación: " << e.what() << "\n";
+        // Limpiar archivos temporales si es necesario
+        remove("temp.txt");
     }
 }

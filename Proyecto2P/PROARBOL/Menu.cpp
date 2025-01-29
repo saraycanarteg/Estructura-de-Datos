@@ -24,6 +24,7 @@
 
 using namespace std;
 
+void eliminarLibro(BPlusTree& arbol, const string& isbn);
 std::wstring getExecutablePath()
 {
     wchar_t buffer[MAX_PATH];
@@ -322,20 +323,12 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
                 string isbn;
                 do
                 {
+                    cout << "Está la función nueva :p";
                     cout << "Ingrese el ISBN del libro a eliminar: ";
                     getline(cin, isbn);
                 } while (!Validaciones::validarIsbn(isbn));
-                Libro libro = arbol.search(isbn);
-                if (!libro.getTitulo().empty())
-                {
-                    arbol.remove(isbn);
-                    cout << "Libro eliminado exitosamente.\n";
-                }
-                else
-                {
-                    cout << "Libro no encontrado.\n";
-                }
-                arbol.loadFromFile("book_tree.txt");
+                
+                eliminarLibro(arbol, isbn);
             }
             else if (opciones[seleccion] == "Ver todos los libros")
             {
