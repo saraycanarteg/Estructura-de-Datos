@@ -24,7 +24,7 @@
 
 using namespace std;
 
-void eliminarLibro(BPlusTree& arbol, const string& isbn);
+void eliminarLibro(BPlusTree &arbol, const string &isbn);
 std::wstring getExecutablePath()
 {
     wchar_t buffer[MAX_PATH];
@@ -91,7 +91,7 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
         "Agregar libro",
         "Buscar libro",
         "Buscar autor",
-        //busquedas binarias
+        // busquedas binarias
         "Buscar por palabra inicial",
         "Buscar por prefijo de ISBN",
         "Eliminar libro",
@@ -234,10 +234,11 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
             else if (opciones[seleccion] == "Buscar autor")
             {
                 string isni;
-                do{
-                cout << "Ingrese el ISNI del autor a buscar: ";
-                getline(cin, isni);
-                }while (!Validaciones::validarIsni(isni));
+                do
+                {
+                    cout << "Ingrese el ISNI del autor a buscar: ";
+                    getline(cin, isni);
+                } while (!Validaciones::validarIsni(isni));
 
                 Libro autor = arbol.searchByIsni(isni);
                 if (autor.getAutor().getIsni() == isni)
@@ -286,7 +287,8 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
                     getline(cin, palabra);
                 } while (!Validaciones::validarTitulo(palabra, "Título"));
 
-                cout <<endl <<left;
+                cout << endl
+                     << left;
                 cout << setw(40) << "Título"
                      << setw(25) << "Autor"
                      << setw(22) << "ISNI"
@@ -300,15 +302,18 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
             else if (opciones[seleccion] == "Buscar por prefijo de ISBN")
             {
                 string prefix;
-                do {
+                do
+                {
                     cout << "Ingrese los primeros 4 dígitos del ISBN: ";
                     getline(cin, prefix);
-                    if (prefix.length() != 4 || !all_of(prefix.begin(), prefix.end(), ::isdigit)) {
+                    if (prefix.length() != 4 || !all_of(prefix.begin(), prefix.end(), ::isdigit))
+                    {
                         cout << "Error: Ingrese exactamente 4 dígitos numéricos.\n";
                     }
                 } while (prefix.length() != 4 || !all_of(prefix.begin(), prefix.end(), ::isdigit));
 
-                cout << endl << left;
+                cout << endl
+                     << left;
                 cout << setw(40) << "Título"
                      << setw(25) << "Autor"
                      << setw(22) << "ISNI"
@@ -327,7 +332,7 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
                     cout << "Ingrese el ISBN del libro a eliminar: ";
                     getline(cin, isbn);
                 } while (!Validaciones::validarIsbn(isbn));
-                
+
                 eliminarLibro(arbol, isbn);
             }
             else if (opciones[seleccion] == "Ver todos los libros")
@@ -390,7 +395,7 @@ void mostrarMenu(BPlusTree &arbol, BPlusTree &arbol_fechas)
             cout << "Presione cualquier tecla para continuar...\n";
             _getch();
         }
-        else if (tecla == 59)
+        else if (GetAsyncKeyState(VK_F1) & 0x8000)
         { // F1
             std::wstring base_path = getExecutablePath();
             std::wstring ayuda_path = base_path + L"\\output\\ayuda.exe";
