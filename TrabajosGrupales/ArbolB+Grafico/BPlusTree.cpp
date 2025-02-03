@@ -1,7 +1,4 @@
 #include "BplusTree.h"
-#include <queue>
-#include <cmath>
-#include <iomanip>
 
 template <typename T, int DEGREE>
 void BPlusTree<T, DEGREE>::insert(const T& key) {
@@ -42,48 +39,6 @@ void BPlusTree<T, DEGREE>::insertInternal(const T& key, Node<T, DEGREE>* node, N
     }
 }
 
-
-template <typename T, int DEGREE>
-void BPlusTree<T, DEGREE>::splitChild(Node<T, DEGREE>* node, int index, Node<T, DEGREE>* child) {
-    // Create a new child node
-    Node<T, DEGREE>* newChild = new Node<T, DEGREE>(child->isLeaf);
-    
-    // Calculate the split point
-    int splitPoint = DEGREE / 2;
-    
-    // Copy upper half of keys to the new child
-    newChild->numKeys = DEGREE - splitPoint - 1;
-    for (int j = 0; j < newChild->numKeys; j++) {
-        newChild->keys[j] = child->keys[j + splitPoint + 1];
-    }
-
-    // If it's an internal node, copy children
-    if (!child->isLeaf) {
-        for (int j = 0; j <= newChild->numKeys; j++) {
-            newChild->children[j] = child->children[j + splitPoint + 1];
-        }
-        child->numKeys = splitPoint;
-    } else {
-        // For leaf nodes, adjust the linked list
-        newChild->children[DEGREE] = child->children[DEGREE];
-        child->children[DEGREE] = newChild;
-        child->numKeys = splitPoint + 1;
-    }
-
-    // Make room for the new child in the parent node
-    for (int j = node->numKeys; j > index; j--) {
-        node->children[j + 1] = node->children[j];
-    }
-    node->children[index + 1] = newChild;
-
-    // Move the splitting key up to the parent
-    for (int j = node->numKeys - 1; j >= index; j--) {
-        node->keys[j + 1] = node->keys[j];
-    }
-    node->keys[index] = child->keys[splitPoint];
-    node->numKeys++;
-}
-
 template <typename T, int DEGREE>
 void BPlusTree<T, DEGREE>::traverse(Node<T, DEGREE>* node) const {
 
@@ -101,6 +56,46 @@ void BPlusTree<T, DEGREE>::traverse(Node<T, DEGREE>* node) const {
         leaf = leaf->children[DEGREE];
     }
     std::cout << std::endl;
+}
+
+template <typename T, int DEGREE>
+void BPlusTree<T, DEGREE>::splitChild(Node<T, DEGREE>* node, int index, Node<T, DEGREE>* child) {
+    // Crear un nuevo nodo hijo derecho
+    Node<T, DEGREE>* newChild = new Node<T, DEGREE>(child->isLeaf);
+
+    // Punto de división
+    int splitPoint = DEGREE / 2;
+
+    // Copiar la mitad superior de las claves al nuevo nodo derecho
+    newChild->numKeys = child->numKeys - splitPoint;
+    for (int j = 0; j < newChild->numKeys; j++) {
+        newChild->keys[j] = child->keys[j + splitPoint];
+    }
+
+    // Si es un nodo interno, copiar los hijos correspondientes
+    if (!child->isLeaf) {
+        for (int j = 0; j <= newChild->numKeys; j++) {
+            newChild->children[j] = child->children[j + splitPoint];
+        }
+    } else {
+        // Para nodos hoja, ajustar la lista enlazada
+        newChild->children[DEGREE] = child->children[DEGREE];
+        child->children[DEGREE] = newChild;
+    }
+
+    // Ajustar el número de claves del nodo original
+    child->numKeys = splitPoint;
+
+    // Insertar el nuevo hijo en el nodo padre
+    for (int j = node->numKeys; j > index; j--) {
+        node->children[j + 1] = node->children[j];
+        node->keys[j] = node->keys[j - 1];  // Desplazar claves
+    }
+    node->children[index + 1] = newChild;
+
+    // ✅ CORRECCIÓN: Promover la primera clave del nuevo nodo derecho
+    node->keys[index] = newChild->keys[0];
+    node->numKeys++;
 }
 
 template <typename T, int DEGREE>
@@ -206,76 +201,4 @@ int BPlusTree<T, DEGREE>::calculateDepth(Node<T, DEGREE>* node) const {
     }
     
     return maxDepth;
-}
-
-template <typename T, int DEGREE>
-int BPlusTree<T, DEGREE>::calculateLevel(Node<T, DEGREE>* node) const {
-    std::queue<std::pair<Node<T, DEGREE>*, int>> queue;
-    queue.push(std::make_pair(root, 0));
-    
-    while (!queue.empty()) {
-        Node<T, DEGREE>* currentNode = queue.front().first;
-        int level = queue.front().second;
-        queue.pop();
-        
-        if (currentNode == node) return level;
-        
-        if (!currentNode->isLeaf) {
-            for (int i = 0; i <= currentNode->numKeys; i++) {
-                if (currentNode->children[i]) {
-                    queue.push(std::make_pair(currentNode->children[i], level + 1));
-                }
-            }
-        }
-    }
-    
-    return -1; // Node not found
-}
-
-template <typename T, int DEGREE>
-int BPlusTree<T, DEGREE>::getHeight() const {
-    return calculateHeight(root);
-}
-
-template <typename T, int DEGREE>
-int BPlusTree<T, DEGREE>::getDepth() const {
-    return calculateDepth(root);
-}
-
-template <typename T, int DEGREE>
-void BPlusTree<T, DEGREE>::displayLevels() const {
-    if (root == nullptr) return;
-    
-    std::queue<std::pair<Node<T, DEGREE>*, int>> queue;
-    queue.push(std::make_pair(root, 0));
-    int currentLevel = 0;
-    
-    while (!queue.empty()) {
-        Node<T, DEGREE>* node = queue.front().first;
-        int level = queue.front().second;
-        queue.pop();
-        
-        if (level > currentLevel) {
-            std::cout << std::endl;
-            currentLevel = level;
-        }
-        
-        // Print node contents
-        std::cout << "[";
-        for (int i = 0; i < node->numKeys; i++) {
-            std::cout << node->keys[i];
-            if (i < node->numKeys - 1) std::cout << " ";
-        }
-        std::cout << "]";
-        
-        // Add children to queue for internal nodes
-        if (!node->isLeaf) {
-            for (int i = 0; i <= node->numKeys; i++) {
-                if (node->children[i]) {
-                    queue.push(std::make_pair(node->children[i], level + 1));
-                }
-            }
-        }
-    }
-    std::cout << std::endl;
 }
