@@ -42,37 +42,45 @@ void BPlusTree<T, DEGREE>::insertInternal(const T& key, Node<T, DEGREE>* node, N
     }
 }
 
+
 template <typename T, int DEGREE>
 void BPlusTree<T, DEGREE>::splitChild(Node<T, DEGREE>* node, int index, Node<T, DEGREE>* child) {
+    // Create a new child node
     Node<T, DEGREE>* newChild = new Node<T, DEGREE>(child->isLeaf);
-    newChild->numKeys = DEGREE / 2;
-
-    for (int j = 0; j < DEGREE / 2; j++) {
-        newChild->keys[j] = child->keys[j + DEGREE / 2];
+    
+    // Calculate the split point
+    int splitPoint = DEGREE / 2;
+    
+    // Copy upper half of keys to the new child
+    newChild->numKeys = DEGREE - splitPoint - 1;
+    for (int j = 0; j < newChild->numKeys; j++) {
+        newChild->keys[j] = child->keys[j + splitPoint + 1];
     }
 
+    // If it's an internal node, copy children
     if (!child->isLeaf) {
-        for (int j = 0; j <= DEGREE / 2; j++) {
-            newChild->children[j] = child->children[j + DEGREE / 2];
+        for (int j = 0; j <= newChild->numKeys; j++) {
+            newChild->children[j] = child->children[j + splitPoint + 1];
         }
+        child->numKeys = splitPoint;
     } else {
+        // For leaf nodes, adjust the linked list
         newChild->children[DEGREE] = child->children[DEGREE];
         child->children[DEGREE] = newChild;
+        child->numKeys = splitPoint + 1;
     }
 
-    child->numKeys = DEGREE / 2;
-
-    for (int j = node->numKeys; j >= index + 1; j--) {
+    // Make room for the new child in the parent node
+    for (int j = node->numKeys; j > index; j--) {
         node->children[j + 1] = node->children[j];
     }
-
     node->children[index + 1] = newChild;
 
+    // Move the splitting key up to the parent
     for (int j = node->numKeys - 1; j >= index; j--) {
         node->keys[j + 1] = node->keys[j];
     }
-
-    node->keys[index] = child->keys[DEGREE / 2];
+    node->keys[index] = child->keys[splitPoint];
     node->numKeys++;
 }
 
@@ -118,12 +126,13 @@ void BPlusTree<T, DEGREE>::printStructure(Node<T, DEGREE>* node, int level) cons
         // Solo imprimir los nodos internos
         if (!current->isLeaf) {
             internalNodesPrinted = true;
+            std::cout << " Nivel " << nodeLevel << ": ";
             std::cout << "[";
             for (int i = 0; i < current->numKeys; i++) {
                 std::cout << current->keys[i];
                 if (i < current->numKeys - 1) std::cout << " ";
             }
-            std::cout << "]" << std::endl;
+            std::cout << "]";
             
             for (int i = 0; i <= current->numKeys; i++) {
                 if (current->children[i]) {
@@ -153,6 +162,9 @@ void BPlusTree<T, DEGREE>::printStructure(Node<T, DEGREE>* node, int level) cons
         }
     }
     std::cout << std::endl;
+
+    std::cout <<  "Altura: " << calculateHeight(node) << ", Profundidad: " << calculateDepth(node) << std::endl;
+
 }
 
 template <typename T, int DEGREE>
@@ -165,4 +177,105 @@ void BPlusTree<T, DEGREE>::display() const {
 template <typename T, int DEGREE>
 void BPlusTree<T, DEGREE>::displayStructure() const {
     printStructure(root, 0);
+}
+
+template <typename T, int DEGREE>
+int BPlusTree<T, DEGREE>::calculateHeight(Node<T, DEGREE>* node) const {
+    if (node == nullptr || node->isLeaf) return 0;
+    int height = 0;
+    for (int i = 0; i <= node->numKeys; i++) {
+        if (node->children[i]) {
+            int childHeight = calculateHeight(node->children[i]);
+            height = std::max(height, childHeight);
+        }
+    }
+    return height + 1;
+}
+
+template <typename T, int DEGREE>
+int BPlusTree<T, DEGREE>::calculateDepth(Node<T, DEGREE>* node) const {
+    if (node == nullptr) return 0;
+    
+    int maxDepth = 0;
+    if (!node->isLeaf) {
+        for (int i = 0; i <= node->numKeys; i++) {
+            int childDepth = calculateDepth(node->children[i]);
+            maxDepth = std::max(maxDepth, childDepth);
+        }
+        maxDepth++;
+    }
+    
+    return maxDepth;
+}
+
+template <typename T, int DEGREE>
+int BPlusTree<T, DEGREE>::calculateLevel(Node<T, DEGREE>* node) const {
+    std::queue<std::pair<Node<T, DEGREE>*, int>> queue;
+    queue.push(std::make_pair(root, 0));
+    
+    while (!queue.empty()) {
+        Node<T, DEGREE>* currentNode = queue.front().first;
+        int level = queue.front().second;
+        queue.pop();
+        
+        if (currentNode == node) return level;
+        
+        if (!currentNode->isLeaf) {
+            for (int i = 0; i <= currentNode->numKeys; i++) {
+                if (currentNode->children[i]) {
+                    queue.push(std::make_pair(currentNode->children[i], level + 1));
+                }
+            }
+        }
+    }
+    
+    return -1; // Node not found
+}
+
+template <typename T, int DEGREE>
+int BPlusTree<T, DEGREE>::getHeight() const {
+    return calculateHeight(root);
+}
+
+template <typename T, int DEGREE>
+int BPlusTree<T, DEGREE>::getDepth() const {
+    return calculateDepth(root);
+}
+
+template <typename T, int DEGREE>
+void BPlusTree<T, DEGREE>::displayLevels() const {
+    if (root == nullptr) return;
+    
+    std::queue<std::pair<Node<T, DEGREE>*, int>> queue;
+    queue.push(std::make_pair(root, 0));
+    int currentLevel = 0;
+    
+    while (!queue.empty()) {
+        Node<T, DEGREE>* node = queue.front().first;
+        int level = queue.front().second;
+        queue.pop();
+        
+        if (level > currentLevel) {
+            std::cout << std::endl;
+            currentLevel = level;
+        }
+        
+        // Print node contents
+        std::cout << "[";
+        for (int i = 0; i < node->numKeys; i++) {
+            std::cout << node->keys[i];
+            if (i < node->numKeys - 1) std::cout << " ";
+        }
+        std::cout << "]";
+        
+        // Add children to queue for internal nodes
+        if (!node->isLeaf) {
+            for (int i = 0; i <= node->numKeys; i++) {
+                if (node->children[i]) {
+                    queue.push(std::make_pair(node->children[i], level + 1));
+                }
+            }
+        }
+    }
+    std::cout << std::endl;
 }

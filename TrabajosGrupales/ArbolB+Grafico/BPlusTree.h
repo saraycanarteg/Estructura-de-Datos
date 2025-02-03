@@ -14,6 +14,10 @@ private:
     void traverse(Node<T, DEGREE>* node) const;
     void printStructure(Node<T, DEGREE>* node, int level) const;
 
+    int calculateHeight(Node<T, DEGREE>* node) const;
+    int calculateDepth(Node<T, DEGREE>* node) const;
+    int calculateLevel(Node<T, DEGREE>* node) const;
+
 public:
     BPlusTree() : root(new Node<T, DEGREE>(true)) {}
     ~BPlusTree() { delete root; }
@@ -21,6 +25,9 @@ public:
     void insert(const T& key);
     void display() const;
     void displayStructure() const;
+    int getHeight() const;
+    int getDepth() const;
+    void displayLevels() const;
 };
 
 #endif // BPLUSTREE_H
