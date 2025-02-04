@@ -1,4 +1,5 @@
 #include <iostream>
+#include <windows.h> 
 #include "BplusTree.cpp"
 
 using namespace std;
@@ -30,6 +31,7 @@ void insertAndDisplay(BPlusTree<int, 3>& tree) {
 }
 
 int main() {
+    system("Color 0A"); 
     BPlusTree<int, 3> tree;
     insertAndDisplay(tree);
     return 0;
