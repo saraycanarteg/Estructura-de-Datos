@@ -7,7 +7,7 @@ int main() {
     int gd = DETECT, gm;
     int width = 800;  // Ancho de la ventana
     int height = 1000; // Alto de la ventana
-    initwindow(width, height, "Graphics Window");
+    initwindow(width, height, "Open Hashing");
 
     OpenHashing hashTable(13);
     std::vector<int> data;
