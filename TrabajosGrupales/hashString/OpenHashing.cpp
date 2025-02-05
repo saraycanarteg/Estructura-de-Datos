@@ -6,8 +6,6 @@
 #include <iomanip>
 using namespace std;
 
-double zoomLevel = 1.0; // Initialize zoomLevel
-
 OpenHashing::OpenHashing(int s) {
     size = s;
     table = new Node*[size];
@@ -113,17 +111,22 @@ void OpenHashing::display() {
 void OpenHashing::insert(const string& key) {
     int index = hashFunction(key);
     Node* newNode = new Node(key);
+    newNode->next = nullptr;  // Ensure the new node points to null
 
-    // Insertar al final de la lista en esa posición
+    // If the list is empty at this index
     if (table[index] == nullptr) {
         table[index] = newNode;
-    } else {
-        Node* current = table[index];
-        while (current->next != nullptr) {
-            current = current->next;
-        }
-        current->next = newNode;
+        return;
     }
+
+    // Find the last node in the list
+    Node* current = table[index];
+    while (current->next != nullptr) {
+        current = current->next;
+    }
+
+    // Append the new node at the end
+    current->next = newNode;
 }
 
 OpenHashing::~OpenHashing() {
@@ -136,5 +139,38 @@ OpenHashing::~OpenHashing() {
         }
     }
     delete[] table;
+}
+
+bool OpenHashing::remove(const std::string& key) {
+    int index = hashFunction(key);
+    
+    // If list is empty
+    if (table[index] == nullptr) {
+        return false;
+    }
+    
+    // If key is at the head
+    if (table[index]->key == key) {
+        Node* temp = table[index];
+        table[index] = table[index]->next;
+        delete temp;
+        return true;
+    }
+    
+    // Search for key in the list
+    Node* current = table[index];
+    while (current->next != nullptr && current->next->key != key) {
+        current = current->next;
+    }
+    
+    // If key was found
+    if (current->next != nullptr) {
+        Node* temp = current->next;
+        current->next = temp->next;
+        delete temp;
+        return true;
+    }
+    
+    return false;
 }
 

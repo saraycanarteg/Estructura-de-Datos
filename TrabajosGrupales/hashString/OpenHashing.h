@@ -4,6 +4,7 @@
 #include <string>
 #include <bitset>
 
+
 struct Node {
     std::string key;
     Node* next;
@@ -23,7 +24,7 @@ public:
     void insert(const std::string& key);
     void display();
     ~OpenHashing();
-    void handleZoom();
+    bool remove(const std::string& key);
 };
 
 #endif

@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <graphics.h>
+#include <string>
 
 using namespace std;
 
@@ -29,6 +30,26 @@ int main() {
         hashTable.display();
         getch();
     }
+    
+    char response;
+    do {
+        cout << "Desea eliminar algun elemento? (s/n): ";
+        cin >> response;
+        
+        if (tolower(response) == 's') {
+            string keyToDelete;
+            cout << "Ingrese el string a eliminar: ";
+            cin >> keyToDelete;
+            
+            if (hashTable.remove(keyToDelete)) {
+                cout << "Elemento '" << keyToDelete << "' eliminado exitosamente." << endl;
+                hashTable.display();
+                getch();
+            } else {
+                cout << "Elemento '" << keyToDelete << "' no encontrado." << endl;
+            }
+        }
+    } while (tolower(response) == 's');
     
     closegraph();
     return 0;
