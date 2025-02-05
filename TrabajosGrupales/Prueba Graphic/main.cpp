@@ -5,9 +5,10 @@
 
 int main() {
     int gd = DETECT, gm;
-    int width = 800;  // Ancho de la ventana
-    int height = 1000; // Alto de la ventana
+    int width = 2000;  // Increased window width
+    int height = 1200;  // Adjusted window height
     initwindow(width, height, "Open Hashing");
+
 
     OpenHashing hashTable(13);
     std::vector<int> data;
