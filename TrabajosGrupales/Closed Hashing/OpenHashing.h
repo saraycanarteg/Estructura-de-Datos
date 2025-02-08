@@ -1,7 +1,5 @@
 #include <graphics.h>
 #include <iostream>
-#include <algorithm>
-#include <vector>
 
 using namespace std;
 
@@ -27,6 +25,4 @@ public:
     void display();
 
     ~OpenHashing();
-
-    void remove(int key);
 };

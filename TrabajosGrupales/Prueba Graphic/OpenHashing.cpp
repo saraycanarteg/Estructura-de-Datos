@@ -103,3 +103,29 @@ OpenHashing::~OpenHashing()
     }
     delete[] table;
 }
+
+void OpenHashing::remove(int key) {
+    int index = hashFunction(key);
+    Node* current = table[index];
+    Node* prev = nullptr;
+
+    // Search for key
+    while (current != nullptr && current->key != key) {
+        prev = current;
+        current = current->next;
+    }
+
+    // Key found
+    if (current != nullptr) {
+        // Case 1: Element is at head
+        if (prev == nullptr) {
+            table[index] = current->next;
+        }
+        // Case 2: Element is in middle or end
+        else {
+            prev->next = current->next;
+        }
+        delete current;
+    }
+    // Key not found - no action needed
+}

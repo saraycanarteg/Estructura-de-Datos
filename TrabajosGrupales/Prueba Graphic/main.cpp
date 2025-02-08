@@ -1,16 +1,7 @@
 #include "OpenHashing.cpp"
-#include <iostream>
-#include <vector>
-#include <algorithm>
-
-int main() {
-    int gd = DETECT, gm;
-    int width = 2000;  // Increased window width
-    int height = 1200;  // Adjusted window height
-    initwindow(width, height, "Open Hashing");
 
 
-    OpenHashing hashTable(13);
+void insertNumbers(OpenHashing& hashTable) {
     std::vector<int> data;
     int num;
 
@@ -23,6 +14,11 @@ int main() {
 
     std::sort(data.begin(), data.end());
 
+    int gd = DETECT, gm;
+    int width = 2000;
+    int height = 1200;
+    initwindow(width, height, "Open Hashing");
+
     for (int value : data) {
         hashTable.insert(value);
         hashTable.display();
@@ -30,40 +26,53 @@ int main() {
     }
 
     closegraph();
-    return 0;
 }
 
-
-/*
-#include "OpenHashing.cpp"
+void deleteNumber(OpenHashing& hashTable) {
+    std::cout << "Ingrese el numero a eliminar: ";
+    int num;
+    std::cin >> num;
+    
+    int gd = DETECT, gm;
+    int width = 2000;
+    int height = 1200;
+    initwindow(width, height, "Open Hashing");
+    
+    hashTable.remove(num);
+    hashTable.display();
+    getch();
+    
+    closegraph();
+}
 
 int main() {
-    int gd = DETECT, gm;
-    int width = 800;  // Ancho de la ventana
-    int height = 1000; // Alto de la ventana
-    initwindow(width, height, "Graphics Window");
-
     OpenHashing hashTable(13);
-    hashTable.insert(15);
-    hashTable.display();
-    getch();
-    hashTable.insert(25);
-    hashTable.display();
-    getch();
-    hashTable.insert(35);
-    hashTable.display();
-    getch();
-    hashTable.insert(45);
-    hashTable.display();
-    getch();
-    hashTable.insert(55);
-    hashTable.display();
-    getch();
-    hashTable.insert(16);
-    hashTable.display();
-    getch();
+    int option;
 
-    closegraph();
+    do {
+        system("cls");
+        std::cout << "\n=== MENU HASH TABLE ===\n";
+        std::cout << "1. Insertar elementos\n";
+        std::cout << "2. Eliminar elemento\n";
+        std::cout << "3. Salir\n";
+        std::cout << "Ingrese opcion: ";
+        std::cin >> option;
+
+        switch(option) {
+            case 1:
+                insertNumbers(hashTable);
+                break;
+            case 2:
+                deleteNumber(hashTable);
+                break;
+            case 3:
+                std::cout << "Saliendo...\n";
+                break;
+            default:
+                std::cout << "Opcion invalida\n";
+                system("pause");
+        }
+    } while(option != 3);
+
     return 0;
 }
-*/
