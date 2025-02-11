@@ -8,10 +8,10 @@ int main() {
     char choice;
     do {
         std::cout << "1. Insertar numero\n";
-        std::cout << "2. Eliminar numero\n";
-        std::cout << "3. Mostrar arbol\n";
-        std::cout << "4. Mostrar recorrido\n";
-        std::cout << "5. Salir\n";
+        //std::cout << "2. Eliminar numero\n";
+        std::cout << "2. Mostrar arbol\n";
+        std::cout << "3. Mostrar recorrido\n";
+        std::cout << "4. Salir\n";
         std::cout << "Elija una opcion: ";
         std::cin >> choice;
         
@@ -23,19 +23,19 @@ int main() {
                 visualizer.visualizeInsertion(number);
                 break;
             }
-            case '2':
+            /*case '2':
                 int number;
                 std::cout << "Ingrese el numero a eliminar: ";
                 std::cin >> number;
                 visualizer.visualizeRemoval(number);
-                break;
-            case '3':
+                break;*/
+            case '2':
                 visualizer.displayTree();
                 break;
-            case '4':
+            case '3':
                 visualizer.displayTraversal();
                 break;
-            case '5':
+            case '4':
                 return 0;
         }
     } while (true);

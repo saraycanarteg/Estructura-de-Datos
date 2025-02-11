@@ -98,16 +98,15 @@ void BPlusTreeVisualizer<T, DEGREE>::drawLeafConnections() {
     while (leaf && leaf->children[DEGREE]) {
         setcolor(RGB(147, 112, 219));
         
-        // Dibujar flecha corta
         int startX = getx() + NODE_WIDTH;
         int startY = gety() + NODE_HEIGHT/2;
-        int endX = startX + 30;  // Flecha corta
+        int endX = startX + 30;  
         
         line(startX, startY, endX, startY);
         
         // Punta de flecha
-        int arrowLength = 8;
-        int arrowWidth = 4;
+        int arrowLength = 10;
+        int arrowWidth = 6;
         line(endX - arrowLength, startY - arrowWidth, endX, startY);
         line(endX - arrowLength, startY + arrowWidth, endX, startY);
         
