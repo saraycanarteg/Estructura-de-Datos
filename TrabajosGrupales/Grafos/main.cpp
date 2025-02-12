@@ -1,4 +1,5 @@
 #include "grafo.h"
+#include "dfs_animacion.h"
 #include <iostream>
 #include <graphics.h>
 
@@ -17,7 +18,8 @@ int main() {
         std::cout << "4. Ver lista de adyacencia\n";  
         std::cout << "5. Ver grafo\n";
         std::cout << "6. Generar nuevo grafo aleatorio\n";
-        std::cout << "7. Salir\n";
+        std::cout << "7. Recorrido DFS\n";
+        std::cout << "8. Salir\n";
         std::cout << "Seleccione una opcion: ";
         
         int opcion;
@@ -38,7 +40,7 @@ int main() {
                 grafo->dibujarGrafo();
                 break;
 
-                case 3:
+            case 3:
                 if(grafo) {
                     grafo->dibujarMatrizGrafica();
                     system("pause");
@@ -71,6 +73,23 @@ int main() {
                 break;
                 
             case 7:
+                if(grafo) {
+                    int inicio;
+                    std::cout << "Ingrese el vertice inicial (0-" 
+                              << grafo->getNumVertices()-1 << "): ";
+                    std::cin >> inicio;
+                    if(inicio >= 0 && inicio < grafo->getNumVertices()) {
+                        DFSAnimacion dfs(grafo);
+                        dfs.ejecutarDFS(inicio);
+                        system("pause");
+                    } else {
+                        std::cout << "Vertice invalido\n";
+                    }
+                }
+                else std::cout << "Primero cree un grafo\n";
+                break;
+                
+            case 8:
                 if(grafo) delete grafo;
                 closegraph();
                 return 0;

@@ -10,6 +10,7 @@
                 "-g",
                 "${fileDirname}/main.cpp",
                 "${fileDirname}/grafo.cpp",
+                "${fileDirname}/dfs_animacion.cpp",
                 "-o",
                 "${fileDirname}/main.exe",
                 "-lbgi",

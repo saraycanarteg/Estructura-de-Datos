@@ -20,7 +20,7 @@ public:
 };
 
 class Grafo {
-private:
+protected:
     int numVertices;
     bool dirigido;
     int** matrizAdyacencia;
@@ -33,6 +33,7 @@ private:
     void liberarMatriz();
 
 public:
+    friend class DFSAnimacion;
     Grafo(int vertices, bool esDirigido);
     ~Grafo();
     void generarGrafoAleatorio();
@@ -40,6 +41,11 @@ public:
     void dibujarListaGrafica() const;
     void dibujarGrafo() const;
     bool esDirigido() const { return dirigido; }
+    int getNumVertices() const { return numVertices; }
+    double getCoordX(int i) const { return coordX[i]; }
+    double getCoordY(int i) const { return coordY[i]; }
+    bool isDirigido() const { return dirigido; }
+    int getConexion(int i, int j) const { return matrizAdyacencia[i][j]; }
 };
 
 #endif
