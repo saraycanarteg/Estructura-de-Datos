@@ -1,0 +1,23 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+	  {
+		"label": "build", // Nombre de la tarea
+		"type": "shell",
+		"command": "g++",
+		"args": [
+		  "-g", // Incluye símbolos de depuración
+		  "*.cpp", // Compila todos los archivos .cpp en el directorio
+		  "-o", // Especifica el nombre del ejecutable
+		  "main.exe"
+		],
+		"group": {
+		  "kind": "build",
+		  "isDefault": true
+		},
+		"problemMatcher": ["$gcc"], // Detecta errores y advertencias del compilador
+		"detail": "Compila todos los archivos C++ y genera main.exe"
+	  }
+	]
+  }
+  
