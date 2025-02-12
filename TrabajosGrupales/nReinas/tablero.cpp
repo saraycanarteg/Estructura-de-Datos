@@ -3,9 +3,10 @@
 #include <iostream>
 
 Tablero::Tablero(int size, bool animacion) : n(size), intentos(0), mostrarAnimacion(animacion) {
-    tablero = new int[n];
+    tablero = new int;
+    tablero = (int*)malloc(n * sizeof(int));
     for(int i = 0; i < n; i++) {
-        tablero[i] = -1;
+        *(tablero + i) = -1;
     }
 }
 
@@ -15,13 +16,13 @@ bool Tablero::resolverNReinas(int col) {
         
     for(int i = 0; i < n; i++) {
         if(esPosicionSegura(i, col)) {
-            tablero[col] = i;
+            *(tablero + col) = i;
             intentos++;
             
             if(mostrarAnimacion && intentos % Constantes::ANIMATION_FREQUENCY == 0) {
                 dibujar();
                 for(int j = 0; j <= col; j++) {
-                    dibujarReina(tablero[j], j);
+                    dibujarReina(*(tablero + j), j);
                 }
                 delay(Constantes::ANIMATION_DELAY);
             }
@@ -29,14 +30,14 @@ bool Tablero::resolverNReinas(int col) {
             if(resolverNReinas(col + 1))
                 return true;
                 
-            tablero[col] = -1;
+            *(tablero + col) = -1;
         }
     }
     return false;
 }
 
 Tablero::~Tablero() {
-    delete[] tablero;
+    free(tablero);
 }
 
 void Tablero::dibujar() {
@@ -49,7 +50,7 @@ void Tablero::dibujar() {
             if((i + j) % 2 == 0)
                 setfillstyle(SOLID_FILL, WHITE);
             else
-                setfillstyle(SOLID_FILL, DARKGRAY);
+                setfillstyle(SOLID_FILL, BLACK);
                 
             bar(x, y, x + Constantes::CELL_SIZE, y + Constantes::CELL_SIZE);
             rectangle(x, y, x + Constantes::CELL_SIZE, y + Constantes::CELL_SIZE);
@@ -69,17 +70,16 @@ void Tablero::dibujarReina(int row, int col) {
 
 bool Tablero::esPosicionSegura(int row, int col) {
     for(int i = 0; i < col; i++)
-        if(tablero[i] == row)
+        if(*(tablero + i) == row)
             return false;
             
     for(int i = row, j = col; i >= 0 && j >= 0; i--, j--)
-        if(tablero[j] == i)
+        if(*(tablero + j) == i)
             return false;
             
     for(int i = row, j = col; i < n && j >= 0; i++, j--)
-        if(tablero[j] == i)
+        if(*(tablero + j) == i)
             return false;
             
     return true;
 }
-

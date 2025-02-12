@@ -58,10 +58,9 @@ void Juego::iniciar() {
     
     tablero->dibujar();
     if(tablero->resolverNReinas(0)) {
-        // Siempre mostrar el resultado final
         tablero->dibujar();
         for(int i = 0; i < n; i++) {
-            tablero->dibujarReina(tablero->getTablero()[i], i);
+            tablero->dibujarReina(*(tablero->getTablero() + i), i);
         }
     }
 }
@@ -71,7 +70,7 @@ void Juego::mostrarResultado() {
         cout << "\nSolucion encontrada!\n";
         cout << "Posiciones de las reinas:\n";
         for(int i = 0; i < tablero->getTamanio(); i++) {
-            cout << "Reina " << (i+1) << ": (" << tablero->getTablero()[i]+1 << "," << i+1 << ")\n";
+            cout << "Reina " << (i+1) << ": (" << *(tablero->getTablero() + i)+1 << "," << i+1 << ")\n";
         }
     }
     getch();
