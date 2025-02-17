@@ -1,0 +1,4 @@
+Posición del caballo: (5,4)
+Posición del caballo: (2,7)
+Posición del caballo: (5,7)
+Posición del caballo: (5,3)
