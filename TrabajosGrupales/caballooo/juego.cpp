@@ -25,25 +25,21 @@ void Juego::inicializarGraficos() {
 }
 
 void Juego::guardarPosicion(int row, int col) {
-    // Matriz para almacenar el tablero
     char board[8][8];
     
-    // Inicializar tablero vacío
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
-            board[i][j] = ' '; // Casilla vacía sin X
+            board[i][j] = ' '; 
         }
     }
-    
-    // Colocar el caballo
+ 
     board[row][col] = 'C';
-    
-    // Marcar movimientos posibles
+
     int movimientos[8][2] = {
-        {-2, -1}, {-2, 1},  // Arriba
-        {-1, -2}, {-1, 2},  // Izquierda y derecha arriba
-        {1, -2}, {1, 2},    // Izquierda y derecha abajo
-        {2, -1}, {2, 1}     // Abajo
+        {-2, -1}, {-2, 1},  
+        {-1, -2}, {-1, 2},  
+        {1, -2}, {1, 2},    
+        {2, -1}, {2, 1}     
     };
     
     for(int i = 0; i < 8; i++) {
@@ -55,25 +51,21 @@ void Juego::guardarPosicion(int row, int col) {
         }
     }
     
-    // Guardar en archivo
     ofstream archivo("posiciones.txt", ios::app);
     if(archivo.is_open()) {
         archivo << "\nNueva posición del caballo en: (" << row + 1 << "," << col + 1 << ")\n\n";
         
-        // Imprimir números de columna
         archivo << "    1   2   3   4   5   6   7   8\n";
         
-        // Línea superior del tablero
         archivo << "  ---------------------------------\n";
         
-        // Imprimir tablero con líneas divisorias
         for(int i = 0; i < 8; i++) {
-            archivo << i + 1 << " "; // Números de fila
+            archivo << i + 1 << " "; 
             for(int j = 0; j < 8; j++) {
                 archivo << "| " << board[i][j] << " ";
             }
-            archivo << "|\n";  // Última línea vertical de la fila
-            archivo << "  ---------------------------------\n";  // Línea horizontal entre filas
+            archivo << "|\n";  
+            archivo << "  ---------------------------------\n";  
         }
         
         archivo << "\nLeyenda:\n";
@@ -98,18 +90,17 @@ void Juego::esperarClic() {
         if(ismouseclick(WM_LBUTTONDOWN)) {
             getmouseclick(WM_LBUTTONDOWN, x, y);
             
-            // Convertir coordenadas del clic a posición del tablero
             int columna = (x - Constantes::MARGIN) / Constantes::CELL_SIZE;
             int fila = (y - Constantes::MARGIN) / Constantes::CELL_SIZE;
             
             if(columna >= 0 && columna < 8 && fila >= 0 && fila < 8) {
-                tablero->dibujar(); // Limpiar tablero
+                tablero->dibujar(); 
                 tablero->dibujarCaballo(fila, columna);
                 tablero->mostrarMovimientosPosibles(fila, columna);
                 guardarPosicion(fila, columna);
             }
         }
-        if(kbhit() && getch() == 27) // ESC para salir
+        if(kbhit() && getch() == 27) 
             break;
     }
 }

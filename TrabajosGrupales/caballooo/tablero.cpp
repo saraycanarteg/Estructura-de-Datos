@@ -23,16 +23,22 @@ void Tablero::dibujar() {
 }
 
 void Tablero::dibujarCaballo(int row, int col) {
-    int x = Constantes::MARGIN + col * Constantes::CELL_SIZE + Constantes::CELL_SIZE/2;
-    int y = Constantes::MARGIN + row * Constantes::CELL_SIZE + Constantes::CELL_SIZE/2;
+    int centerX = Constantes::MARGIN + col * Constantes::CELL_SIZE + Constantes::CELL_SIZE/2;
+    int centerY = Constantes::MARGIN + row * Constantes::CELL_SIZE + Constantes::CELL_SIZE/2;
     
-    // Color café (BROWN) para el caballo
-    setcolor(BROWN);
-    setfillstyle(SOLID_FILL, BROWN);
+    int size = Constantes::CELL_SIZE/3;
+    int x1 = centerX;
+    int y1 = centerY - size;  
+    int x2 = centerX - size;  
+    int y2 = centerY + size;
+    int x3 = centerX + size;  
+    int y3 = centerY + size;
     
-    // Dibujar un círculo para representar el caballo
-    circle(x, y, Constantes::CELL_SIZE/3);
-    floodfill(x, y, BROWN);
+    setcolor(YELLOW);
+    setfillstyle(SOLID_FILL, YELLOW);
+    
+    int points[8] = {x1, y1, x2, y2, x3, y3, x1, y1};
+    fillpoly(4, points);
 }
 
 bool Tablero::esMovimientoValido(int row, int col) {

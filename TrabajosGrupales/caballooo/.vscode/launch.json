@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Usuario/Documents/nReinas",
-      "program": "c:/Users/Usuario/Documents/nReinas/main.exe",
+      "cwd": "c:/Users/Usuario/Desktop/Besties/Estructura-de-Datos/TrabajosGrupales/caballooo",
+      "program": "c:/Users/Usuario/Desktop/Besties/Estructura-de-Datos/TrabajosGrupales/caballooo/main.exe",
       "MIMode": "gdb",
       "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
       "setupCommands": [
