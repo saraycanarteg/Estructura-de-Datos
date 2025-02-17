@@ -26,12 +26,13 @@ void Tablero::dibujarCaballo(int row, int col) {
     int x = Constantes::MARGIN + col * Constantes::CELL_SIZE + Constantes::CELL_SIZE/2;
     int y = Constantes::MARGIN + row * Constantes::CELL_SIZE + Constantes::CELL_SIZE/2;
     
-    setcolor(RED);
-    setfillstyle(SOLID_FILL, RED);
+    // Color café (BROWN) para el caballo
+    setcolor(BROWN);
+    setfillstyle(SOLID_FILL, BROWN);
     
     // Dibujar un círculo para representar el caballo
     circle(x, y, Constantes::CELL_SIZE/3);
-    floodfill(x, y, RED);
+    floodfill(x, y, BROWN);
 }
 
 bool Tablero::esMovimientoValido(int row, int col) {
