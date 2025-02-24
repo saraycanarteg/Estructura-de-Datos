@@ -46,12 +46,11 @@ bool Tablero::esMovimientoValido(int row, int col) {
 }
 
 void Tablero::mostrarMovimientosPosibles(int row, int col) {
-    // Movimientos posibles del caballo
     int movimientos[8][2] = {
-        {-2, -1}, {-2, 1},  // Arriba
-        {-1, -2}, {-1, 2},  // Izquierda y derecha arriba
-        {1, -2}, {1, 2},    // Izquierda y derecha abajo
-        {2, -1}, {2, 1}     // Abajo
+        {-2, -1}, {-2, 1},  
+        {-1, -2}, {-1, 2},  
+        {1, -2}, {1, 2},    
+        {2, -1}, {2, 1}     
     };
     
     setcolor(GREEN);
