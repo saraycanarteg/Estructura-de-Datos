@@ -1,0 +1,2 @@
+// Modificar el método generarBackup() en la clase ListaLibros
+void ListaLibros::generarBackup() const
