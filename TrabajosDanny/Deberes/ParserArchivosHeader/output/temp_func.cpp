@@ -1,0 +1,1 @@
+static Nodo* ordenar(Nodo* cabeza);
