@@ -8,10 +8,10 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Usuario/Documents/nReinas",
-      "program": "c:/Users/Usuario/Documents/nReinas/main.exe",
+      "cwd": "c:/Users/usuar/OneDrive/Dome/ESPE/3 software/Estructura de datos/Grupis/Estructura-de-Datos/TrabajosDomi/Operaciones",
+      "program": "c:/Users/usuar/OneDrive/Dome/ESPE/3 software/Estructura de datos/Grupis/Estructura-de-Datos/TrabajosDomi/Operaciones/build/Debug/outDebug",
       "MIMode": "gdb",
-      "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
+      "miDebuggerPath": "gdb",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",
