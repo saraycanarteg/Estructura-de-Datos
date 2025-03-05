@@ -49,20 +49,27 @@ void TrafficLight::setTimer(int timer) {
 
 // Comportamiento
 void TrafficLight::update() {
-    timer--; // Decrementar temporizador
-    
-    // Cambiar estado según el temporizador
-    if (timer <= 0) {
-        // Ciclo de semáforo: VERDE -> AMARILLO -> ROJO -> VERDE
-        if (state == GREEN) {
-            state = YELLOW;
-            timer = 30; // Duración de amarillo
-        } else if (state == YELLOW) {
-            state = RED;
-            timer = 100; // Duración de rojo
-        } else {
+    timer--;
+    if(timer <= 0) {
+        switch(state) {
+            case GREEN:
+                state = YELLOW;
+                timer = 100;  // 3 segundos para amarillo (100 frames)
+                break;
+            case YELLOW:
+                state = RED;
+                timer = 165;  // 5 segundos para rojo (165 frames)
+                break;
+            case RED:
+                state = GREEN;
+                timer = 100;  // 3 segundos para verde (100 frames)
+                break;
+        }
+    }
+    // Advertencia cuando el verde está por terminar
+    else if(state == GREEN && timer < 50) {  // Parpadeo en últimos 1.5 segundos
+        if(timer % 10 < 5) {  // Parpadeo más rápido
             state = GREEN;
-            timer = 100; // Duración de verde
         }
     }
 }
