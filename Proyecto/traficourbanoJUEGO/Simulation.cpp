@@ -31,6 +31,11 @@ void Simulation::initialize() {
     int gd = DETECT, gm;
     initgraph(&gd, &gm, (char*)"");
     srand(time(NULL));
+
+    setbkcolor(GREEN);
+    cleardevice(); // Limpiar la pantalla para aplicar el nuevo color
+    
+    srand(time(NULL));
     
     // Crear semáforos para cada intersección (9 intersecciones, 4 semáforos cada una)
     // Intersección Superior Izquierda
@@ -156,11 +161,11 @@ void Simulation::run() {
         crossroad.draw();
         
         // Actualizar y dibujar semáforos
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 18; i++) {
             trafficLights[i]->update();
             trafficLights[i]->draw();
         }
-        
+
         if (kbhit()) {
             key = getch();
             if (key == 27) { // ESC
@@ -205,7 +210,7 @@ void Simulation::run() {
 
         setcolor(WHITE);
         outtextxy(10, 10, (char*)"Use las flechas para mover");
-        outtextxy(10, 30, (char*)"Espacio para pausar");
+        outtextxy(10, 30, (char*)"Espacio para frenar");
         outtextxy(10, 50, (char*)"ESC para salir");
         
         delay(30);
@@ -219,11 +224,19 @@ void Simulation::cleanup() {
     cleanupVehicles();
     
     // Liberar memoria de los semáforos
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 18; i++) {
         delete trafficLights[i];
         trafficLights[i] = nullptr;
     }
-    
+
     // Cerrar el modo gráfico
     closegraph();
+}
+
+void Simulation::setPlayerName(const std::string& name) {
+    playerName = name;
+}
+
+std::string Simulation::getPlayerName() const {
+    return playerName;
 }

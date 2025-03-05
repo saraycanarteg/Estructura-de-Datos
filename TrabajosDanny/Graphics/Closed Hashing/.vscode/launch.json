@@ -6,7 +6,7 @@
         "type": "cppdbg",
         "request": "launch",
         "args": [],
-        "stopAtEntry": true,
+        "stopAtEntry": false,
         "externalConsole": true,
         "cwd": "D:\\Universidad\\Tercer Semestre\\Estructura de datos\\RepositorioGit\\Estructura-de-Datos\\TrabajosDanny\\Graphics\\Closed Hashing",
         "program": "D:\\Universidad\\Tercer Semestre\\Estructura de datos\\RepositorioGit\\Estructura-de-Datos\\TrabajosDanny\\Graphics\\Closed Hashing\\output\\main.exe",
