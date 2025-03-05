@@ -5,6 +5,7 @@
 #include <time.h>
 #include <conio.h>
 #include "Simulation.h"
+#include "RecordManager.h"
 
 // Definición de constantes de color
 #define RED 4
@@ -17,6 +18,7 @@ Simulation::Simulation() {
     vehicles = nullptr;
     running = 1;
     frameCount = 0;
+    survivalTime = 0;
     vehicles = new Vehicle(0, 250, 1, 0, 0); 
 }
 
@@ -153,6 +155,9 @@ void Simulation::cleanupVehicles() {
 void Simulation::run() {
     char key;
     bool paused = false;
+    survivalTime = 0; // Initialize survival time
+    bool redLightViolation = false;
+    bool returnToMenu = false;
 
     while (running) {
         cleardevice();
@@ -164,6 +169,42 @@ void Simulation::run() {
         for (int i = 0; i < 18; i++) {
             trafficLights[i]->update();
             trafficLights[i]->draw();
+        }
+
+        // Check for red light violation
+        if (vehicles != nullptr) {
+            // Get vehicle's current intersection
+            int vehicleX = vehicles->getX();
+            int vehicleY = vehicles->getY();
+            
+            // Check through all traffic lights
+            for (int i = 0; i < 18; i++) {
+                // Simple intersection check (you might need to refine this)
+                if (abs(trafficLights[i]->getX() - vehicleX) < 50 && 
+                    abs(trafficLights[i]->getY() - vehicleY) < 50 &&
+                    trafficLights[i]->getState() == RED) {
+                    redLightViolation = true;
+                    break;
+                }
+            }
+        }
+
+        if (redLightViolation) {
+            setcolor(RED);
+            settextstyle(DEFAULT_FONT, HORIZ_DIR, 3);
+            outtextxy(150, 250, (char*)"GAME OVER");
+            
+            setcolor(WHITE);
+            settextstyle(DEFAULT_FONT, HORIZ_DIR, 2);
+            char scoreText[100];
+            sprintf(scoreText, "Puntuacion: %d", calculateScore());
+            outtextxy(150, 300, scoreText);
+            
+            saveRecord(); // Save the record
+            
+            delay(3000);
+            running = 0;
+            break;
         }
 
         if (kbhit()) {
@@ -213,6 +254,10 @@ void Simulation::run() {
         outtextxy(10, 30, (char*)"Espacio para frenar");
         outtextxy(10, 50, (char*)"ESC para salir");
         
+        if (!paused) {
+            survivalTime++;
+        }
+        
         delay(30);
         frameCount++;
     }
@@ -239,4 +284,19 @@ void Simulation::setPlayerName(const std::string& name) {
 
 std::string Simulation::getPlayerName() const {
     return playerName;
+}
+
+void Simulation::saveRecord() {
+    recordManager.loadRecords();
+    recordManager.addRecord(playerName, calculateScore());
+    recordManager.saveRecords();
+}
+
+int Simulation::calculateScore() {
+    return (survivalTime / 30) * 100; // Assuming 30 frames per second
+}
+
+void Simulation::displayRecords() {
+    recordManager.loadRecords();
+    recordManager.displayRecords(150, 100);
 }

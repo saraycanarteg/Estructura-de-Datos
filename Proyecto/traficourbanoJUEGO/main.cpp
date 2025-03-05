@@ -70,7 +70,8 @@ int main() {
                 case 1: { // Ver Records
                     clearScreen();
                     std::cout << "\n\tRecords del juego:\n";
-                    std::cout << "\t(Función en desarrollo)\n\n";
+                    Simulation simulation;
+                    simulation.displayRecords();
                     system("pause");
                     break;
                 }
