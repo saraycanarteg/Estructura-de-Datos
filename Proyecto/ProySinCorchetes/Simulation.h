@@ -28,7 +28,7 @@ private:
     Obstacle *obstacles;
     TrafficLightNode *trafficLightsList; // Cambio aquí
     Crossroad crossroad;
-    Navigator navigator;
+    Navigator* navigator;
 
     // Variables de misión
     bool missionCompleted;

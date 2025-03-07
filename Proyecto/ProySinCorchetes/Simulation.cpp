@@ -25,6 +25,7 @@ Simulation::Simulation() {
     missionCompleted = false;
     hasMission = false;
     vehicles = new Vehicle(20, 150, 1, 0, 0);
+    navigator = new Navigator();
 }
 
 void Simulation::addTrafficLight(TrafficLight* light) {
@@ -84,6 +85,8 @@ void Simulation::initialize() {
         count++;
         current = current->next;
     }
+    int obstaclePositions[1][2] = {{0, 0}}; // Placeholder, will be updated
+    navigator->setDestination(obstaclePositions[0][0], obstaclePositions[0][1]);
 }
 
 void Simulation::generateRandomObstacle()
@@ -158,28 +161,12 @@ void Simulation::cleanupObstacles()
 }
 void Simulation::updateNavigation()
 {
-    if (!hasMission)
-        return;
+    if (!hasMission) return;
 
-    // Draw the minimap
-    navigator.drawMinimap();
-
-    // Check if destination reached
-    if (navigator.hasReachedDestination(vehicles->getX(), vehicles->getY()))
-    {
-        setcolor(GREEN);
-        settextstyle(DEFAULT_FONT, HORIZ_DIR, 2);
-        outtextxy(150, 200, (char *)"MISSION COMPLETED!");
-
-        score += 1000; // Bonus points for completing mission
-        missionCompleted = true;
-
-        // Set a new destination after a delay
-        if (frameCount % 150 == 0 && missionCompleted)
-        {
-            navigator.setDestination(rand() % 640, rand() % 480);
-            missionCompleted = false;
-        }
+    // Calcular la mejor ruta
+    if (navigator->calculateRoute()) {
+        auto nextDirection = navigator->getNextDirection();
+        vehicles->setPosition(nextDirection.first, nextDirection.second);
     }
 }
 // Check for collisions between player and obstacles
@@ -327,7 +314,21 @@ void Simulation::run()
         updateObstacles();
         checkCollisions();
         updateNavigation();
+        navigator->drawMinimap();
+        if (navigator->hasReachedDestination(vehicles->getX(), vehicles->getY())) {
+            setcolor(GREEN);
+            settextstyle(DEFAULT_FONT, HORIZ_DIR, 2);
+            outtextxy(150, 200, (char *)"MISSION COMPLETED!");
 
+            score += 1000; // Bonus points for completing mission
+            missionCompleted = true;
+
+            // Establecer un nuevo destino después de un retraso
+            if (frameCount % 150 == 0 && missionCompleted) {
+                navigator->setDestination(rand() % 640, rand() % 480);
+                missionCompleted = false;
+            }
+        }
         // Check for red light violation
         if (vehicles != nullptr && !redLightViolation)
         {
