@@ -1,4 +1,7 @@
+juju 1000
 dan 600
 saray 300
 andres 200
 dome 0
+lulu 0
+jeje 0

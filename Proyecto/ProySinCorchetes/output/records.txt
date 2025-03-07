@@ -1,4 +1,5 @@
 aloha 300
 pepe 300
+lily 300
 holi 200
 askjh 0
