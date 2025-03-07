@@ -13,8 +13,10 @@
 #define LIGHTGREEN 10
 
 Navigator::Navigator() {
-    // Inicializar el grid
+    // Inicializar el grid con memoria dinámica
+    grid = new int*[GRID_ROWS];
     for (int i = 0; i < GRID_ROWS; i++) {
+        grid[i] = new int[GRID_COLS];
         for (int j = 0; j < GRID_COLS; j++) {
             // Marcar como libre (0) inicialmente
             grid[i][j] = 0;
@@ -37,7 +39,11 @@ Navigator::Navigator() {
 }
 
 Navigator::~Navigator() {
-    // Nada que limpiar específicamente
+    // Liberar la memoria dinámica del grid
+    for (int i = 0; i < GRID_ROWS; i++) {
+        delete[] grid[i];
+    }
+    delete[] grid;
 }
 
 void Navigator::setDestination(int x, int y) {
@@ -187,25 +193,34 @@ std::pair<int, int> Navigator::getNextDirection() {
 }
 
 void Navigator::drawMinimap() {
+    int minimapWidth = 150;  // Reducido de 180
+    int minimapHeight = 150; // Reducido de 180
+    int startX = 480;        // Ajustado para mantenerlo a la derecha
+    int startY = 10;
     // Dibujar fondo del minimapa
     setcolor(BLACK);
     setfillstyle(SOLID_FILL, BLACK);
-    bar(450, 10, 630, 190);
+    bar(startX, startY, startX + minimapWidth, startY + minimapHeight);
     
     setcolor(WHITE);
-    rectangle(450, 10, 630, 190);
+    rectangle(startX, startY, startX + minimapWidth, startY + minimapHeight);
     
-    // Titulo del minimapa
-    outtextxy(460, 20, (char*)"Minimapa - Mejor Ruta");
+    // Título del minimapa
+    settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
+    outtextxy(startX + 15, startY + 5, (char*)"Minimapa");
     
     // Tamaño de cada celda en el minimapa
-    int cellSize = 20;
+    int cellSize = 15;
+
+    // Desplazamiento para centrar el grid
+    int offsetX = startX + 10;
+    int offsetY = startY + 25;
     
     // Dibujar grid
     for (int i = 0; i < GRID_ROWS; i++) {
         for (int j = 0; j < GRID_COLS; j++) {
-            int x = 450 + j * cellSize;
-            int y = 40 + i * cellSize;
+            int x = offsetX + j * cellSize;
+            int y = offsetY + i * cellSize;
             
             if (grid[i][j] == 1) {
                 // Obstáculo
@@ -217,21 +232,29 @@ void Navigator::drawMinimap() {
                 bar(x, y, x + cellSize - 1, y + cellSize - 1);
             }
             
-            // Dibujar borde de la celda
-            setcolor(WHITE);
-            rectangle(x, y, x + cellSize - 1, y + cellSize - 1);
         }
     }
     
     // Dibujar destino
     int destGridX = convertCoordToGrid(destX, true);
     int destGridY = convertCoordToGrid(destY, false);
-    int destMinimapX = 450 + destGridX * cellSize;
-    int destMinimapY = 40 + destGridY * cellSize;
+    int destMinimapX = offsetX + destGridX * cellSize;
+    int destMinimapY = offsetY + destGridY * cellSize;
     
     setfillstyle(SOLID_FILL, YELLOW);
     bar(destMinimapX, destMinimapY, destMinimapX + cellSize - 1, destMinimapY + cellSize - 1);
     
+    setcolor(BLACK);
+    line(destMinimapX + cellSize/2, destMinimapY + cellSize - 1, 
+         destMinimapX + cellSize/2, destMinimapY + cellSize/4);
+    setfillstyle(SOLID_FILL, RED);
+    int flagPoints[6] = {
+        destMinimapX + cellSize/2, destMinimapY + cellSize/4,
+        destMinimapX + cellSize - 2, destMinimapY + cellSize/3,
+        destMinimapX + cellSize/2, destMinimapY + cellSize/2
+    };
+    fillpoly(3, flagPoints);
+
     // Dibujar la ruta óptima
     if (!path.empty()) {
         setcolor(GREEN);
@@ -249,12 +272,19 @@ void Navigator::drawMinimap() {
     }
     
     // Dibujar posición actual del jugador
-    int playerMinimapX = 450 + playerGridX * cellSize;
-    int playerMinimapY = 40 + playerGridY * cellSize;
+    int playerMinimapX = offsetX + playerGridX * cellSize + cellSize/2;
+    int playerMinimapY = offsetY + playerGridY * cellSize + cellSize/2;
     
     setcolor(WHITE);
+    circle(playerMinimapX, playerMinimapY, cellSize/2);
     setfillstyle(SOLID_FILL, GREEN);
-    fillellipse(playerMinimapX + cellSize/2, playerMinimapY + cellSize/2, cellSize/3, cellSize/3);
+    fillellipse(playerMinimapX, playerMinimapY, cellSize/2 - 1, cellSize/2 - 1);
+    
+    settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
+    setcolor(WHITE);
+    outtextxy(startX + 10, startY + minimapHeight - 20, (char*)"Verde: Tú");
+    outtextxy(startX + 80, startY + minimapHeight - 20, (char*)"Rojo: Meta");
+
 }
 
 bool Navigator::hasReachedDestination(int playerX, int playerY) {

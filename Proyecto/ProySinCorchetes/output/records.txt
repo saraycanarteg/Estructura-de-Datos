@@ -1,4 +1,17 @@
+<<<<<<< HEAD
 dome 500
 dan 500
 mat 0
 saray 0
+=======
+dan 700
+sara 700
+l 300
+dan 300
+Dan 0
+Dan 0
+Dan 0
+dad 0
+dan 0
+dan 0
+>>>>>>> 470caca88781fa1af54e92b994f7c58e682fe322

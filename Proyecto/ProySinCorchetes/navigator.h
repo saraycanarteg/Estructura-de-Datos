@@ -11,8 +11,8 @@ private:
     static const int GRID_ROWS = 9;
     static const int GRID_COLS = 9;
     
-    // Array para almacenar el estado del grid (0 = libre, 1 = obstáculo)
-    int grid[GRID_ROWS][GRID_COLS];
+    // Puntero para almacenar el estado del grid (0 = libre, 1 = obstáculo)
+    int** grid;
     
     // Posición del destino
     int destX, destY;
