@@ -20,6 +20,7 @@ public:
     void loadRecords();
     void saveRecords();
     void displayRecords(int x, int y);
+    void generatePDF();
     
     // Helper to get the head of the list (for iteration if needed)
     Record* getHead() const;

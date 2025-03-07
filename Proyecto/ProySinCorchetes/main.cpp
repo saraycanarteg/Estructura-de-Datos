@@ -81,7 +81,7 @@ int main() {
                     clearScreen();
                     std::cout << "\n\tRecords del juego:\n";
                     Simulation simulation;
-                    //simulation.displayRecords();
+                    simulation.displayRecords();
                     system("pause");
                     break;
                 }

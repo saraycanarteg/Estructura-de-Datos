@@ -1,6 +1,9 @@
 #include "RecordManager.h"
+#include "pdf_generator.h"
 #include <fstream>
 #include <graphics.h>
+#include <iostream>
+#include <conio.h>
 #include <cstring>
 
 RecordManager::RecordManager() : head(nullptr) {}
@@ -14,21 +17,36 @@ RecordManager::~RecordManager() {
 }
 
 void RecordManager::addRecord(const std::string& name, int score) {
+    // Primero verificar si el jugador ya existe
+    Record* current = head;
+    while (current != nullptr) {
+        if (current->getName() == name) {
+            // Si el nuevo puntaje es mayor, actualizar
+            if (score > current->score) {
+                current->score = score;
+                sortRecords(); // Reordenar después de actualizar
+            }
+            return;
+        }
+        current = current->next;
+    }
+    
+    // Si el jugador no existe, crear nuevo record
     Record* newRecord = new Record(name, score);
     
-    // If list is empty
+    // Si la lista está vacía
     if (head == nullptr) {
         head = newRecord;
+        saveRecords(); // Guardar después de cada cambio
         return;
     }
     
-    // If new record should be at the start
+    // Si el nuevo record debe ir al inicio
     if (score > head->score) {
         newRecord->next = head;
         head = newRecord;
-    }
-    else {
-        Record* current = head;
+    } else {
+        current = head;
         while (current->next != nullptr && current->next->score >= score) {
             current = current->next;
         }
@@ -36,8 +54,74 @@ void RecordManager::addRecord(const std::string& name, int score) {
         current->next = newRecord;
     }
     
-    // Trim to max records
     trimRecords();
+    saveRecords(); // Guardar después de cada cambio
+    generatePDF(); // Generar PDF actualizado
+}
+
+void RecordManager::sortRecords() {
+    if (head == nullptr || head->next == nullptr) return;
+    
+    bool swapped;
+    Record* current;
+    Record* last = nullptr;
+    
+    do {
+        swapped = false;
+        current = head;
+        
+        while (current->next != last) {
+            if (current->score < current->next->score) {
+                // Intercambiar puntajes y nombres
+                int tempScore = current->score;
+                std::string tempName = current->getName();
+                
+                current->score = current->next->score;
+                current->name = current->next->getName();
+                
+                current->next->score = tempScore;
+                current->next->name = tempName;
+                
+                swapped = true;
+            }
+            current = current->next;
+        }
+        last = current;
+    } while (swapped);
+}
+
+// ...existing code...
+
+void RecordManager::generatePDF() {
+    std::string tempFilePath = "temp_records.txt";
+    std::ofstream tempFile(tempFilePath);
+    if (!tempFile) {
+        std::cerr << "Error al crear archivo temporal" << std::endl;
+        return;
+    }
+    
+    // Escribir encabezados
+    tempFile << "Jugador;Puntaje;Fecha;Posicion\n";
+    
+    // Escribir records
+    Record* current = head;
+    int position = 1;
+    while (current != nullptr) {
+        tempFile << current->getName() << ";"
+                << current->getScore() << ";"
+                << "2024-03-07" << ";" 
+                << position << "\n";
+        current = current->next;
+        position++;
+    }
+    
+    tempFile.close();
+    
+    // Generar PDF usando la función existente
+    createPDF(tempFilePath.c_str());  // Cambiado aquí para pasar const char*
+    
+    // Eliminar archivo temporal
+    remove(tempFilePath.c_str());
 }
 
 void RecordManager::trimRecords() {
@@ -91,6 +175,10 @@ void RecordManager::loadRecords() {
 
 void RecordManager::saveRecords() {
     std::ofstream outFile("records.txt");
+    if (!outFile) {
+        std::cerr << "Error al abrir archivo records.txt" << std::endl;
+        return;
+    }
     
     Record* current = head;
     while (current != nullptr) {
@@ -102,32 +190,30 @@ void RecordManager::saveRecords() {
 }
 
 void RecordManager::displayRecords(int x, int y) {
-    cleardevice();
-    setbkcolor(GREEN);
-    cleardevice();
-    setcolor(WHITE);
+    // Limpiar pantalla
+    system("cls");
     
-    // Title
-    settextstyle(DEFAULT_FONT, HORIZ_DIR, 2);
-    outtextxy(x, y - 50, (char*)"TOP 10 RECORDS");
+    // Título
+    std::cout << "\n\t=== TOP 10 RECORDS ===\n\n";
     
-    // Display records
-    settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
-    
+    // Mostrar records
     Record* current = head;
     int i = 0;
+    
+    if (current == nullptr) {
+        std::cout << "\tNo hay records disponibles.\n";
+    }
+    
     while (current != nullptr && i < MAX_RECORDS) {
-        char recordText[100];
-        sprintf(recordText, "%d. %s - %d puntos", 
-                i+1, current->getName().c_str(), current->getScore());
-        outtextxy(x, y + i*30, recordText);
-        
+        std::cout << "\t" << (i + 1) << ". " 
+                 << current->getName() << " - " 
+                 << current->getScore() << " puntos\n";
         current = current->next;
         i++;
     }
     
-    // Wait for key press
-    getch();
+    std::cout << "\n\tPresione cualquier tecla para continuar...\n";
+    _getch();
 }
 
 Record* RecordManager::getHead() const {
