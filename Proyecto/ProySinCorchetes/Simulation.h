@@ -29,7 +29,9 @@ private:
     TrafficLightNode *trafficLightsList; // Cambio aquí
     Crossroad crossroad;
     Navigator* navigator;
-
+    int safeZoneX;
+    int safeZoneY;
+    int safeZoneRadius;
     // Variables de misión
     bool missionCompleted;
     bool hasMission;

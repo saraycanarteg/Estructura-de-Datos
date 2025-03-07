@@ -25,6 +25,9 @@ Simulation::Simulation() {
     missionCompleted = false;
     hasMission = false;
     vehicles = new Vehicle(20, 150, 1, 0, 0);
+    safeZoneX = vehicles->getX();
+    safeZoneY = vehicles->getY();
+    safeZoneRadius = 150;
     navigator = new Navigator();
 }
 
@@ -51,7 +54,11 @@ void Simulation::initialize() {
     srand(time(NULL));
     setbkcolor(GREEN);
     cleardevice();
-
+    
+    if (vehicles != nullptr) {
+        safeZoneX = vehicles->getX();
+        safeZoneY = vehicles->getY();
+    }
     // Crear semáforos como lista enlazada
     addTrafficLight(new TrafficLight(150, 150, 0));
     addTrafficLight(new TrafficLight(150, 150, 1));
@@ -97,26 +104,59 @@ void Simulation::generateRandomObstacle()
         int obstacleType = rand() % 3; // 0=small, 1=medium, 2=large
 
         Obstacle *newObstacle = nullptr;
+        int obstacleX = 0, obstacleY = 0;
+        bool validPosition = false;
 
-        switch (direction)
-        {
-        case 0: // North to South
-            newObstacle = new Obstacle(150 + (rand() % 3) * 100, 0, 0, 1, obstacleType);
-            break;
-        case 1: // East to West
-            newObstacle = new Obstacle(640, 150 + (rand() % 3) * 100, -1, 0, obstacleType);
-            break;
-        case 2: // South to North
-            newObstacle = new Obstacle(150 + (rand() % 3) * 100, 480, 0, -1, obstacleType);
-            break;
-        case 3: // West to East
-            newObstacle = new Obstacle(0, 150 + (rand() % 3) * 100, 1, 0, obstacleType);
-            break;
+        // Intentar hasta 10 veces para encontrar una posición válida
+        for (int attempts = 0; attempts < 10 && !validPosition; attempts++) {
+            switch (direction)
+            {
+            case 0: // North to South
+                obstacleX = 150 + (rand() % 3) * 100;
+                obstacleY = 0;
+                break;
+            case 1: // East to West
+                obstacleX = 640;
+                obstacleY = 150 + (rand() % 3) * 100;
+                break;
+            case 2: // South to North
+                obstacleX = 150 + (rand() % 3) * 100;
+                obstacleY = 480;
+                break;
+            case 3: // West to East
+                obstacleX = 0;
+                obstacleY = 150 + (rand() % 3) * 100;
+                break;
+            }
+
+            // Verificar si la posición está lejos del carro del jugador
+            if (vehicles != nullptr) {
+                int playerX = vehicles->getX();
+                int playerY = vehicles->getY();
+                
+                // Calcular la distancia entre el obstáculo y el jugador
+                int distanceSquared = (obstacleX - safeZoneX) * (obstacleX - safeZoneX) + 
+                (obstacleY - safeZoneY) * (obstacleY - safeZoneY);
+                
+                if (distanceSquared > safeZoneRadius * safeZoneRadius) {
+                validPosition = true;
+                }
+            } else {
+                // Si no hay vehículo del jugador, cualquier posición es válida
+                validPosition = true;
+            }
         }
 
-        if (newObstacle != nullptr)
-        {
-            addObstacle(&obstacles, newObstacle);
+        // Sólo crear el obstáculo si encontramos una posición válida
+        if (validPosition) {
+            newObstacle = new Obstacle(obstacleX, obstacleY, 
+                                     (direction == 1) ? -1 : (direction == 3) ? 1 : 0,
+                                     (direction == 0) ? 1 : (direction == 2) ? -1 : 0, 
+                                     obstacleType);
+            
+            if (newObstacle != nullptr) {
+                addObstacle(&obstacles, newObstacle);
+            }
         }
     }
 }
