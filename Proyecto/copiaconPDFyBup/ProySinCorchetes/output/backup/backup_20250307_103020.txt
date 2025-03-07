@@ -1,0 +1,4 @@
+dan 600
+saray 300
+dome 0
+andres 0
