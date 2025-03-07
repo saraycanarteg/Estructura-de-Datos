@@ -1,4 +1,6 @@
+papapa 1400
 dan 600
 saray 300
+kalsx 300
 andres 200
 dome 0

@@ -88,10 +88,11 @@ void Simulation::initialize() {
     while (current != nullptr) {
         if (count % 2 == 0) {
             current->light->setState(GREEN);
+            current->light->setTimer(150);
         } else {
             current->light->setState(RED);
+            current->light->setTimer(75);
         }
-        current->light->setTimer(100);
         count++;
         current = current->next;
     }
