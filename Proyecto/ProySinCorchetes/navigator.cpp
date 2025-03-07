@@ -47,22 +47,15 @@ Navigator::~Navigator() {
 }
 
 void Navigator::setDestination(int x, int y) {
+    destX = x;
+    destY = y;
+    
     // Convertir coordenadas de pantalla a grid
     int gridX = convertCoordToGrid(x, true);
     int gridY = convertCoordToGrid(y, false);
     
-    // Asegurarse de que el destino esté en una celda válida y libre
-    if (gridX >= 0 && gridX < GRID_COLS && gridY >= 0 && gridY < GRID_ROWS && grid[gridY][gridX] == 0) {
-        // Eliminar el destino anterior si existe
-        for (int i = 0; i < GRID_ROWS; i++) {
-            for (int j = 0; j < GRID_COLS; j++) {
-                if (grid[i][j] == 2) {
-                    grid[i][j] = 0;
-                }
-            }
-        }
-        destX = x;
-        destY = y;
+    // Asegurarse de que el destino esté en una celda válida
+    if (gridX >= 0 && gridX < GRID_COLS && gridY >= 0 && gridY < GRID_ROWS) {
         grid[gridY][gridX] = 2; // Marcar como destino
     }
 }
@@ -212,12 +205,16 @@ void Navigator::drawMinimap() {
     setcolor(WHITE);
     rectangle(startX, startY, startX + minimapWidth, startY + minimapHeight);
     
+    // Título del minimapa
+    settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
+    outtextxy(startX + 15, startY + 5, (char*)"Minimapa");
+    
     // Tamaño de cada celda en el minimapa
     int cellSize = 15;
 
     // Desplazamiento para centrar el grid
     int offsetX = startX + 10;
-    int offsetY = startY + 10;
+    int offsetY = startY + 25;
     
     // Dibujar grid
     for (int i = 0; i < GRID_ROWS; i++) {
@@ -264,8 +261,8 @@ void Navigator::drawMinimap() {
         setfillstyle(SOLID_FILL, LIGHTGREEN);
         
         for (size_t i = 0; i < path.size(); i++) {
-            int pathX = offsetX + path[i].first * cellSize;
-            int pathY = offsetY + path[i].second * cellSize;
+            int pathX = 450 + path[i].first * cellSize;
+            int pathY = 40 + path[i].second * cellSize;
             
             // No dibujar el punto actual del jugador como parte de la ruta
             if (i != 0) {
@@ -275,13 +272,13 @@ void Navigator::drawMinimap() {
     }
     
     // Dibujar posición actual del jugador
-    int playerMinimapX = offsetX + playerGridX * cellSize;
-    int playerMinimapY = offsetY + playerGridY * cellSize;
+    int playerMinimapX = offsetX + playerGridX * cellSize + cellSize/2;
+    int playerMinimapY = offsetY + playerGridY * cellSize + cellSize/2;
     
     setcolor(WHITE);
-    circle(playerMinimapX + cellSize/2, playerMinimapY + cellSize/2, cellSize/2);
+    circle(playerMinimapX, playerMinimapY, cellSize/2);
     setfillstyle(SOLID_FILL, GREEN);
-    fillellipse(playerMinimapX + cellSize/2, playerMinimapY + cellSize/2, cellSize/2 - 1, cellSize/2 - 1);
+    fillellipse(playerMinimapX, playerMinimapY, cellSize/2 - 1, cellSize/2 - 1);
     
     settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
     setcolor(WHITE);

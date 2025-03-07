@@ -25,6 +25,7 @@
 				"${workspaceFolder}/LibPDF",
 				"-L",
 				"${workspaceFolder}/LibPDF",
+				"-lwinmm",
 				"-lhpdf",
                 "-lbgi",
                 "-lgdi32",

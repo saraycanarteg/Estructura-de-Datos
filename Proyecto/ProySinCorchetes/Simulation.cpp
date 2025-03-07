@@ -44,6 +44,7 @@ void Simulation::addTrafficLight(TrafficLight* light) {
 // Destructor
 Simulation::~Simulation()
 {
+    PlaySound(NULL, NULL, 0); // Detener la música
     cleanup();
 }
 
@@ -54,6 +55,8 @@ void Simulation::initialize() {
     srand(time(NULL));
     setbkcolor(GREEN);
     cleardevice();
+
+    PlaySound(TEXT("background_music.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
     
     if (vehicles != nullptr) {
         safeZoneX = vehicles->getX();
@@ -85,11 +88,10 @@ void Simulation::initialize() {
     while (current != nullptr) {
         if (count % 2 == 0) {
             current->light->setState(GREEN);
-            current->light->setTimer(150); 
         } else {
             current->light->setState(RED);
-            current->light->setTimer(90); 
         }
+        current->light->setTimer(100);
         count++;
         current = current->next;
     }
@@ -329,28 +331,13 @@ void Simulation::run()
         TrafficLightNode* current = trafficLightsList;
         bool redLightViolation = false;
 
-        // Verificar si el vehículo está en una intersección
-        bool isInIntersection = false;
-        if (vehicles != nullptr) {
-            int playerX = vehicles->getX();
-            int playerY = vehicles->getY();
-            
-            // Una intersección se define como un área cerca del cruce de dos calles
-            // Las coordenadas de intersecciones son múltiplos de 100 (según el minimapa)
-            if ((abs(playerX - 150) < 30 || abs(playerX - 250) < 30 || abs(playerX - 350) < 30) &&
-                (abs(playerY - 150) < 30 || abs(playerY - 250) < 30 || abs(playerY - 350) < 30)) {
-                isInIntersection = true;
-            }
-        }
-
-        // Actualizar y verificar semáforos
         while (current != nullptr) 
         {
             current->light->update();
             current->light->draw();
 
-            // Verificar violación solo si el vehículo existe y NO está en una intersección
-            if (vehicles != nullptr && !isInIntersection)
+            // Verificar violación solo si el vehículo existe
+            if (vehicles != nullptr)
             {
                 int playerX = vehicles->getX();
                 int playerY = vehicles->getY();

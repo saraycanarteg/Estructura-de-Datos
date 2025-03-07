@@ -54,15 +54,15 @@ void TrafficLight::update() {
         switch(state) {
             case GREEN:
                 state = YELLOW;
-                timer = 60;  // 2 segundos para amarillo (60 frames)
+                timer = 100;  // 3 segundos para amarillo (100 frames)
                 break;
             case YELLOW:
                 state = RED;
-                timer = 90;  // 3 segundos para rojo (90 frames)
+                timer = 165;  // 5 segundos para rojo (165 frames)
                 break;
             case RED:
                 state = GREEN;
-                timer = 150;  // 5 segundos para verde (150 frames)
+                timer = 100;  // 3 segundos para verde (100 frames)
                 break;
         }
     }

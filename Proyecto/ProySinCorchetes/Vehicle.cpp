@@ -26,11 +26,11 @@ Vehicle::Vehicle(int startX, int startY, int dx, int dy, int vehicleType) {
     
     // Establecer dimensiones según el tipo
     if (vehicleType == 0) { // Carro
-        width = 10;
-        height = 20;
-    } else { // Camión
-        width = 15;
+        width = 20;
         height = 30;
+    } else { // Camión
+        width = 25;
+        height = 40;
     }
     
     next = nullptr;

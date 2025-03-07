@@ -2,6 +2,9 @@
 #define SIMULATION_H
 
 #include <string>
+#include <windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "Winmm.lib")
 
 #include "Vehicle.h"
 #include "TrafficLight.h"

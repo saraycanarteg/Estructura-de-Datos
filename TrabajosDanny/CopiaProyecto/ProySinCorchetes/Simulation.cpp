@@ -44,6 +44,7 @@ void Simulation::addTrafficLight(TrafficLight* light) {
 // Destructor
 Simulation::~Simulation()
 {
+    PlaySound(NULL, NULL, 0); // Detener la música
     cleanup();
 }
 
@@ -54,6 +55,8 @@ void Simulation::initialize() {
     srand(time(NULL));
     setbkcolor(GREEN);
     cleardevice();
+
+    PlaySound(TEXT("background_music.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
     
     if (vehicles != nullptr) {
         safeZoneX = vehicles->getX();
