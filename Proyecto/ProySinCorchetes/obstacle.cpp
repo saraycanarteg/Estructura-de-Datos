@@ -19,7 +19,7 @@ Obstacle::Obstacle(int startX, int startY, int dx, int dy, int obstacleType) {
     
     // Colores según tipo de obstáculo
     if (obstacleType == 0) { // Carro
-        color = BLUE;
+        color = MAGENTA;
     } else if (obstacleType == 1) { // Camión
         color = BROWN;
     } else { // Barricada
